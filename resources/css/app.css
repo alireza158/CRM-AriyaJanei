@@ -1,0 +1,83 @@
+@import url('/public/css/instrument-sans.css');
+@import url('http://192.168.1.30:8080/public/css/Vazirmatn.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* RTL Support */
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+}
+
+/* Persian Font Support */
+@layer base {
+    html[lang="fa"] {
+        font-family: 'Vazirmatn','Instrument Sans', 'Tahoma', 'Arial', sans-serif;
+    }
+
+    html[lang="fa"] body {
+        direction: rtl;
+        text-align: right;
+    }
+}
+
+/* RTL Utilities */
+@layer utilities {
+.body {
+    font-family: Vazirmatn;
+}
+#global-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+}
+
+
+    .text-right-rtl {
+        text-align: right;
+    }
+
+    .text-left-rtl {
+        text-align: left;
+    }
+
+    .float-right-rtl {
+        float: right;
+    }
+
+    .float-left-rtl {
+        float: left;
+    }
+
+    .mr-rtl {
+        margin-right: 0;
+        margin-left: 1rem;
+    }
+
+    .ml-rtl {
+        margin-left: 0;
+        margin-right: 1rem;
+    }
+
+    .pr-rtl {
+        padding-right: 0;
+        padding-left: 1rem;
+    }
+
+    .pl-rtl {
+        padding-left: 0;
+        padding-right: 1rem;
+    }
+}

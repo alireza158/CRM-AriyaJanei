@@ -1,0 +1,31 @@
+<x-guest-layout>
+    <div class="mb-4 text-sm text-gray-600">
+        از ثبت‌نام شما متشکریم! قبل از شروع، لطفاً آدرس ایمیل خود را با کلیک روی لینکی که به تازگی برای شما ارسال کرده‌ایم تایید کنید. اگر ایمیل را دریافت نکرده‌اید، ما با کمال میل ایمیل دیگری برای شما ارسال خواهیم کرد.
+    </div>
+
+    @if (session('status') == 'verification-link-sent')
+        <div class="mb-4 font-medium text-sm text-green-600">
+            لینک تایید جدید به آدرس ایمیلی که در زمان ثبت‌نام ارائه دادید ارسال شده است.
+        </div>
+    @endif
+
+    <div class="mt-4 flex items-center justify-between">
+        <form method="POST" action="{{ route('verification.send') }}">
+            @csrf
+
+            <div>
+                <x-primary-button>
+                    ارسال مجدد ایمیل تایید
+                </x-primary-button>
+            </div>
+        </form>
+
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+
+            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                خروج
+            </button>
+        </form>
+    </div>
+</x-guest-layout>
