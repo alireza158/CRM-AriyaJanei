@@ -128,7 +128,7 @@
         </div>
 
         <div class="footer mt-12">
-            © {{ now()->year }} Jahesh Bama — تمامی حقوق محفوظ است.
+            © {{ now()->year }} آریا جانبی — تمامی حقوق محفوظ است.
         </div>
     </div>
 </div>
