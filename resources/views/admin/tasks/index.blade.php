@@ -10,6 +10,7 @@
                     <th>عنوان</th>
                     <th>تاریخ</th>
                     <th>وضعیت</th>
+                    <th>عملیات</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,9 +26,18 @@
                             <span class="badge bg-warning">در حال انجام</span>
                         @endif
                     </td>
+                    <td>
+                        <a href="{{ route('admin.tasks.edit', $task->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
+
+                        <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+
 </x-app-layout>

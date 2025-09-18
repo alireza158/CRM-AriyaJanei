@@ -11,7 +11,7 @@ class TaskController extends Controller
         $tasks = Task::with('user')->orderBy('date','desc')->get();
         return view('admin.tasks.index', compact('tasks'));
     }
- 
+
     public function create() {
         return view('admin.tasks.create');
     }
@@ -56,4 +56,33 @@ $task->update(['completed' => !$task->completed]);
 return response()->json(['success'=>true, 'completed'=>$task->completed]);
 
     }
+
+    // نمایش فرم ویرایش
+public function edit(Task $task) {
+    return view('admin.tasks.edit', compact('task'));
+}
+
+// بروزرسانی تسک
+public function update(Request $request, Task $task) {
+    $request->validate([
+        'title' => 'required|string',
+        'description' => 'nullable|string',
+        'date' => 'required|date_format:Y-m-d',
+    ]);
+
+    $task->update([
+        'title' => $request->title,
+        'description' => $request->description,
+        'date' => $request->date,
+    ]);
+
+    return redirect()->route('admin.tasks.index')->with('success', 'تسک با موفقیت بروزرسانی شد.');
+}
+
+// حذف تسک
+public function destroy(Task $task) {
+    $task->delete();
+    return redirect()->route('admin.tasks.index')->with('success', 'تسک با موفقیت حذف شد.');
+}
+
 }
