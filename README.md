@@ -100,9 +100,7 @@ php artisan migrate --seed
 
 ## 🧑‍💻 توسعه‌دهنده
 
-احسان ملک  
-[GitHub Profile](https://github.com/ka1antarBAB/)
-
+علیرضا سجادی
 ---
 
 ## 🏷️ نسخه
