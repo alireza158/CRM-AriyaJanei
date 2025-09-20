@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <label for="start_time" class="block font-medium text-gray-700">ساعت شروع</label>
-                        <input type="text" name="start_time" id="start_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_time') }}">
+                        <input type="time" name="start_time" id="start_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_time') }}">
                         @error('start_time')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -69,7 +69,7 @@
                     </div>
                     <div>
                         <label for="end_time" class="block font-medium text-gray-700">ساعت پایان</label>
-                        <input type="text" name="end_time" id="end_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('end_time') }}">
+                        <input type="time" name="end_time" id="end_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('end_time') }}">
                         @error('end_time')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -117,7 +117,7 @@
 </script>
 <script>
 
-    if(window.innerWidth > 768){ // فقط دسکتاپ
+
     flatpickr("#start_time", {
         enableTime: true,
         noCalendar: true,
@@ -130,6 +130,6 @@
         dateFormat: "H:i",
         time_24hr: true
     });
-}
+
 
 </script>
