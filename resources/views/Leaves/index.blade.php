@@ -21,8 +21,8 @@
 
         <div class="bg-white shadow-sm rounded-lg p-4 md:p-6" dir="rtl">
 
-            <!-- جدول برای دسکتاپ -->
-            <div class="hidden md:block overflow-x-auto">
+            <!-- جدول با اسکرول افقی -->
+            <div class="overflow-x-auto">
                 <table class="table-auto w-full text-center border-collapse border border-gray-300">
                     <thead class="bg-gray-100">
                         <tr>
@@ -30,8 +30,8 @@
                             <th class="border px-4 py-2">نوع مرخصی</th>
                             <th class="border px-4 py-2">شروع</th>
                             <th class="border px-4 py-2">پایان</th>
-                            <th class="border px-4 py-2">توضیحات</th>
-                            <th class="border px-4 py-2">تاریخ ارائه درخواست</th>
+                            <th class="border px-4 py-2 hidden sm:table-cell">توضیحات</th>
+                            <th class="border px-4 py-2 hidden sm:table-cell">تاریخ ارائه درخواست</th>
                             <th class="border px-4 py-2">وضعیت</th>
                             <th class="border px-4 py-2">عملیات</th>
                         </tr>
@@ -49,8 +49,8 @@
                                     {{ \Hekmatinasser\Verta\Verta::instance($leave->end_date)->format('Y/m/d') }}
                                     {{ \Carbon\Carbon::parse($leave->end_time)->format('H:i') }}
                                 </td>
-                                <td class="border px-4 py-2">{{ $leave->reason }}</td>
-                                <td class="border px-4 py-2">
+                                <td class="border px-4 py-2 hidden sm:table-cell">{{ $leave->reason }}</td>
+                                <td class="border px-4 py-2 hidden sm:table-cell">
                                     {{ \Hekmatinasser\Verta\Verta::instance($leave->created_at)->format('Y/m/d') }}
                                     {{ \Carbon\Carbon::parse($leave->created_at)->format('H:i') }}
                                 </td>
@@ -96,43 +96,6 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
-
-            <!-- کارت‌ها برای موبایل -->
-            <div class="md:hidden space-y-4">
-                @forelse($leaves as $leave)
-                    <div class="bg-gray-50 p-4 rounded shadow">
-                        <p><strong>کارمند:</strong> {{ $leave->user->name }}</p>
-                        <p><strong>نوع مرخصی:</strong> {{ $leave->leave_type }}</p>
-                        <p><strong>شروع:</strong> {{ \Hekmatinasser\Verta\Verta::instance($leave->start_date)->format('Y/m/d') }} {{ \Carbon\Carbon::parse($leave->start_time)->format('H:i') }}</p>
-                        <p><strong>پایان:</strong> {{ \Hekmatinasser\Verta\Verta::instance($leave->end_date)->format('Y/m/d') }} {{ \Carbon\Carbon::parse($leave->end_time)->format('H:i') }}</p>
-                        <p><strong>توضیحات:</strong> {{ $leave->reason }}</p>
-                        <p><strong>تاریخ درخواست:</strong> {{ \Hekmatinasser\Verta\Verta::instance($leave->created_at)->format('Y/m/d') }} {{ \Carbon\Carbon::parse($leave->created_at)->format('H:i') }}</p>
-                        <p><strong>وضعیت:</strong>
-                            @switch($leave->status)
-                                @case('pending')
-                                    در انتظار تایید مدیر واحد
-                                    @break
-                                @case('manager_approved')
-                                    در انتظار مسئول حضور و غیاب → تایید مدیر واحد
-                                    @break
-                                @case('accounting_approved')
-                                    در انتظار تایید مدیر داخلی → تایید مسئول حضور و غیاب
-                                    @break
-                                @case('final_approved')
-                                    تایید نهایی
-                                    @break
-                                @case('manager_rejected')
-                                @case('accounting_rejected')
-                                @case('final_rejected')
-                                    رد شده
-                                    @break
-                            @endswitch
-                        </p>
-                    </div>
-                @empty
-                    <p class="text-center text-gray-400">هیچ مرخصی‌ای ثبت نشده است.</p>
-                @endforelse
             </div>
 
             <div class="mt-4">
