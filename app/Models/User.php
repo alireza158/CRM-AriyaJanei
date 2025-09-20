@@ -91,5 +91,8 @@ public function employees()
 {
     return $this->hasMany(User::class, 'manager_id');
 }
-
+public function isRole($role)
+{
+    return $this->role === $role;
+}
 }

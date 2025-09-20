@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="py-12 bg-gray-50">
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <div class="mb-8 text-lg text-gray-800">
                 خوش آمدی {{ Auth::user()->name }}
             </div>
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <span class="font-bold">{{ $newNotesCount }}</span>
         یادداشت ثبت شده است.
     </div>
- 
+
     <div class="bg-purple-100 border border-purple-300 text-purple-800 px-4 py-3 rounded-lg shadow">
         📑 در ۲۴ ساعت گذشته
         <span class="font-bold">{{ $newReportsCount }}</span>
@@ -190,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','color'=>'bg-yellow-200','icon'=>'tag'],
                     ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
                     ['title'=>'مدیریت کاربران','route'=>'admin.users.index','color'=>'bg-red-200','icon'=>'users'],
+                    ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
 
                 ];
 
@@ -197,6 +198,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'مشتریان من','route'=>'marketer.customers.index','color'=>'bg-teal-200','icon'=>'users'],
                     ['title'=>'گزارش‌های من','route'=>'marketer.reports.index','color'=>'bg-indigo-200','icon'=>'document-text'],
                     ['title'=>'فروش','route'=>'marketer.sales.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+                    ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];
 
                 $cardsGuest = [

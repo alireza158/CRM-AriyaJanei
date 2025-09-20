@@ -16,6 +16,13 @@ use App\Http\Controllers\UserPanelController;
 use App\Models\UserProduct;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeaveController;
+
+Route::resource('leaves', LeaveController::class);
+Route::patch('leaves/{leave}/approve', [LeaveController::class,'approve'])->name('leaves.approve');
+Route::patch('leaves/{leave}/reject', [LeaveController::class,'reject'])->name('leaves.reject');
+
+Route::get('leaves', [LeaveController::class,'index'])->name('leaves');
 
 Route::get('/', function () {
     return view('welcome');
