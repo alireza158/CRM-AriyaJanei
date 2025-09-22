@@ -1,5 +1,5 @@
-@import url('/public/css/instrument-sans.css');
-@import url('http://192.168.1.30:8080/public/css/Vazirmatn.css');
+@import url('css/instrument-sans.css');
+@import url('css/Vazirmatn.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

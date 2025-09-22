@@ -13,11 +13,11 @@
                     display: flex;
                     justify-content: center; /* افقی */
                     /* align-items: center; */     /* عمودی */
-                    height: 70px;
+                    height: 50px;
 					padding-left : 10px;
                 ">
 
-                            <img src="http://192.168.1.30:8080/Jahesh/public/logo.png" alt="Flowers in Chania">
+                            <img src="logo.png" alt="آریا جانبی">
 
                         </div>
                     </a>
