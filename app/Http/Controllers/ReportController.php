@@ -20,7 +20,9 @@ class ReportController extends Controller
         $manager = auth()->user();
 
         // اطمینان از اینکه واقعا مدیر است
-
+        if (!$manager->hasRole('Manager')) {
+            abort(403, 'شما دسترسی ندارید');
+        }
 
         // گرفتن گزارش‌های تمام کارمندانی که manager_id = id همین مدیر هست
         $reports = Report::whereIn('user_id', function ($query) use ($manager) {

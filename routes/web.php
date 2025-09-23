@@ -32,7 +32,7 @@ Route::middleware(['auth','blocked'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 Route::prefix('user/reports')->name('user.reports')->group(function(){
-    Route::get('/', [ReportController::class, 'indexForManager'])->name('index');
+    Route::get('/', [ReportController::class, 'indexForManager'])->name('indexForManager');
 
 });
 
