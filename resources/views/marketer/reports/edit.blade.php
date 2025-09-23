@@ -38,7 +38,7 @@
                         <input type="text" name="title" id="title"
                                value="{{ old('title', $report->title) }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
-                               @if($report->status !== \App\Models\Report::STATUS_DRAFT) disabled @endif
+                                {{--@if($report->status !== \App\Models\Report::STATUS_DRAFT) disabled @endif--}}
                         >
                         @error('title')<p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>@enderror
                     </div>
@@ -47,7 +47,7 @@
                         <label for="description" class="block text-sm font-medium text-gray-700 text-right">توضیحات</label>
                         <textarea name="description" id="description" rows="5"
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
-                                  @if($report->status !== \App\Models\Report::STATUS_DRAFT) disabled @endif
+                                  {{-- @if($report->status !== \App\Models\Report::STATUS_DRAFT) disabled @endif--}}
                         >{{ old('description', $report->description) }}</textarea>
                         @error('description')<p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>@enderror
                     </div>
@@ -60,22 +60,21 @@
                             </button>
                         </a>
 
-                        @if($report->status === \App\Models\Report::STATUS_DRAFT)
-                            <button type="submit" name="action" value="save"
-                                    class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
-                                ذخیره پیش‌نویس
-                            </button>
-                            <a href="{{ route('marketer.reports.submit', $report ) }}">
-                                <button type="button" name="action" value="submit"
+                       {{--  @if($report->status === \App\Models\Report::STATUS_DRAFT)--}}
+
+                          {{--   <a href="{{ route('marketer.reports.submit', $report ) }}">--}}
+                                <button type="submit" name="action" value="submit"
                                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                    ارسال نهایی
+به روز رسانی
                                 </button>
-                            </a>
+                            {{-- </a>--}}
+                            {{--!
                         @elseif($report->status === \App\Models\Report::STATUS_SUBMITTED || \App\Models\Report::STATUS_DRAFT)
                             <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-md">
                                 گزارش قفل شده ({{ $report->status }})
                             </span>
-                        @endif
+                        !--}}
+                       {{-- @endif--}}
                     </div>
                 </form>
             </div>
