@@ -10,7 +10,7 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $managers = User::role('Manager')->with('User')->get();
+        $managers = User::role('Manager')->with('employees')->get();
         return view('admin.users.index', compact('managers'));
     }
 
