@@ -300,7 +300,7 @@ Route::middleware(['auth','role:Marketer'])
 // ------------------------------
 // مسیرهای مربوط به نقش Guest
 // ------------------------------
-Route::middleware(['auth','role:User|Manager'])
+Route::middleware(['auth','role:User|Manager|Admin'])
     ->prefix('user')
     ->name('user.')
     ->group(function() {

@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
                     ['title'=>'مدیریت کاربران','route'=>'admin.users.index','color'=>'bg-red-200','icon'=>'users'],
                     ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
+                      ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
                 ];
 
