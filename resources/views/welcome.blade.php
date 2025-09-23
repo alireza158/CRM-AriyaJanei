@@ -102,7 +102,7 @@
         /* align-items: center; */     /* عمودی */
         height: 200px;
     ">
-                <img src="logo.png" alt="Flowers in Chania">
+<img src="{{ asset('logo.png') }}" alt="Logo">
 
             </div>
 
