@@ -31,10 +31,7 @@ use App\Http\Controllers\Admin\UserBlockController;
 Route::middleware(['auth','blocked'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
-Route::prefix('user/reports')->name('user.reports')->group(function(){
-    Route::get('/', [ReportController::class, 'index'])->name('index');
 
-});
 
 Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function(){
     Route::resource('tasks', TaskController::class);
@@ -303,7 +300,7 @@ Route::middleware(['auth','role:Marketer'])
 // ------------------------------
 // مسیرهای مربوط به نقش Guest
 // ------------------------------
-Route::middleware(['auth','role:User'])
+Route::middleware(['auth','role:User|Manager'])
     ->prefix('user')
     ->name('user.')
     ->group(function() {
