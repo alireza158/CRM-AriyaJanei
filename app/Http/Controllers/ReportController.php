@@ -31,7 +31,7 @@ class ReportController extends Controller
                   ->where('manager_id', $manager->id);
         })->with('user')->latest()->paginate(15);
 
-        return view('manager.reports.index', compact('reports'));
+        return view('user.reports.index', compact('reports'));
     }
 
     public function index(User $user)
