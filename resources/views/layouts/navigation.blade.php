@@ -17,7 +17,7 @@
 					padding-left : 10px;
                 ">
 
-                            <img src="logo.png" alt="آریا جانبی">
+<img src="{{ asset('logo.png') }}" alt="Logo">
 
                         </div>
                     </a>
