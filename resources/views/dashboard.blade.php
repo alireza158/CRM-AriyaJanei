@@ -206,8 +206,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];
                 $cardsManager = [
-                    ['title'=>'گزارش‌های من','route'=>'myreports','color'=>'bg-orange-200','icon'=>'document-text'],
-                    ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+                    ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+                    ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.reportsManagment','color'=>'bg-orange-200','icon'=>'document-text'],
                     ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                     ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];

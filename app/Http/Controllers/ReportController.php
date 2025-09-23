@@ -34,19 +34,9 @@ class ReportController extends Controller
             return view($view, compact('user', 'reports'));
         }
 
-         $manager = auth()->user();
+        
 
-    // فقط مدیر اجازه داره
-    if (!$manager->hasRole('Manager')) {
-        abort(403, 'شما دسترسی ندارید');
-    }
-
-    // همه گزارش‌های کارمندانی که manager_id = id مدیر
-    $reports = Report::whereHas('user', function ($query) use ($manager) {
-        $query->where('manager_id', $manager->id);
-    })->with('user')->latest()->paginate(15);
-
-    return view('user.reports.index', compact('reports'));
+         
 
         $authUser = Auth::user();
         $view = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
@@ -61,21 +51,19 @@ class ReportController extends Controller
 
         return view($view, compact('reports'));
     }
-    public function myreports(User $user)
+    public function reportsManagment(User $user)
     {
 
-        $authUser = Auth::user();
-        $view =  'user.reports.index';
-        $reports = Report::where('user_id', $authUser->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+     $manager = auth()->user();
 
-        activity()
-            ->causedBy($authUser)
-            ->withProperties(['user_id' => $authUser->id, 'action' => 'view_list'])
-            ->log('مشاهده لیست گزارش‌ها');
+    
 
-        return view($view, compact('reports'));
+    // همه گزارش‌های کارمندانی که manager_id = id مدیر
+    $reports = Report::whereHas('user', function ($query) use ($manager) {
+        $query->where('manager_id', $manager->id);
+    })->with('user')->latest()->paginate(15);
+
+    return view('user.reports.reportsManagment', compact('reports'));
     }
     public function feedback(Request $request, Report $report, User $user)
     {
@@ -153,8 +141,13 @@ class ReportController extends Controller
             ->withProperties(['new' => $data])
             ->log('ارسال گزارش با فایل');
 
-        $route = $authUser->hasRole('Admin') ? 'admin.reports.index' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index');
+       if(  $authUser ->hasRole('Marketer')){
+  $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+}elseif(  $authUser ->hasRole('Manager')){
+    $route = 'user.reports.index';
+}else{
+     $route = 'user.reports.index';
+}
 
         return redirect()->route($route, $userId)
             ->with('success', 'گزارش با موفقیت ثبت شد.');
@@ -179,8 +172,14 @@ class ReportController extends Controller
             ->performedOn($report)
             ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
             ->log('ارسال گزارش');
-
-        $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+if(  $authUser ->hasRole('Marketer')){
+  $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+}elseif(  $authUser ->hasRole('Manager')){
+    $route = 'user.reports.index';
+}else{
+     $route = 'user.reports.index';
+}
+      
 
         return redirect()->route($route, $report)
             ->with('success', 'گزارش ارسال شد.');
@@ -212,15 +211,8 @@ class ReportController extends Controller
     if ($authUser->hasRole('Manager')) {
         $isEmployeeReport = $report->user && $report->user->manager_id == $authUser->id;
 
-        if (!$isEmployeeReport) {
-            abort(403, 'دسترسی غیرمجاز');
-        }
-    } else {
-        // کاربر معمولی فقط گزارش خودش رو ببینه
-        if ($report->user_id !== $authUser->id) {
-            abort(403, 'دسترسی غیرمجاز');
-        }
-    }
+       
+    } 
 
     activity()
         ->causedBy($authUser)
@@ -241,9 +233,7 @@ class ReportController extends Controller
     } elseif ($authUser->hasRole('Manager')) {
         // فقط گزارش کارمندهای خودش
         $report = Report::where('id', $report->id)
-            ->whereHas('user', function ($q) use ($authUser) {
-                $q->where('manager_id', $authUser->id);
-            })
+            
             ->firstOrFail();
     } else {
         // کاربر یا مارکتر فقط گزارش خودش
@@ -309,9 +299,7 @@ public function destroy(Report $report, User $user = null)
         $report = Report::where('user_id', $user->id)->where('id', $report->id)->firstOrFail();
     } elseif ($authUser->hasRole('Manager')) {
         $report = Report::where('id', $report->id)
-            ->whereHas('user', function ($q) use ($authUser) {
-                $q->where('manager_id', $authUser->id);
-            })
+           
             ->firstOrFail();
     } else {
         $report = Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();

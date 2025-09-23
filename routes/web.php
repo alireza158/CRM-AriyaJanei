@@ -318,10 +318,10 @@ Route::middleware(['auth','role:User|Manager'])
             ->name('reports.edit');
         Route::put('reports/{report}', [ReportController::class,'update'])
             ->name('reports.update');
-        Route::post('reports/{report}/destroy', [ReportController::class,'destroy'])
+        Route::delete('reports/{report}/destroy', [ReportController::class,'destroy'])
             ->name('reports.destroy');
     });
-    Route::get('myreports', [ReportController::class, 'myreports'])->name('myreports');
+    Route::get('reportsManagment', [ReportController::class, 'reportsManagment'])->name('user.reports.reportsManagment');
 require __DIR__.'/auth.php';
 Route::put('/admin/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update2');
 
