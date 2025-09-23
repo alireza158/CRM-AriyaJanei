@@ -41,7 +41,11 @@
                 <div class="text-right">
                     <h4 class="text-gray-600 font-semibold">وضعیت:</h4>
                     <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full">
-                        {{ $report->status }}
+                        @if($report->status =="submitted")
+                        <span class="badge bg-warning text-dark">خوانده نشده</span>
+                        @elseif($report->status =="read")
+                        <span class="badge bg-success">خوانده شده</span>
+                        @endif
                     </span>
                 </div>
             </div>
@@ -64,6 +68,7 @@
                     >{{ $report->feedback ?? '' }}</textarea>
                 </div>
 
+                {{--!
                 <div class="text-right">
                     <label for="rating" class="block text-gray-700 font-medium mb-1">امتیاز (1 تا 5):</label>
                     <input type="number"
@@ -75,7 +80,7 @@
                            class="w-24 border rounded-lg p-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 text-center"
                     >
                 </div>
-
+--}}
                 <div class="text-center gap-4">
                     <button type="submit"
                             class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">

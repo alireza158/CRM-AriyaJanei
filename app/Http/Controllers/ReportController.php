@@ -102,6 +102,9 @@ class ReportController extends Controller
 
         $data['user_id'] = $userId;
         $actionInput = $request->input('action');
+
+        $data['status'] = Report::STATUS_SUBMITTED;
+
         if ($actionInput === 'submit') {
             $data['status'] = Report::STATUS_SUBMITTED;
             $data['submitted_at'] = now();
@@ -110,6 +113,12 @@ class ReportController extends Controller
         }
 
         $report = Report::create($data);
+
+        $oldData = $report->getOriginal();
+        $report->status = Report::STATUS_SUBMITTED;
+        $report->submitted_at = now();
+        $report->save();
+
 
         activity()
             ->causedBy($authUser)

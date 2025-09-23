@@ -66,17 +66,24 @@
                                     @endif
                                 </td>
                                 <td class="d-flex justify-content-center gap-1 flex-wrap">
+
                                     <a href="{{ route("{$prefix}.reports.show", $user ? [$report, $user] : $report) }}"
                                        class="btn btn-sm btn-primary">مشاهده</a>
-                                    <a href="{{ route("{$prefix}.reports.edit", $user ? [$report, $user] : $report) }}"
-                                       class="btn btn-sm btn-success">ویرایش</a>
-                                    <form action="{{ route("{$prefix}.reports.destroy", $user ? [$report, $user] : $report) }}"
-                                          method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
-                                        @csrf
-                                        @method('POST')
-                                        <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                                    </form>
+
+
+
+                                        <a href="{{ route("{$prefix}.reports.edit", $user ? [$report, $user] : $report) }}"
+                                           class="btn btn-sm btn-success">ویرایش</a>
+
+                                        <form action="{{ route("{$prefix}.reports.destroy", $user ? [$report, $user] : $report) }}"
+                                              method="POST" class="d-inline" onsubmit="return confirm('آیا مطمئن هستید؟')">
+                                            @csrf
+                                            @method('DELETE') {{-- باید DELETE باشه نه POST --}}
+                                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                        </form>
+
                                 </td>
+
                             </tr>
                             @empty
                             <tr>

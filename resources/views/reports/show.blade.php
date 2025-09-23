@@ -23,7 +23,11 @@
                 <div>
                     <h4 class="text-gray-600 font-semibold">وضعیت:</h4>
                     <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full">
-                        {{ $report->status }}
+                        @if($report->status =="submitted")
+                        <span class="badge bg-warning text-dark">خوانده نشده</span>
+                        @elseif($report->status =="read")
+                        <span class="badge bg-success">خوانده شده</span>
+                        @endif
                     </span>
                 </div>
             </div>
@@ -38,12 +42,14 @@
                             {{ $report->feedback ?? 'هنوز بازخوردی ثبت نشده.' }}
                         </p>
                     </div>
+                    {{--!
                     <div>
                         <h4 class="text-gray-600 font-semibold">امتیاز:</h4>
                         <p class="text-gray-800">
                             {{ $report->rating !== null ? $report->rating : '—' }}
                         </p>
                     </div>
+                    --}}
                 </div>
             </div>
         @endif
