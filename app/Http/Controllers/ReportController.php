@@ -15,24 +15,7 @@ class ReportController extends Controller
     {
         $this->middleware('role:Admin|Marketer|User');
     }
-    public function indexForManager()
-    {
-        $manager = auth()->user();
 
-        // اطمینان از اینکه واقعا مدیر است
-        if (!$manager->hasRole('Manager')) {
-            abort(403, 'شما دسترسی ندارید');
-        }
-
-        // گرفتن گزارش‌های تمام کارمندانی که manager_id = id همین مدیر هست
-        $reports = Report::whereIn('user_id', function ($query) use ($manager) {
-            $query->select('id')
-                  ->from('users')
-                  ->where('manager_id', $manager->id);
-        })->with('user')->latest()->paginate(15);
-
-        return view('user.reports.index', compact('reports'));
-    }
 
     public function index(User $user)
     {
@@ -51,7 +34,16 @@ class ReportController extends Controller
             return view($view, compact('user', 'reports'));
         }
 
+        if (Auth::user()->hasRole('Manager')) {
+             // گرفتن گزارش‌های تمام کارمندانی که manager_id = id همین مدیر هست
+        $reports = Report::whereIn('user_id', function ($query) use ($manager) {
+            $query->select('id')
+                  ->from('users')
+                  ->where('manager_id', $manager->id);
+        })->with('user')->latest()->paginate(15);
 
+        return view('user.reports.index', compact('reports'));
+        }
 
         $authUser = Auth::user();
         $view = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
