@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 خوش آمدی {{ Auth::user()->name }}
             </div>
             {{-- اعلان‌ها --}}
-            @if(!auth()->user()->hasRole('Admin'))
+            @if(auth()->user()->hasRole('Marketer'))
 <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4" dir="rtl">
     <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
         📌 در ۲۴ ساعت گذشته
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
         تسک برایت اضافه شده.
     </div>
 </div>
-@else
+@elseif(auth()->user()->hasRole('Admin'))
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
         📌 در ۲۴ ساعت گذشته

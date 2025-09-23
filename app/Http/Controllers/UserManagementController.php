@@ -10,7 +10,7 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $managers = User::role('Manager')->with('employees')->get();
+        $managers = User::role('Manager')->with('User')->get();
         return view('admin.users.index', compact('managers'));
     }
 
@@ -87,7 +87,7 @@ class UserManagementController extends Controller
             'manager_id' => $manager->id, // اتصال به مدیر
         ]);
 
-        $user->assignRole('Employee');
+        $user->assignRole('User');
 
         return redirect()->route('admin.users.index')->with('success', 'کارمند با موفقیت ایجاد شد.');
     }
