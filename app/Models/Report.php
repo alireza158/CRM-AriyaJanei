@@ -61,5 +61,9 @@ class Report extends Model
         $this->status = self::STATUS_READ;
         $this->save();
     }
+    public function attachments()
+    {
+        return $this->hasMany(ReportAttachment::class);
+    }
 
 }

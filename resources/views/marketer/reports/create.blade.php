@@ -17,7 +17,7 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6" dir="rtl">
 
-                <form action="{{ route('marketer.reports.store') }}"
+                <form action="{{ route('marketer.reports.store') }}" enctype="multipart/form-data"
                       method="POST">
                     @csrf
 
@@ -45,13 +45,18 @@
                             </button>
                         </a>
 
+                        <div class="mb-4">
+                            <label for="attachments" class="block text-sm font-medium text-gray-700 text-right">آپلود فایل‌ها</label>
+                            <input type="file" name="attachments[]" id="attachments" multiple
+                                   class="mt-1 block w-full text-right">
+                            @error('attachments')<p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>@enderror
+                        </div>
 
-                        <button type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                             ارسال نهایی
                         </button>
                     </div>
-                </form>
+                    </form>
             </div>
         </div>
     </div>

@@ -299,9 +299,9 @@ Route::middleware(['auth','role:Marketer'])
 // ------------------------------
 // مسیرهای مربوط به نقش Guest
 // ------------------------------
-Route::middleware(['auth','role:Guest'])
-    ->prefix('guest')
-    ->name('guest.')
+Route::middleware(['auth','role:User'])
+    ->prefix('user')
+    ->name('user.')
     ->group(function() {
         Route::get('reports/{report}/submit', [ReportController::class, 'submit'])
             ->name('reports.submit');

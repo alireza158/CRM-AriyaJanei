@@ -16,7 +16,7 @@
     <div class="py-12" dir="rtl">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form action="{{ route('admin.reports.store', $user->id) }}"
+                <form  action="{{ route('admin.reports.store', $user->id) }}"  enctype="multipart/form-data"
                       method="POST">
                     @csrf
                     <div class="mb-4">
@@ -42,6 +42,8 @@
                                 بازگشت
                             </button>
                         </a>
+
+
                         <button type="submit"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                             ذخیره

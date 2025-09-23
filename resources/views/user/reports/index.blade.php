@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center gap-3">
             <h2 class="fw-semibold fs-4 mb-0">فهرست گزارشات</h2>
             <span>|</span>
-            <a href="{{ route('marketer.reports.create') }}" class="text-decoration-none">
+            <a href="{{ route('user.reports.create') }}" class="text-decoration-none">
                 ایجاد گزارش جدید
             </a>
         </div>
@@ -57,11 +57,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('marketer.reports.show', $report) }}" class="btn btn-sm btn-primary">مشاهده</a>
+                                        <a href="{{ route('user.reports.show', $report) }}" class="btn btn-sm btn-primary">مشاهده</a>
 
                                         @if($report->created_at->gt(now()->subHours(2)))
-                                            <a href="{{ route('marketer.reports.edit', $report) }}" class="btn btn-sm btn-success">ویرایش</a>
-                                            <form action="{{ route('marketer.reports.destroy', $report) }}"
+                                            <a href="{{ route('user.reports.edit', $report) }}" class="btn btn-sm btn-success">ویرایش</a>
+                                            <form action="{{ route('user.reports.destroy', $report) }}"
                                                   method="POST" class="d-inline">
                                                 @csrf
                                                 @method('delete')

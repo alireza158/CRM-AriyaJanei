@@ -30,6 +30,29 @@
                         @endif
                     </span>
                 </div>
+
+                {{-- بخش نمایش فایل‌ها --}}
+                @if($report->attachments->count())
+                <div class="mb-3">
+                    <h5 style="text-align: right; padding-bottom: 20px;" class="fw-bold ">فایل‌ها و تصاویر:</h5>
+                    <ul class="list-unstyled text-end">
+                        @foreach($report->attachments as $attachment)
+                            <li class="mb-2">
+                                @if(Str::startsWith($attachment->type, 'image'))
+                                    <img src="{{ Storage::url($attachment->file_path) }}"
+                                         alt="تصویر گزارش"
+                                         class="img-fluid mb-1 clickable-image"
+                                         style="max-height: 200px; cursor: pointer;"
+                                         data-bs-toggle="modal"
+                                         data-bs-target="#imageModal"
+                                         data-src="{{ Storage::url($attachment->file_path) }}">
+                                @endif
+
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             </div>
         </div>
         @if($report->status === \App\Models\Report::STATUS_SUBMITTED || $report->status === \App\Models\Report::STATUS_READ)
@@ -57,4 +80,21 @@
             <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">بازگشت</a>
         </div>
     </div>
+        <!-- Modal برای نمایش تصویر -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <img src="" id="modalImage" class="img-fluid w-100" alt="تصویر گزارش">
+            </div>
+        </div>
+    </div>
+</div>
 </x-layouts.app>
+<script>
+    document.querySelectorAll('.clickable-image').forEach(img => {
+        img.addEventListener('click', function() {
+            document.getElementById('modalImage').src = this.dataset.src;
+        });
+    });
+</script>

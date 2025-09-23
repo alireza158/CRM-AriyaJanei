@@ -201,8 +201,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];
 
-                $cardsGuest = [
-                    ['title'=>'گزارش‌های من','route'=>'guest.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+                $cardsUser = [
+                    ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+                    ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];
             @endphp
 
@@ -253,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function() {
             @endphp
 
             {{-- Render Cards --}}
-            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'Guest'=>$cardsGuest] as $role=>$cards)
+            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser] as $role=>$cards)
                 @hasrole($role)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8" dir="rtl">
                     @foreach($cards as $card)

@@ -32,7 +32,7 @@ class UserManagementController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
             'password' => bcrypt($request->password),
-            'manager_id' => $manager->id, // اینجا درست مقداردهی میشه
+            'manager_id' => "1", // اینجا درست مقداردهی میشه
         ]);
 
         $user->assignRole('Manager');

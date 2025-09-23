@@ -13,7 +13,7 @@ class ReportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Admin|Marketer|Guest');
+        $this->middleware('role:Admin|Marketer|User');
     }
 
     public function index(User $user)
@@ -33,8 +33,9 @@ class ReportController extends Controller
             return view($view, compact('user', 'reports'));
         }
 
+
         $authUser = Auth::user();
-        $view = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'guest.reports.index';
+        $view = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
         $reports = Report::where('user_id', $authUser->id)
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -78,7 +79,7 @@ class ReportController extends Controller
         $authUser = Auth::user();
 
         $view = $authUser->hasRole('Admin') ? 'admin.reports.create' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.create' : 'guest.reports.create');
+            ($authUser->hasRole('Marketer') ? 'marketer.reports.create' : 'user.reports.create');
 
         activity()
             ->causedBy($authUser)
@@ -93,38 +94,38 @@ class ReportController extends Controller
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'required|string',
+            'attachments.*' => 'nullable|file|max:10240', // حداکثر 10MB
         ]);
 
         $authUser = Auth::user();
         $userId = $authUser->hasRole('Admin') ? $user->id : $authUser->id;
-        $route = $authUser->hasRole('Admin') ? 'admin.reports.index' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'guest.reports.index');
 
+        $data['submitted_at']= now();
         $data['user_id'] = $userId;
-        $actionInput = $request->input('action');
-
         $data['status'] = Report::STATUS_SUBMITTED;
-
-        if ($actionInput === 'submit') {
-            $data['status'] = Report::STATUS_SUBMITTED;
-            $data['submitted_at'] = now();
-        } else {
-            $data['status'] = Report::STATUS_DRAFT;
-        }
 
         $report = Report::create($data);
 
-        $oldData = $report->getOriginal();
-        $report->status = Report::STATUS_SUBMITTED;
-        $report->submitted_at = now();
-        $report->save();
+        // ذخیره فایل‌ها
+        if ($request->hasFile('attachments')) {
 
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('report_attachments', 'public');
+                $report->attachments()->create([
+                    'file_path' => $path,
+                    'type' => $file->getClientMimeType(),
+                ]);
+            }
+        }
 
         activity()
             ->causedBy($authUser)
             ->performedOn($report)
             ->withProperties(['new' => $data])
-            ->log($data['status'] === Report::STATUS_SUBMITTED ? 'ارسال گزارش' : 'ثبت پیش‌نویس گزارش');
+            ->log('ارسال گزارش با فایل');
+
+        $route = $authUser->hasRole('Admin') ? 'admin.reports.index' :
+            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index');
 
         return redirect()->route($route, $userId)
             ->with('success', 'گزارش با موفقیت ثبت شد.');
@@ -150,7 +151,7 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
             ->log('ارسال گزارش');
 
-        $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'guest.reports.index';
+        $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
 
         return redirect()->route($route, $report)
             ->with('success', 'گزارش ارسال شد.');
@@ -191,7 +192,7 @@ class ReportController extends Controller
             : Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();
 
         $view = $authUser->hasRole('Admin') ? 'admin.reports.edit' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.edit' : 'guest.reports.edit');
+            ($authUser->hasRole('Marketer') ? 'marketer.reports.edit' : 'user.reports.edit');
 
         activity()
             ->causedBy($authUser)
@@ -211,7 +212,7 @@ class ReportController extends Controller
 
         $authUser = Auth::user();
         $route = $authUser->hasRole('Admin') ? 'admin.reports.index' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'guest.reports.index');
+            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index');
 
         $oldData = $report->getOriginal();
         $report->update($data);
@@ -230,7 +231,7 @@ class ReportController extends Controller
     {
         $authUser = Auth::user();
         $route = $authUser->hasRole('Admin') ? 'admin.reports.index' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'guest.reports.index');
+            ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index');
 
         activity()
             ->causedBy($authUser)
