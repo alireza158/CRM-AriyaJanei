@@ -32,6 +32,20 @@ class ReportController extends Controller
 
             return view($view, compact('user', 'reports'));
         }
+        if (Auth::user()->hasRole('Manager')) {
+            $reports = Report::where('user_id', $user->id)
+                ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+            $view =  'user.reports.index';
+
+            activity()
+                ->causedBy(Auth::user())
+                ->withProperties(['user_id' => $user->id, 'action' => 'view_list'])
+                ->log('مشاهده لیست گزارش‌ها');
+
+            return view($view, compact('user', 'reports'));
+        }
 
 
         $authUser = Auth::user();
