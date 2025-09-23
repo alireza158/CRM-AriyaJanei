@@ -61,7 +61,22 @@ class ReportController extends Controller
 
         return view($view, compact('reports'));
     }
+    public function myreports(User $user)
+    {
 
+        $authUser = Auth::user();
+        $view =  'user.reports.index';
+        $reports = Report::where('user_id', $authUser->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        activity()
+            ->causedBy($authUser)
+            ->withProperties(['user_id' => $authUser->id, 'action' => 'view_list'])
+            ->log('مشاهده لیست گزارش‌ها');
+
+        return view($view, compact('reports'));
+    }
     public function feedback(Request $request, Report $report, User $user)
     {
         if (!Auth::user()->hasRole('Admin')) abort(403);

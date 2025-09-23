@@ -321,7 +321,7 @@ Route::middleware(['auth','role:User|Manager'])
         Route::post('reports/{report}/destroy', [ReportController::class,'destroy'])
             ->name('reports.destroy');
     });
-
+    Route::get('myreports', [ReportController::class, 'myreports'])->name('myreports');
 require __DIR__.'/auth.php';
 Route::put('/admin/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update2');
 

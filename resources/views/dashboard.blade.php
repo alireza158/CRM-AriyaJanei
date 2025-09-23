@@ -205,6 +205,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
                     ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                 ];
+                $cardsManager = [
+                    ['title'=>'گزارش‌های من','route'=>'myreports','color'=>'bg-orange-200','icon'=>'document-text'],
+                    ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+                    ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+                    ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+                ];
             @endphp
 
             {{-- Function to render SVG icons --}}
@@ -254,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
             @endphp
 
             {{-- Render Cards --}}
-            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser] as $role=>$cards)
+            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser, 'Manager'=>$cardsManager] as $role=>$cards)
                 @hasrole($role)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8" dir="rtl">
                     @foreach($cards as $card)
