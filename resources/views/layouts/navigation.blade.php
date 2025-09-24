@@ -73,7 +73,7 @@
                                 مشتریان من
                             </x-dropdown-link>
 
-                            <x-dropdown-link :href="route('marketer.reports.index')">
+                            <x-dropdown-link :href="route('user.reports.index')">
                                 گزارش های من
                             </x-dropdown-link>
                         @endhasrole

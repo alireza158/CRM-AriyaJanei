@@ -187,7 +187,7 @@ Route::middleware(['auth','role:Admin'])
             ->name('reports.edit');
         Route::put('reports/{report}/update/{user}', [ReportController::class,'update'])
             ->name('reports.update');
-        Route::post('reports/{report}/destroy/{user}', [ReportController::class,'destroy'])
+        Route::delete('reports/{report}/destroy/{user}', [ReportController::class,'destroy'])
             ->name('reports.destroy');
 
         Route::get('marketers/{marketer}/customers/{customer}/notes', [CustomerNotesController::class, 'index'])
@@ -219,7 +219,33 @@ Route::middleware(['auth','role:Admin'])
 Route::get('/admin/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
 Route::post('/admin/products/store', [AdminController::class, 'storeProduct'])->name('admin.products.store');
 
-
+// ------------------------------
+// مسیرهای مربوط به نقش Guest
+// ------------------------------
+Route::middleware(['auth','role:User|Manager|Admin'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function() {
+        Route::get('reports/{report}/submit', [ReportController::class, 'submit'])
+            ->name('reports.submit');
+           Route::put('reports/{report}/feedback/', [ReportController::class,'feedback'])
+            ->name('reports.feedback');
+        Route::get('reports/create', [ReportController::class,'create'])
+            ->name('reports.create');
+        Route::post('reports', [ReportController::class,'store'])
+            ->name('reports.store');
+        Route::get('reports', [ReportController::class,'index'])
+            ->name('reports.index');
+        Route::get('reports/show/{report}', [ReportController::class,'show'])
+            ->name('reports.show');
+        Route::get('reports/{report}/edit', [ReportController::class,'edit'])
+            ->name('reports.edit');
+        Route::put('reports/{report}', [ReportController::class,'update'])
+            ->name('reports.update');
+        Route::delete('reports/{report}/destroy', [ReportController::class,'destroy'])
+            ->name('reports.destroy');
+    });
+    Route::get('reportsManagment', [ReportController::class, 'reportsManagment'])->name('user.reports.reportsManagment');
 // ------------------------------
 // مسیرهای مربوط به نقش Marketer
 // ------------------------------
@@ -258,22 +284,22 @@ Route::middleware(['auth','role:Marketer'])
             ->name('invoices.destroy');
 
 
-        Route::get('reports/create', [ReportController::class, 'create'])
-            ->name('reports.create');
-        Route::get('reports/show/{report}', [ReportController::class, 'show'])
-            ->name('reports.show');
-        Route::get('reports/{report}/edit', [ReportController::class, 'edit'])
-            ->name('reports.edit');
-        Route::get('reports/{report}/submit', [ReportController::class, 'submit'])
-            ->name('reports.submit');
-        Route::get('reports', [ReportController::class, 'index'])
-            ->name('reports.index');
-        Route::post('reports', [ReportController::class, 'store'])
-            ->name('reports.store');
-        Route::put('reports/{report}', [ReportController::class, 'update'])
-            ->name('reports.update');
-        Route::post('reports/{report}/destroy', [ReportController::class, 'destroy'])
-            ->name('reports.destroy');
+       // Route::get('reports/create', [ReportController::class, 'create'])
+        //    ->name('reports.create');
+      //  Route::get('reports/show/{report}', [ReportController::class, 'show'])
+       //     ->name('reports.show');
+       // Route::get('reports/{report}/edit', [ReportController::class, 'edit'])
+      //      ->name('reports.edit');
+      //  Route::get('reports/{report}/submit', [ReportController::class, 'submit'])
+      //      ->name('reports.submit');
+      //  Route::get('reports', [ReportController::class, 'index'])
+      //      ->name('reports.index');
+      //  Route::post('reports', [ReportController::class, 'store'])
+      //      ->name('reports.store');
+      //  Route::put('reports/{report}', [ReportController::class, 'update'])
+      //      ->name('reports.update');
+//Route::delete('reports/{report}/destroy', [ReportController::class, 'destroy'])
+     //       ->name('reports.destroy');
 
 
         Route::get('customers/{customer}/notes', [CustomerNotesController::class, 'index'])
@@ -297,31 +323,7 @@ Route::middleware(['auth','role:Marketer'])
 
     });
 
-// ------------------------------
-// مسیرهای مربوط به نقش Guest
-// ------------------------------
-Route::middleware(['auth','role:User|Manager|Admin'])
-    ->prefix('user')
-    ->name('user.')
-    ->group(function() {
-        Route::get('reports/{report}/submit', [ReportController::class, 'submit'])
-            ->name('reports.submit');
-        Route::get('reports/create', [ReportController::class,'create'])
-            ->name('reports.create');
-        Route::post('reports', [ReportController::class,'store'])
-            ->name('reports.store');
-        Route::get('reports', [ReportController::class,'index'])
-            ->name('reports.index');
-        Route::get('reports/show/{report}', [ReportController::class,'show'])
-            ->name('reports.show');
-        Route::get('reports/{report}/edit', [ReportController::class,'edit'])
-            ->name('reports.edit');
-        Route::put('reports/{report}', [ReportController::class,'update'])
-            ->name('reports.update');
-        Route::delete('reports/{report}/destroy', [ReportController::class,'destroy'])
-            ->name('reports.destroy');
-    });
-    Route::get('reportsManagment', [ReportController::class, 'reportsManagment'])->name('user.reports.reportsManagment');
+
 require __DIR__.'/auth.php';
 Route::put('/admin/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update2');
 

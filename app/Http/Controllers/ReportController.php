@@ -39,7 +39,7 @@ class ReportController extends Controller
          
 
         $authUser = Auth::user();
-        $view = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+        $view = $authUser->hasRole('Marketer') ? 'user.reports.index' : 'user.reports.index';
         $reports = Report::where('user_id', $authUser->id)
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -84,7 +84,7 @@ class ReportController extends Controller
     }
     public function feedback(Request $request, Report $report, User $user)
     {
-        if (!Auth::user()->hasRole('Admin')) abort(403);
+       // if (!Auth::user()->hasRole('Admin')||!Auth::user()->hasRole(roles: 'Manager')) abort(403);
 
         if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
             abort(404);
@@ -104,8 +104,8 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $data])
             ->log('ثبت بازخورد برای گزارش');
 
-        return redirect()->route('admin.reports.show', [$report, $user])
-            ->with('success', 'بازخورد و امتیاز با موفقیت ذخیره شد.');
+        return back()->with('success', 'بازخورد و امتیاز با موفقیت ذخیره شد.');
+
     }
 
     public function create(User $user)
@@ -113,7 +113,7 @@ class ReportController extends Controller
         $authUser = Auth::user();
 
         $view = $authUser->hasRole('Admin') ? 'admin.reports.create' :
-            ($authUser->hasRole('Marketer') ? 'marketer.reports.create' : 'user.reports.create');
+            ($authUser->hasRole('Marketer') ? 'user.reports.create' : 'user.reports.create');
 
         activity()
             ->causedBy($authUser)
@@ -159,7 +159,7 @@ class ReportController extends Controller
             ->log('ارسال گزارش با فایل');
 
        if(  $authUser ->hasRole('Marketer')){
-  $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+  $route = $authUser->hasRole('Marketer') ? 'user.reports.index' : 'user.reports.index';
 }elseif(  $authUser ->hasRole('Manager')){
     $route = 'user.reports.index';
 }else{
@@ -190,7 +190,7 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
             ->log('ارسال گزارش');
 if(  $authUser ->hasRole('Marketer')){
-  $route = $authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index';
+  $route = $authUser->hasRole('Marketer') ? 'user.reports.index' : 'user.reports.index';
 }elseif(  $authUser ->hasRole('Manager')){
     $route = 'user.reports.index';
 }else{
@@ -237,7 +237,7 @@ if(  $authUser ->hasRole('Marketer')){
         ->withProperties(['action' => 'view'])
         ->log('مشاهده گزارش');
 
-    return view('reports.show', compact('report'));
+    return view('user.reports.show', compact('report',));
 }
 
 
@@ -264,7 +264,7 @@ if(  $authUser ->hasRole('Marketer')){
 
     $view = $authUser->hasRole('Admin') ? 'user.reports.edit'
         : ($authUser->hasRole('Manager') ? 'user.reports.edit'
-        : ($authUser->hasRole('Marketer') ? 'marketer.reports.edit' : 'user.reports.edit'));
+        : ($authUser->hasRole('Marketer') ? 'user.reports.edit' : 'user.reports.edit'));
 
     activity()
         ->causedBy($authUser)
@@ -284,18 +284,11 @@ public function update(Request $request, Report $report, User $user = null)
 
     $authUser = Auth::user();
 
-   if ($authUser->hasRole('Admin')) {
-       if ($user) {
-        $report = Report::where('user_id', $user->id)->where('id', $report->id)->firstOrFail();
-    } else {
-        // ادمین همه گزارش‌ها میتونه ببینه
+    if ($authUser->hasRole('Admin')) {
         $report = Report::where('id', $report->id)->firstOrFail();
-    
-    }}  elseif ($authUser->hasRole('Manager')) {
+    } elseif ($authUser->hasRole('Manager')) {
         $report = Report::where('id', $report->id)
-            ->whereHas('user', function ($q) use ($authUser) {
-                $q->where('manager_id', $authUser->id);
-            })
+           
             ->firstOrFail();
     } else {
         $report = Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();
@@ -310,12 +303,8 @@ public function update(Request $request, Report $report, User $user = null)
         ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
         ->log('ویرایش گزارش');
 
-    $route = $authUser->hasRole('Admin') ? 'admin.reports.index'
-        : ($authUser->hasRole('Manager') ? 'user.reports.index'
-        : ($authUser->hasRole('Marketer') ? 'marketer.reports.index' : 'user.reports.index'));
-
-    $userId = $authUser->hasRole('Admin') ? $user->id : null;
-    return redirect()->route($route, $userId);
+    // ✅ بعد از ویرایش به همون صفحه برگرد
+    return redirect()->back()->with('success', 'گزارش با موفقیت ویرایش شد.');
 }
 
 public function destroy(Report $report, User $user = null)
@@ -323,24 +312,18 @@ public function destroy(Report $report, User $user = null)
     $authUser = Auth::user();
 
     if ($authUser->hasRole('Admin')) {
-        // ادمین همه گزارش‌ها
         $report = Report::where('id', $report->id)->firstOrFail();
-        $route = 'user.reports.reportsManagment';
     } elseif ($authUser->hasRole('Manager')) {
-        // مدیر می‌تواند گزارش‌های خودش یا زیرمجموعه‌ها را حذف کند
         $report = Report::where('id', $report->id)
             ->where(function($query) use ($authUser) {
                 $query->where('user_id', $authUser->id)
                       ->orWhereIn('user_id', $authUser->employees->pluck('id'));
             })
             ->firstOrFail();
-        $route = 'user.reports.index';
     } else {
-        // کاربران عادی فقط گزارش‌های خودشون
         $report = Report::where('id', $report->id)
             ->where('user_id', $authUser->id)
             ->firstOrFail();
-        $route = 'user.reports.index';
     }
 
     activity()
@@ -351,7 +334,8 @@ public function destroy(Report $report, User $user = null)
 
     $report->delete();
 
-    return redirect()->route($route);
+    // ✅ به همون صفحه قبلی برگرد
+    return redirect()->back()->with('success', 'گزارش با موفقیت حذف شد.');
 }
 
 

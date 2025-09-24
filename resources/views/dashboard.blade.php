@@ -179,40 +179,44 @@ document.addEventListener("DOMContentLoaded", function() {
 @endif
 
 
-            @php
-                $cardsAdmin = [
-                    ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','color'=>'bg-blue-200','icon'=>'users'],
-                    ['title'=>'کاربران مهمان','route'=>'admin.guests.index','color'=>'bg-purple-200','icon'=>'user'],
-                    ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','color'=>'bg-green-200','icon'=>'archive'],
-                    ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','color'=>'bg-purple-200','icon'=>'user-group'],
-                    ['title'=>'مدیریت تسک کاربران','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
-                    ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','color'=>'bg-blue-200','icon'=>'clipboard-list'],
-                    ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','color'=>'bg-yellow-200','icon'=>'tag'],
-                    ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
-                    ['title'=>'مدیریت کاربران','route'=>'admin.users.index','color'=>'bg-red-200','icon'=>'users'],
-                    ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
-                      ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+           @php
+    $cardsAdmin = [
+        ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','color'=>'bg-blue-200','icon'=>'users'],
+        ['title'=>'کاربران مهمان','route'=>'admin.guests.index','color'=>'bg-purple-200','icon'=>'user'],
+        ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','color'=>'bg-green-200','icon'=>'archive'],
+        ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','color'=>'bg-purple-200','icon'=>'user-group'],
+        ['title'=>'مدیریت تسک کاربران','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
+        ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','color'=>'bg-blue-200','icon'=>'clipboard-list'],
+        ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','color'=>'bg-yellow-200','icon'=>'tag'],
+        ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
+        ['title'=>'مدیریت کاربران','route'=>'admin.users.index','color'=>'bg-red-200','icon'=>'users'],
+       // ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
+       // ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+    ];
 
-                ];
+    $cardsMarketer = [
+        ['title'=>'مشتریان من','route'=>'marketer.customers.index','color'=>'bg-teal-200','icon'=>'users'],
+        // ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-indigo-200','icon'=>'document-text'],
+        ['title'=>'فروش (درحال توسعه و تکمیل)','route'=>'dashboard','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+        // ['title'=>'فروش (درحال توسعه و تکمیل)','route'=>'marketer.sales.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+       // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+    ];
 
-                $cardsMarketer = [
-                    ['title'=>'مشتریان من','route'=>'marketer.customers.index','color'=>'bg-teal-200','icon'=>'users'],
-                    ['title'=>'گزارش‌های من','route'=>'marketer.reports.index','color'=>'bg-indigo-200','icon'=>'document-text'],
-                    ['title'=>'فروش','route'=>'marketer.sales.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                    ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                ];
+    $cardsUser = [
+        ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+               ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
-                $cardsUser = [
-                    ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
-                    ['title'=>'مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                ];
-                $cardsManager = [
-                    ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
-                    ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.reportsManagment','color'=>'bg-orange-200','icon'=>'document-text'],
-                    ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                    ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                ];
-            @endphp
+    ];
+
+    $cardsManager = [
+        // ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
+        ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.reportsManagment','color'=>'bg-orange-200','icon'=>'document-text'],
+        // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+        ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+    ];
+    
+@endphp
+
 
             {{-- Function to render SVG icons --}}
             @php

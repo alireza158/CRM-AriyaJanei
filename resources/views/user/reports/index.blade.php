@@ -59,8 +59,11 @@
                                     <td>
                                         <a href="{{ route('user.reports.show', $report) }}" class="btn btn-sm btn-primary">مشاهده</a>
 
-                                        @if($report->created_at->gt(now()->subHours(2)))
-                                            <a href="{{ route('user.reports.edit', $report) }}" class="btn btn-sm btn-success">ویرایش</a>
+                                       {{--  @if($report->created_at->gt(now()->subHours(2)))
+                                            
+                                        @endif--}}
+
+                                        <a href="{{ route('user.reports.edit', $report) }}" class="btn btn-sm btn-success">ویرایش</a>
                                             <form action="{{ route('user.reports.destroy', $report) }}"
                                                   method="POST" class="d-inline">
                                                 @csrf
@@ -70,7 +73,6 @@
                                                     حذف
                                                 </button>
                                             </form>
-                                        @endif
                                     </td>
                                 </tr>
                             @empty

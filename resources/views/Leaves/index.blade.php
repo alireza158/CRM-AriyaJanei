@@ -55,65 +55,89 @@
                                     <br class="sm:hidden">
                                     {{ \Carbon\Carbon::parse($leave->created_at)->format('H:i') }}
                                 </td>
-                                <td class="whitespace-nowrap">
-                                    @switch($leave->status)
-                                        @case('pending')
-                                            <span class="badge bg-warning">در انتظار تایید مدیر واحد</span>
-                                            @break
-                                        @case('manager_approved')
-                                            <span class="badge bg-info">در انتظار مسئول حضور و غیاب → تایید مدیر واحد</span>
-                                            @break
-                                        @case('accounting_approved')
-                                            <span class="badge bg-primary">در انتظار تایید مدیر داخلی → تایید مسئول حضور و غیاب </span>
-                                            @break
-                                        @case('final_approved')
-                                            <span class="badge bg-success">تایید نهایی</span>
-                                            @break
-                                        @case('manager_rejected')
-                                            <span class="badge bg-danger">رد توسط مدیر واحد</span>
-                                            @break
-                                        @case('accounting_rejected')
-                                            <span class="badge bg-danger">رد توسط مسئول حضور و غیاب</span>
-                                            @break
-                                        @case('final_rejected')
-                                            <span class="badge bg-danger">رد توسط مدیر داخلی</span>
-                                            @break
-                                    @endswitch
-                                </td>
-                                <td class="whitespace-nowrap">
-                                    @if(Auth::user()->role === 'manager' && $leave->status === 'pending' && Auth::user()->id ===  $leave->manager_id )
-                                        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-success btn-sm">تایید</button>
-                                        </form>
-                                        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-danger btn-sm">رد</button>
-                                        </form>
-                                    @endif
+                                {{-- وضعیت (badge) --}}
+<td class="whitespace-nowrap">
+    @switch($leave->status)
+        @case('pending')
+            <span class="badge bg-warning">در انتظار تایید مدیر واحد</span>
+            @break
 
-                                    @if(Auth::user()->role === 'accountant' && $leave->status === 'manager_approved')
-                                        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-success btn-sm">تایید</button>
-                                        </form>
-                                        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-danger btn-sm">رد</button>
-                                        </form>
-                                    @endif
+        @case('manager_approved')
+            <span class="badge bg-info">تأیید مدیر واحد — منتظر تایید مدیر داخلی/ادمین</span>
+            @break
 
-                                    @if(Auth::user()->role === 'internalManager' && $leave->status === 'accounting_approved')
-                                        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-success btn-sm">تایید نهایی</button>
-                                        </form>
-                                        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline mb-1 sm:mb-0">
-                                            @csrf @method('PATCH')
-                                            <button type="submit" class="btn btn-danger btn-sm">رد</button>
-                                        </form>
-                                    @endif
-                                </td>
+        @case('internal_approved')
+            <span class="badge bg-primary">تأیید مدیر داخلی/ادمین — منتظر تایید حسابداری</span>
+            @break
+
+        @case('accounting_approved')
+            <span class="badge bg-indigo">تأیید حسابداری — منتظر تأیید نهایی</span>
+            @break
+
+        @case('final_approved')
+            <span class="badge bg-success">تأیید نهایی</span>
+            @break
+
+        @case('manager_rejected')
+            <span class="badge bg-danger">رد توسط مدیر واحد</span>
+            @break
+
+        @case('internal_rejected')
+            <span class="badge bg-danger">رد توسط مدیر داخلی/ادمین</span>
+            @break
+
+        @case('accounting_rejected')
+            <span class="badge bg-danger">رد توسط حسابداری</span>
+            @break
+
+        @default
+            <span class="badge bg-secondary">{{ $leave->status }}</span>
+    @endswitch
+</td>
+
+{{-- عملیات (تایید / رد) --}}
+<td class="whitespace-nowrap">
+    @php $user = Auth::user(); @endphp
+
+    {{-- مدیر واحد --}}
+    @if($user->hasRole('Manager') && $leave->status === 'pending' && $leave->manager_id == $user->id)
+        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-success btn-sm">تایید</button>
+        </form>
+        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-danger btn-sm">رد</button>
+        </form>
+    @endif
+
+    {{-- مدیر داخلی یا ادمین --}}
+    @if(($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved')
+        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-success btn-sm">تایید مدیر داخلی / ادمین</button>
+        </form>
+        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-danger btn-sm">رد مدیر داخلی / ادمین</button>
+        </form>
+    @endif
+
+    {{-- حسابداری --}}
+    @if($user->hasRole('Accountant') && $leave->status === 'internal_approved')
+        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-success btn-sm">تایید حسابداری</button>
+        </form>
+        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-danger btn-sm">رد حسابداری</button>
+        </form>
+    @endif
+</td>
+
+
+
                             </tr>
                         @empty
                             <tr>

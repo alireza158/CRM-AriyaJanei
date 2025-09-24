@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Leave extends Model
 {
     use HasFactory;
-
+ const STATUS_PENDING_MANAGER   = 'pending_manager';   // در انتظار تایید مدیر واحد
+    const STATUS_PENDING_INTERNAL  = 'pending_internal';  // در انتظار تایید مدیر داخلی یا ادمین
+    const STATUS_PENDING_ACCOUNT   = 'pending_account';   // در انتظار تایید حسابداری
+    const STATUS_APPROVED          = 'approved';          // تایید نهایی
+    const STATUS_REJECTED          = 'rejected';          // رد شده
     protected $fillable = [
         'user_id',
         'leave_type',

@@ -13,28 +13,22 @@ class LeaveController extends Controller
 {
     $user = Auth::user();
 
-    if ($user->role === 'admin') {
+    if (Auth::user()->hasRole('Admin')) {
         // ادمین همه مرخصی‌ها رو می‌بینه
         $leaves = Leave::latest()->paginate(15);
 
-    } elseif ($user->role === 'manager') {
+    } elseif (Auth::user()->hasRole(roles: 'Manager')) {
         // مدیر فقط مرخصی‌هایی که به اون ارجاع داده شدن رو می‌بینه
         $leaves = Leave::where('manager_id', $user->id)
                        ->latest()
                        ->paginate(15);
 
-    } elseif ($user->role === 'accountant') {
+    } elseif (Auth::user()->hasRole('Accountant')) {
         // حسابداری مرخصی‌هایی که مدیر تایید کرده رو می‌بینه
-        $leaves = Leave::where('status', 'manager_approved')
-                       ->latest()
-                       ->paginate(15);
+         $leaves = Leave::latest()->paginate(15);
 
-    }  else if($user->role === 'user') {
-        // کارمند فقط مرخصی‌های خودش رو می‌بینه
-        $leaves = Leave::where('user_id', $user->id)
-                       ->latest()
-                       ->paginate(15);
-    }else if($user->role === 'internalManager') {
+
+    }  else if(Auth::user()->hasRole('User') ) {
         // کارمند فقط مرخصی‌های خودش رو می‌بینه
         $leaves = Leave::where('user_id', $user->id)
                        ->latest()
@@ -80,91 +74,68 @@ class LeaveController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
-        $start_date = Verta::parse($request->start_date)->datetime();
-        $end_date   = Verta::parse($request->end_date)->datetime();
-        $user = auth()->user();
-        Leave::create([
-            'user_id' => auth()->id(),
-            'leave_type' => $request->leave_type,
-            'start_date' =>  $start_date,
-            'end_date' =>  $end_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'reason' => $request->reason,
-            'manager_id' => $user->manager_id,
+  public function store(Request $request)
+{
+    $start_date = Verta::parse($request->start_date)->datetime();
+    $end_date   = Verta::parse($request->end_date)->datetime();
+    $user = auth()->user();
+
+    $leave = Leave::create([
+        'user_id'    => $user->id,
+        'leave_type' => $request->leave_type,
+        'start_date' => $start_date,
+        'end_date'   => $end_date,
+        'start_time' => $request->start_time,
+        'end_time'   => $request->end_time,
+        'reason'     => $request->reason,
+        'manager_id' => $user->manager_id, // مدیر بخش واقعی
+        'status'     => 'pending',
+    ]);
+
+    // اگر خود کاربر مدیر بخش بود → مستقیم تایید بشه و بره مرحله بعد
+    if ($user->hasRole('Manager')) {
+        $leave->update([
+            'status'     => 'manager_approved',
+            'manager_id' => $user->id,
         ]);
-
-        return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد.');
     }
 
-    public function approve(Leave $leave)
-    {
-        $user = auth()->user();
+    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد.');
+}
+public function approve(Leave $leave)
+{
+    $user = auth()->user();
 
-        if ($user->isRole('manager') && $leave->status === 'pending') {
-            $leave->update([
-                'manager_id' => $user->id,
-                'status' => 'manager_approved',
-            ]);
-        }
-
-        if ($user->isRole('accountant') && $leave->status === 'manager_approved') {
-            $leave->update([
-                'accountant_id' => $user->id,
-                'status' => 'accounting_approved',
-            ]);
-        }
-
-        if ($user->isRole('internalManager') && $leave->status === 'accounting_approved') {
-            $leave->update([
-                'super_manager_id' => $user->id,
-                'status' => 'final_approved',
-            ]);
-        }
-        if ($user->isRole('admin') && $leave->status === 'accounting_approved') {
-            $leave->update([
-                'super_manager_id' => $user->id,
-                'status' => 'final_approved',
-            ]);
-        }
-        return back()->with('success', 'مرخصی تأیید شد.');
+    if ($user->hasRole('Manager') && $leave->status === 'pending' && $leave->manager_id == $user->id) {
+        $leave->update(['status' => 'manager_approved', 'manager_id' => $user->id]);
+    } elseif (($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved') {
+        $leave->update(['status' => 'internal_approved', 'super_manager_id' => $user->id]);
+    } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
+        $leave->update(['status' => 'final_approved', 'accountant_id' => $user->id]);
+    } else {
+        abort(403, 'شما مجوز تایید این مرخصی را ندارید.');
     }
 
-    public function reject(Leave $leave)
-    {
-        $user = auth()->user();
+    return back()->with('success', 'مرخصی تأیید شد.');
+}
 
-        if ($user->isRole('manager') && $leave->status === 'pending') {
-            $leave->update([
-                'manager_id' => $user->id,
-                'status' => 'manager_rejected',
-            ]);
-        }
+public function reject(Leave $leave)
+{
+    $user = auth()->user();
 
-        if ($user->isRole('accountant') && $leave->status === 'manager_approved') {
-            $leave->update([
-                'accountant_id' => $user->id,
-                'status' => 'accounting_rejected',
-            ]);
-        }
-
-        if ($user->isRole('internalManager') && $leave->status === 'accounting_approved') {
-            $leave->update([
-                'super_manager_id' => $user->id,
-                'status' => 'final_rejected',
-            ]);
-        }
-        if ($user->isRole('admin') && $leave->status === 'accounting_approved') {
-            $leave->update([
-                'super_manager_id' => $user->id,
-                'status' => 'final_rejected',
-            ]);
-        }
-
-        return back()->with('error', 'مرخصی رد شد.');
+    if ($user->hasRole('Manager') && $leave->status === 'pending') {
+        $leave->update(['status' => 'manager_rejected', 'manager_id' => $user->id]);
+    } elseif (($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved') {
+        $leave->update(['status' => 'internal_rejected', 'super_manager_id' => $user->id]);
+    } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
+        $leave->update(['status' => 'accounting_rejected', 'accountant_id' => $user->id]);
+    } else {
+        abort(403, 'شما مجوز رد این مرخصی را ندارید.');
     }
+
+    return back()->with('error', 'مرخصی رد شد.');
+}
+
 
 
 }
