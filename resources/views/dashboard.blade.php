@@ -176,8 +176,39 @@ document.addEventListener("DOMContentLoaded", function() {
         </ul>
     </div>
 </div>
-@endif
 
+@endif
+ {{-- Modal یادآورها --}}
+    @if($todayReminders->count() > 0)
+    <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">یادآورهای امروز</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="list-group">
+              @foreach($todayReminders as $reminder)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                      <strong>{{ $reminder->title }}</strong><br>
+                      <small>{{ $reminder->description }}</small><br>
+                      <small>{{ \Hekmatinasser\Verta\Verta::instance($reminder->remind_at)->format('Y/m/d H:i') }}</small>
+                  </div>
+                  <form action="{{ route('reminders.markAsSeen', $reminder->id) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-success btn-sm">خواندم</button>
+                  </form>
+                </li>
+              @endforeach
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endif
 
            @php
     $cardsAdmin = [
@@ -205,6 +236,8 @@ document.addEventListener("DOMContentLoaded", function() {
     $cardsUser = [
         ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
                ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+                              ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+
 
     ];
 
@@ -214,6 +247,8 @@ document.addEventListener("DOMContentLoaded", function() {
         // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
           ['title'=>'مدیریت تسک ها','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
+                      //                  ['title'=>'مدیریت یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+
         
     ];
     
@@ -318,5 +353,12 @@ document.querySelectorAll('.task-checkbox').forEach(el => {
 
 
         </script>
-
+  @if($todayReminders->count() > 0)
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        var reminderModal = new bootstrap.Modal(document.getElementById('reminderModal'));
+        reminderModal.show();
+      });
+    </script>
+    @endif
 </x-app-layout>

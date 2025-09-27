@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\CustomerNote;
 use App\Models\Report;
+use App\Models\Reminder;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -46,6 +48,11 @@ class DashboardController extends Controller
 
         $newReportsCount = Report::where('created_at', '>=', $since)->count();
 
+$todayReminders = Reminder::where('user_id', auth()->id())
+    ->where('remind_at', '<=', Carbon::now())
+    ->where('seen', false)
+    ->orderBy('remind_at', 'asc')
+    ->get();
 
         return view('dashboard', [
             'tasks' => $tasks,
@@ -53,6 +60,7 @@ class DashboardController extends Controller
             'todayTasksCount' => $todayTasksCount,
             'newNotesCount' =>$newNotesCount,
             'newReportsCount' =>$newReportsCount,
+            'todayReminders'=>$todayReminders,
         ]);
     }
 

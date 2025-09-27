@@ -17,7 +17,31 @@ use App\Models\UserProduct;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\RemindersController;
+Route::middleware(['auth'])->group(function () {
 
+    // لیست Reminder های خود کاربر
+    Route::get('/reminders', [RemindersController::class, 'index'])->name('reminders.index');
+
+    // فرم ایجاد Reminder
+    Route::get('/reminders/create', [RemindersController::class, 'create'])->name('reminders.create');
+
+    // ذخیره Reminder جدید
+    Route::post('/reminders', [RemindersController::class, 'store'])->name('reminders.store');
+
+    // نمایش فرم ویرایش
+    Route::get('/reminders/{reminder}/edit', [RemindersController::class, 'edit'])->name('reminders.edit');
+
+    // بروزرسانی Reminder
+    Route::patch('/reminders/{reminder}', [RemindersController::class, 'update'])->name('reminders.update');
+
+    // حذف Reminder
+    Route::delete('/reminders/{reminder}', [RemindersController::class, 'destroy'])->name('reminders.destroy');
+
+    // علامت‌گذاری خوانده شده
+    Route::patch('/reminders/{reminder}/seen', [RemindersController::class, 'markAsSeen'])->name('reminders.markAsSeen');
+
+});
 Route::resource('leaves', LeaveController::class);
 Route::patch('leaves/{leave}/approve', [LeaveController::class,'approve'])->name('leaves.approve');
 Route::patch('leaves/{leave}/reject', [LeaveController::class,'reject'])->name('leaves.reject');
