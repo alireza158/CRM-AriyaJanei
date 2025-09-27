@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 خوش آمدی {{ Auth::user()->name }}
             </div>
             {{-- اعلان‌ها --}}
-            @if(auth()->user()->hasRole('Marketer'))
+            @if(auth()->user()->hasRole('Marketer') || auth()->user()->hasRole('User')||auth()->user()->hasRole('Manager'))
 <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4" dir="rtl">
     <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
         📌 در ۲۴ ساعت گذشته
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 {{-- کارت تسک‌های امروز (گوشه بالا سمت راست) --}}
-@if(auth()->user()->hasRole('Marketer'))
+@if(auth()->user()->hasRole('Marketer') || auth()->user()->hasRole('User')||auth()->user()->hasRole('Manager'))
 <div class="d-none d-lg-block position-fixed top-0 end-0 mt-5 me-4" style="width: 280px; z-index: 1050;">
     <div class="card shadow-sm rounded">
         <div class="card-header bg-primary text-white fw-semibold">
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'کاربران مهمان','route'=>'admin.guests.index','color'=>'bg-purple-200','icon'=>'user'],
         ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','color'=>'bg-green-200','icon'=>'archive'],
         ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','color'=>'bg-purple-200','icon'=>'user-group'],
-        ['title'=>'مدیریت تسک کاربران','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
+      
         ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','color'=>'bg-blue-200','icon'=>'clipboard-list'],
         ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','color'=>'bg-yellow-200','icon'=>'tag'],
         ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
@@ -213,6 +213,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'مدیریت گزارش کار ها','route'=>'user.reports.reportsManagment','color'=>'bg-orange-200','icon'=>'document-text'],
         // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+          ['title'=>'مدیریت تسک ها','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
+        
     ];
     
 @endphp

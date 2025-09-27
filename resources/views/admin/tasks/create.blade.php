@@ -21,14 +21,12 @@
 
                     <div class="mb-3">
                         <label for="user_id" class="form-label">کاربر</label>
-                        <select name="user_id" id="user_id" class="form-select" required>
-                            <option value="">انتخاب کاربر</option>
-                            @foreach(\App\Models\User::all() as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                     <select name="user_id" class="form-control">
+    @foreach($users as $u)
+        <option value="{{ $u->id }}">{{ $u->name }}</option>
+    @endforeach
+</select>
+
                         @error('user_id')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
@@ -49,9 +47,9 @@
 
                     <div class="mb-3">
                         <label for="date" class="form-label">تاریخ</label>
-                        <input type="date" name="date" id="date" class="form-control" value="{{ old('date', now()->format('Y-m-d')) }}" required>
+                        <input type="text" name="date" id="date" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('date') }}">
                         @error('date')
-                            <div class="text-danger small">{{ $message }}</div>
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
@@ -62,3 +60,21 @@
         </div>
     </div>
 </x-app-layout>
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-date/dist/persian-date.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    $(document).ready(function() {
+        $("#date").persianDatepicker({
+            format: 'YYYY/MM/DD',
+            initialValue: false
+        });
+     
+    });
+</script>

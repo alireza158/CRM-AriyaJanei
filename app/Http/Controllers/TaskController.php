@@ -1,43 +1,69 @@
 <?php
 namespace App\Http\Controllers;
-
+use App\Models\User;
+use Hekmatinasser\Verta\Verta;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 class TaskController extends Controller
 {
     // Admin: نمایش و مدیریت تسک‌ها
-    public function index() {
+   public function index() {
+    $user = auth()->user();
+
+    if ($user->hasRole('Admin')) {
         $tasks = Task::with('user')->orderBy('date','desc')->get();
-        return view('admin.tasks.index', compact('tasks'));
+    } elseif ($user->hasRole('Manager')) {
+        $tasks = Task::with('user')
+            ->whereHas('user', function($q) use ($user) {
+                $q->where('manager_id', $user->id); // فقط اعضای زیرمجموعه
+            })
+            ->orderBy('date','desc')->get();
+    } else {
+        $tasks = Task::with('user')
+            ->whereHas('user', function($q) use ($user) {
+                $q->where('user_id', $user->id); // فقط اعضای زیرمجموعه
+            })
+            ->orderBy('date','desc')->get();
     }
 
-    public function create() {
-        return view('admin.tasks.create');
+    return view('admin.tasks.index', compact('tasks'));
+}
+
+
+  public function create() {
+    if (auth()->user()->hasRole('Admin')) {
+        $users = User::all();
+    } elseif (auth()->user()->hasRole('Manager')) {
+        $users = User::where('manager_id', auth()->id())->get();
+    } else {
+        abort(403);
     }
 
-    public function store(Request $request) {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'title' => 'required|string',
-            'date' => 'required|date',
-        ]);
-        $request->validate([
-    'date' => 'required|date_format:Y-m-d',
-]);
-
-        Task::create([
-            'user_id' => $request->user_id,
-            'title'   => $request->title,
-            'description' => $request->description,
-            'date'    => $request->date, // این باید YYYY-MM-DD باشد
-        ]);
+    return view('admin.tasks.create', compact('users'));
+}
 
 
-        // بعد از ذخیره تسک در Controller
-return redirect()->route('admin.tasks.index')->with('success','تسک ساخته شد.');
 
-    }
+public function store(Request $request) {
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'title'   => 'required|string',
+        'date'    => 'required|string', // رشته شمسی می‌آید
+    ]);
+
+    // تبدیل تاریخ شمسی به میلادی
+    $gregorianDate = Verta::parseFormat('Y/m/d', $request->date)->datetime();
+
+    Task::create([
+        'user_id'    => $request->user_id,
+        'title'      => $request->title,
+        'description'=> $request->description,
+        'date'       => $gregorianDate->format('Y-m-d'), // ذخیره میلادی
+    ]);
+
+    return redirect()->route('admin.tasks.index')->with('success','تسک ساخته شد.');
+}
 
     // Marketer: دریافت تسک‌های امروز
     public function today() {
@@ -50,19 +76,34 @@ return redirect()->route('admin.tasks.index')->with('success','تسک ساخته
     }
 
     // Marketer: تیک زدن تسک
-    public function complete(Task $task) {
-      // $this->authorize('update', $task); // حذف کنید
-$task->update(['completed' => !$task->completed]);
-return response()->json(['success'=>true, 'completed'=>$task->completed]);
+   public function complete(Task $task) {
+    $task->update(['completed' => !$task->completed]);
+    return response()->json(['success'=>true, 'completed'=>$task->completed]);
+}
 
-    }
 
     // نمایش فرم ویرایش
 public function edit(Task $task) {
-    return view('admin.tasks.edit', compact('task'));
+    $user = auth()->user();
+
+    if ($user->hasRole('Admin') || ($user->hasRole('Manager') && $task->user->manager_id == $user->id)) {
+        return view('admin.tasks.edit', compact('task'));
+    }
+
+    abort(403);
 }
 
-// بروزرسانی تسک
+public function destroy(Task $task) {
+    $user = auth()->user();
+
+    if ($user->hasRole('Admin') || ($user->hasRole('Manager') && $task->user->manager_id == $user->id)) {
+        $task->delete();
+        return redirect()->route('admin.tasks.index')->with('success', 'تسک حذف شد.');
+    }
+
+    abort(403);
+}
+
 public function update(Request $request, Task $task) {
     $request->validate([
         'title' => 'required|string',
@@ -79,10 +120,6 @@ public function update(Request $request, Task $task) {
     return redirect()->route('admin.tasks.index')->with('success', 'تسک با موفقیت بروزرسانی شد.');
 }
 
-// حذف تسک
-public function destroy(Task $task) {
-    $task->delete();
-    return redirect()->route('admin.tasks.index')->with('success', 'تسک با موفقیت حذف شد.');
-}
+
 
 }
