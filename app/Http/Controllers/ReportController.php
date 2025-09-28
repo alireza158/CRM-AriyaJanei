@@ -20,7 +20,7 @@ class ReportController extends Controller
 
     public function index(User $user)
     {
-        if (Auth::user()->hasRole('Admin')) {
+       /* if (Auth::user()->hasRole('Admin')) {
             $reports = Report::where('user_id', $user->id)
                 ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
                 ->orderBy('created_at', 'desc')
@@ -33,8 +33,7 @@ class ReportController extends Controller
                 ->log('مشاهده لیست گزارش‌ها');
 
             return view($view, compact('user', 'reports'));
-        }
-
+        }*/
 
 
 
@@ -113,7 +112,7 @@ class ReportController extends Controller
     {
         $authUser = Auth::user();
 
-        $view = $authUser->hasRole('Admin') ? 'admin.reports.create' :
+        $view = $authUser->hasRole('Admin') ? 'user.reports.create' :
             ($authUser->hasRole('Marketer') ? 'user.reports.create' : 'user.reports.create');
 
         activity()
@@ -133,10 +132,10 @@ class ReportController extends Controller
         ]);
 
         $authUser = Auth::user();
-        $userId = $authUser->hasRole('Admin') ? $user->id : $authUser->id;
+        $userId = $authUser->id;
 
         $data['submitted_at']= now();
-        $data['user_id'] = $userId;
+        $data['user_id'] =  $authUser->id;
         $data['status'] = Report::STATUS_SUBMITTED;
 
         $report = Report::create($data);
@@ -224,6 +223,7 @@ if(  $authUser ->hasRole('Marketer')){
 {
     $authUser = Auth::user();
 
+    
     if ($authUser->hasRole('Admin')) {
         if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
             abort(404);
