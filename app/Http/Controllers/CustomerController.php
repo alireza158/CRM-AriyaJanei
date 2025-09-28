@@ -98,15 +98,7 @@ class CustomerController extends Controller
                 ->with('success', 'مشتری با موفقیت ساخته شد.');
         }
 
-        if(!$marketerId){
-            Notification::create([
-                'user_id' => $marketerId,
-                'title' => "شماره جدید",
-                'message' => "شماره جدید ثبت شده است.",
-                'seen' => false,
-            ]);
-        }
-
+      
 
         return redirect()->route('marketer.customer.notes.create', ['customer' => $customer->id])
         ->with('success', 'مشتری با موفقیت ساخته شد. حالا می‌توانید یادداشت جدید ثبت کنید.');
