@@ -54,32 +54,49 @@
                 </div>
             @endif
             </div>
-        </div>
-        @if($report->status === \App\Models\Report::STATUS_SUBMITTED || $report->status === \App\Models\Report::STATUS_READ)
-            <div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-6 space-y-6 border-t-4 border-blue-500">
-                <h3 class="text-xl font-bold text-gray-700 border-b pb-2">بازخورد و امتیاز مدیر</h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-gray-600 font-semibold">بازخورد:</h4>
-                        <p class="text-gray-800 whitespace-pre-line">
-                            {{ $report->feedback ?? 'هنوز بازخوردی ثبت نشده.' }}
-                        </p>
-                    </div>
-                    {{--!
-                    <div>
-                        <h4 class="text-gray-600 font-semibold">امتیاز:</h4>
-                        <p class="text-gray-800">
-                            {{ $report->rating !== null ? $report->rating : '—' }}
-                        </p>
-                    </div>
-                    --}}
-                </div>
+             @php
+    $user = Auth::user();
+@endphp
+@if($user->hasRole('Admin') || $user->hasRole('internalManager') ||$user->hasRole('Manager'))
+        {{-- فرم ارسال بازخورد --}}
+        
+        <form action="{{ route('user.reports.feedback', [$report]) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+            <div class="text-right">
+                <label for="feedback" class="block text-gray-700 font-medium mb-1">بازخورد:</label>
+                <textarea name="feedback"
+                          id="feedback"
+                          rows="4"
+                          class="w-full border rounded-lg p-3 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 text-right"
+                          dir="rtl">{{ $report->feedback ?? '' }}</textarea>
+            </div>
+
+            <div class="text-center gap-4">
+                <button type="submit"
+                        class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">
+                    ذخیره بازخورد
+                </button>
+            </div>
+        </form>
+    @else
+        {{-- فقط نمایش بازخورد --}}
+        @if($report->feedback)
+            <div class="text-right p-3 border rounded-lg bg-gray-100">
+                {{ $report->feedback }}
+            </div>
+        @else
+            <div class="text-right text-gray-500">
+                بازخوردی ثبت نشده است.
             </div>
         @endif
+    @endif
         <div class="flex justify-start space-x-reverse space-x-2">
             <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">بازگشت</a>
         </div>
     </div>
+        </div>
+       
         <!-- Modal برای نمایش تصویر -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

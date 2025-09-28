@@ -75,9 +75,12 @@
 
        <div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-6 space-y-6 border-t-4 border-blue-500">
     <h3 class="text-xl font-bold text-gray-700 border-b pb-2 text-right">بازخورد</h3>
-
-    @if(Auth::user()->hasAnyRole(['Admin', 'Manager']))
+   @php
+    $user = Auth::user();
+@endphp
+@if($user->hasRole('Admin') || $user->hasRole('internalManager') ||$user->hasRole('Manager'))
         {{-- فرم ارسال بازخورد --}}
+        
         <form action="{{ route('user.reports.feedback', [$report]) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
@@ -109,7 +112,11 @@
             </div>
         @endif
     @endif
-</div>
+        <div class="flex justify-start space-x-reverse space-x-2">
+            <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">بازگشت</a>
+        </div>
+    </div>
+        </div>
 
                     <a href="{{ route('user.reports.index' ) }}">
                         <button type="button"
