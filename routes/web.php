@@ -18,6 +18,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\RemindersController;
+use App\Http\Controllers\MessageController;
+
 Route::middleware(['auth'])->group(function () {
 
     // لیست Reminder های خود کاربر
@@ -390,3 +392,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:Admin'])->group
 });
 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+
+    // استفاده از {otherUser} به جای {user} تا با پارامتر کنترلر تداخل نکند
+    Route::get('/messages/{otherUser}', [MessageController::class, 'show'])->name('messages.show');
+
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store'); // پیام جدید
+    Route::post('/messages/{otherUser}/reply', [MessageController::class, 'reply'])->name('messages.reply'); // پاسخ پیام
+});

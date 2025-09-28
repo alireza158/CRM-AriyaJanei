@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
                ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                               ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+                              // ['title'=>'مدیریت پیام ها','route'=>'messages.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
 
     ];
