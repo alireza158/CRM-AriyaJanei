@@ -10,7 +10,7 @@ use App\Models\Customer;
 use App\Models\CustomerNote;
 use App\Models\Report;
 use App\Models\Reminder;
-
+use App\Models\Notification;
 class DashboardController extends Controller
 {
     public function index()
@@ -54,14 +54,25 @@ $todayReminders = Reminder::where('user_id', auth()->id())
     ->orderBy('remind_at', 'asc')
     ->get();
 
-        return view('dashboard', [
-            'tasks' => $tasks,
-            'newCustomersCount' => $newCustomersCount,
-            'todayTasksCount' => $todayTasksCount,
-            'newNotesCount' =>$newNotesCount,
-            'newReportsCount' =>$newReportsCount,
-            'todayReminders'=>$todayReminders,
-        ]);
+
+
+    // ...
+
+    $notifications = Notification::where('user_id', auth()->id())
+        ->where('seen', false)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('dashboard', [
+        'tasks' => $tasks,
+        'newCustomersCount' => $newCustomersCount,
+        'todayTasksCount' => $todayTasksCount,
+        'newNotesCount' =>$newNotesCount,
+        'newReportsCount' =>$newReportsCount,
+        'todayReminders'=>$todayReminders,
+        'notifications' => $notifications, // اضافه شد
+    ]);
+
     }
 
 

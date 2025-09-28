@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Spatie\Permission\Traits\HasRoles;
 use Hekmatinasser\Verta\Verta;
+use App\Models\Notification;
 class LeaveController extends Controller
 {
     public function index()
@@ -99,6 +100,25 @@ class LeaveController extends Controller
             'manager_id' => $user->id,
         ]);
     }
+
+    $allIds = [];
+    $Ids = User::role(['Admin','Accountant'])->pluck('id')->toArray();
+    $allIds = array_merge($allIds, $Ids);
+
+    $allIds = array_unique($allIds);
+    $message = "یک درخواست مرخصی جدید ثبت شده است." ;
+    $title="درخواست جدید" ;
+
+    foreach ($allIds as $id) {
+        Notification::create([
+            'user_id' => $id,
+            'title' => $title,
+            'message' => $message,
+            'seen' => false,
+        ]);
+    }
+
+
 
     return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد.');
 }

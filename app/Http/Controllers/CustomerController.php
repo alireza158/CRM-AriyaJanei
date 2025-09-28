@@ -8,6 +8,7 @@ use App\Models\ReferenceType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 
 class CustomerController extends Controller
 {
@@ -97,6 +98,16 @@ class CustomerController extends Controller
                 ->with('success', 'مشتری با موفقیت ساخته شد.');
         }
 
+        if(!$marketerId){
+            Notification::create([
+                'user_id' => $marketerId,
+                'title' => "شماره جدید",
+                'message' => "شماره جدید ثبت شده است.",
+                'seen' => false,
+            ]);
+        }
+
+
         return redirect()->route('marketer.customer.notes.create', ['customer' => $customer->id])
         ->with('success', 'مشتری با موفقیت ساخته شد. حالا می‌توانید یادداشت جدید ثبت کنید.');
     }
@@ -152,6 +163,7 @@ class CustomerController extends Controller
             return redirect()->route('admin.marketers.customers.index', $marketer->id)
                 ->with('success', 'مشتری با موفقیت به‌روزرسانی شد.');
         }
+
 
         return redirect()->route('marketer.customers.index')
             ->with('success', 'مشتری با موفقیت به‌روزرسانی شد.');

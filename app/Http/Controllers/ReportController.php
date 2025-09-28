@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
+use App\Models\Notification;
 
 class ReportController extends Controller
 {
@@ -34,9 +35,9 @@ class ReportController extends Controller
             return view($view, compact('user', 'reports'));
         }
 
-        
 
-         
+
+
 
         $authUser = Auth::user();
         $view = $authUser->hasRole('Marketer') ? 'user.reports.index' : 'user.reports.index';
@@ -73,7 +74,7 @@ class ReportController extends Controller
 
      $manager = auth()->user();
 
-    
+
 
     // همه گزارش‌های کارمندانی که manager_id = id مدیر
     $reports = Report::whereHas('user', function ($query) use ($manager) {
@@ -166,6 +167,23 @@ class ReportController extends Controller
      $route = 'user.reports.index';
 }
 
+$allIds = [];
+$Ids = User::role(['Admin','Manager'])->pluck('id')->toArray();
+$allIds = array_merge($allIds, $Ids);
+
+$allIds = array_unique($allIds);
+$message = "گزارش کار جدید ثبت شده است." ;
+$title="گزارش کار جدید" ;
+
+foreach ($allIds as $id) {
+    Notification::create([
+        'user_id' => $id,
+        'title' => $title,
+        'message' => $message,
+        'seen' => false,
+    ]);
+}
+
         return redirect()->route($route, $userId)
             ->with('success', 'گزارش با موفقیت ثبت شد.');
     }
@@ -196,7 +214,7 @@ if(  $authUser ->hasRole('Marketer')){
 }else{
      $route = 'user.reports.index';
 }
-      
+
 
         return redirect()->route($route, $report)
             ->with('success', 'گزارش ارسال شد.');
@@ -228,8 +246,8 @@ if(  $authUser ->hasRole('Marketer')){
     if ($authUser->hasRole('Manager')) {
         $isEmployeeReport = $report->user && $report->user->manager_id == $authUser->id;
 
-       
-    } 
+
+    }
 
     activity()
         ->causedBy($authUser)
@@ -255,7 +273,7 @@ if(  $authUser ->hasRole('Marketer')){
     } elseif ($authUser->hasRole('Manager')) {
         // فقط گزارش کارمندهای خودش
         $report = Report::where('id', $report->id)
-            
+
             ->firstOrFail();
     } else {
         // کاربر یا مارکتر فقط گزارش خودش
@@ -288,7 +306,7 @@ public function update(Request $request, Report $report, User $user = null)
         $report = Report::where('id', $report->id)->firstOrFail();
     } elseif ($authUser->hasRole('Manager')) {
         $report = Report::where('id', $report->id)
-           
+
             ->firstOrFail();
     } else {
         $report = Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();

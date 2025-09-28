@@ -141,6 +141,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:Admin'])->grou
 });
 Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity_logs.index');
 Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');
+Route::post('/notifications/seen-all', function () {
+    \App\Models\Notification::where('user_id', auth()->id())
+        ->where('seen', false)
+        ->update(['seen' => true]);
+    return response()->json(['success' => true]);
+})->name('notifications.markAllSeen');
 
 // ------------------------------
 // مسیرهای مربوط به نقش Admin

@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'کاربران مهمان','route'=>'admin.guests.index','color'=>'bg-purple-200','icon'=>'user'],
         ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','color'=>'bg-green-200','icon'=>'archive'],
         ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','color'=>'bg-purple-200','icon'=>'user-group'],
-      
+
         ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','color'=>'bg-blue-200','icon'=>'clipboard-list'],
         ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','color'=>'bg-yellow-200','icon'=>'tag'],
         ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','color'=>'bg-pink-200','icon'=>'question'],
@@ -249,9 +249,9 @@ document.addEventListener("DOMContentLoaded", function() {
           ['title'=>'مدیریت تسک ها','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
                       //                  ['title'=>'مدیریت یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
-        
+
     ];
-    
+
 @endphp
 
 
@@ -361,4 +361,46 @@ document.querySelectorAll('.task-checkbox').forEach(el => {
       });
     </script>
     @endif
+
+    @if($notifications->count() > 0)
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let notifications = @json($notifications);
+            let index = 0;
+
+            function showNextNotification() {
+                if (index >= notifications.length) {
+                    // بعد از نمایش همه، request بزن seen بشوند
+                    fetch("{{ route('notifications.markAllSeen') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        }
+                    });
+                    return;
+                }
+
+                let note = notifications[index];
+
+                Swal.fire({
+                    title: note.title,
+                    text: note.message,
+                    icon: "info", // 🔵 ثابت طبق انتخاب شما
+                    timer: 5000,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    confirmButtonText: "باشه",
+                    footer: note.created_at_human // مثل "۲ دقیقه پیش"
+                }).then(() => {
+                    index++;
+                    showNextNotification();
+                });
+            }
+
+            showNextNotification();
+        });
+    </script>
+@endif
+
 </x-app-layout>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

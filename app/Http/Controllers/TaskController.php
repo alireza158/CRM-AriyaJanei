@@ -5,6 +5,8 @@ use Hekmatinasser\Verta\Verta;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\Notification;
+
 class TaskController extends Controller
 {
     // Admin: نمایش و مدیریت تسک‌ها
@@ -61,6 +63,19 @@ public function store(Request $request) {
         'description'=> $request->description,
         'date'       => $gregorianDate->format('Y-m-d'), // ذخیره میلادی
     ]);
+
+
+$message = "تسک جدید ثبت شده است." ;
+$title="تسک جدید" ;
+
+
+    Notification::create([
+        'user_id' => $id,
+        'title' => $title,
+        'message' => $message,
+        'seen' => false,
+    ]);
+
 
     return redirect()->route('admin.tasks.index')->with('success','تسک ساخته شد.');
 }
