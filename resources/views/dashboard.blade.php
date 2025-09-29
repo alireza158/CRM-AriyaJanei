@@ -58,21 +58,26 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="mb-8 text-lg text-gray-800">
                 خوش آمدی {{ Auth::user()->name }}
             </div>
-            {{-- اعلان‌ها --}}
-            @if(auth()->user()->hasRole('Marketer') || auth()->user()->hasRole('User')||auth()->user()->hasRole('Manager'))
-<div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4" dir="rtl">
-    <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4" dir="rtl">
+            @if(auth()->user()->hasRole('Marketer'))
+   <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
         📌 در ۲۴ ساعت گذشته
         <span class="font-bold">{{ $newCustomersCount }}</span>
         شماره مشتری جدید ثبت شده است.
     </div>
+            @endif
+            {{-- اعلان‌ها --}}
+            @if( (auth()->user()->hasRole('User') AND  !auth()->user()->hasRole('Admin')) || (auth()->user()->hasRole('User') AND !auth()->user()->hasRole('Manager')))
+
+
     <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-lg shadow">
         ✅ امروز
         <span class="font-bold">{{ $todayTasksCount }}</span>
         تسک برایت اضافه شده.
     </div>
+    @endif
 </div>
-@elseif(auth()->user()->hasRole('Admin'))
+@if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Manager'))
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg shadow">
         📌 در ۲۴ ساعت گذشته

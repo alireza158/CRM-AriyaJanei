@@ -104,6 +104,13 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $data])
             ->log('ثبت بازخورد برای گزارش');
 
+            Notification::create([
+                'user_id' => $report->user_id,
+                'title' => "بازخورد جدید",
+                'message' => $report->feedback,
+                'seen' => false,
+            ]);
+
         return back()->with('success', 'بازخورد و امتیاز با موفقیت ذخیره شد.');
 
     }
@@ -223,7 +230,7 @@ if(  $authUser ->hasRole('Marketer')){
 {
     $authUser = Auth::user();
 
-    
+
     if ($authUser->hasRole('Admin')) {
         if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
             abort(404);
