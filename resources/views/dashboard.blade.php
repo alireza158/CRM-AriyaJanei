@@ -372,38 +372,64 @@ document.querySelectorAll('.task-checkbox').forEach(el => {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let notifications = @json($notifications);
-            let index = 0;
 
-            function showNextNotification() {
-                if (index >= notifications.length) {
-                    // بعد از نمایش همه، request بزن seen بشوند
-                    fetch("{{ route('notifications.markAllSeen') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                        }
-                    });
-                    return;
-                }
+// گروه‌بندی اعلان‌ها بر اساس title
+let groupedNotifications = {};
+notifications.forEach(note => {
+    if (groupedNotifications[note.title]) {
+        groupedNotifications[note.title].count++;
+        groupedNotifications[note.title].latestCreatedAt = note.created_at_human;
+    } else {
+        groupedNotifications[note.title] = {
+            count: 1,
+            latestCreatedAt: note.created_at_human
+        };
+    }
+});
 
-                let note = notifications[index];
+// تبدیل به آرایه برای پیمایش
+let groupedArray = Object.keys(groupedNotifications).map(title => ({
+    title: title,
+    count: groupedNotifications[title].count,
+    latestCreatedAt: groupedNotifications[title].latestCreatedAt
+}));
 
-                Swal.fire({
-                    title: note.title,
-                    text: note.message,
-                    icon: "info", // 🔵 ثابت طبق انتخاب شما
-                    timer: 5000,
-                    timerProgressBar: true,
-                    showConfirmButton: true,
-                    confirmButtonText: "باشه",
-                    footer: note.created_at_human // مثل "۲ دقیقه پیش"
-                }).then(() => {
-                    index++;
-                    showNextNotification();
-                });
+let index = 0;
+
+function showNextNotification() {
+    if (index >= groupedArray.length) {
+        // بعد از نمایش همه، request بزن seen بشوند
+        fetch("{{ route('notifications.markAllSeen') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
             }
+        });
+        return;
+    }
 
-            showNextNotification();
+    let note = groupedArray[index];
+
+    // متن نمایش داده شده: اگر تعداد > 1 بود فقط تعداد را اضافه کن
+    let messageText = note.count > 1 ? `تعداد: ${note.count}   ` : "";
+
+    Swal.fire({
+        title: note.title,
+        text: messageText,
+        icon: "info",
+        timer: 5000,
+        timerProgressBar: true,
+        showConfirmButton: true,
+        confirmButtonText: "باشه",
+        footer: note.latestCreatedAt
+    }).then(() => {
+        index++;
+        showNextNotification();
+    });
+}
+
+showNextNotification();
+
         });
     </script>
 @endif
