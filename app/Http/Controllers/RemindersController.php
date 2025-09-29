@@ -6,7 +6,7 @@ use App\Models\Reminder;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Hekmatinasser\Verta\Facades\Verta;
 class RemindersController extends Controller
 {
     public function index()
@@ -35,21 +35,35 @@ class RemindersController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'remind_at' => 'required|date', // زمان میلادی
-        ]);
+{
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'remind_at' => 'required|string', // چون فعلاً شمسیه
+        'repeat' => 'required|in:once,daily,weekly,monthly'
+    ]);
 
-        $data['repeat'] = 'once';
-        $data['seen'] = false;
+    // تبدیل تاریخ شمسی به میلادی برای ذخیره
+   // خروجی مثل 2025-02-15 14:30:00
 
-        Reminder::create($data);
+    $shamsiDate = $request->remind_at;        // مثل: 1403/07/05
+$time = $request->remind_time;            // مثل: 14:30
 
-        return redirect()->route('reminders.index')->with('success', 'یادآور ساخته شد.');
-    }
+$datetimeShamsi = $shamsiDate . ' ' . $time; // 1403/07/05 14:30
+
+$miladi = Verta::parse($datetimeShamsi)->datetime(); // تبدیل کامل به میلادی
+
+    Reminder::create([
+        'user_id' => auth()->id(),
+        'title' => $data['title'],
+        'description' => $data['description'],
+        'repeat' => $data['repeat'],
+        'remind_at' => $miladi,
+        'seen' => false,
+    ]);
+
+    return redirect()->route('reminders.index')->with('success', 'یادآور ساخته شد.');
+}
 
     public function edit(Reminder $reminder)
     {
