@@ -107,7 +107,7 @@ class LeaveController extends Controller
 
     $allIds = array_unique($allIds);
     $message = "یک درخواست مرخصی جدید ثبت شده است." ;
-    $title="درخواست جدید" ;
+    $title="درخواست مرخصی جدید" ;
 
     foreach ($allIds as $id) {
         Notification::create([
