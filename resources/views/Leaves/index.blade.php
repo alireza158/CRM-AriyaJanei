@@ -67,7 +67,9 @@
             @break
 
         @case('internal_approved')
-            <span class="badge bg-primary">تأیید مدیر داخلی/ادمین — منتظر تایید حسابداری</span>
+           {{--  <span class="badge bg-primary">تأیید مدیر داخلی/ادمین — منتظر تایید حسابداری</span>--}}
+                       <span class="badge bg-success">تأیید نهایی</span>
+
             @break
 
         @case('accounting_approved')

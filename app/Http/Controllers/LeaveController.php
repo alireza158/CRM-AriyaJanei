@@ -102,7 +102,7 @@ class LeaveController extends Controller
     }
 
     $allIds = [];
-    $Ids = User::role(['Admin','Accountant'])->pluck('id')->toArray();
+    $Ids = User::role(['Admin','Accountant','Manager'])->pluck('id')->toArray();
     $allIds = array_merge($allIds, $Ids);
 
     $allIds = array_unique($allIds);
