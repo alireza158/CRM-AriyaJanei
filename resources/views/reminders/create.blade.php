@@ -17,7 +17,7 @@
                     </select>
                     @error('user_id') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
- --}} 
+ --}}
                 <div class="mb-3">
                     <label for="title">عنوان</label>
                     <input type="text" name="title" class="form-control" required>
@@ -31,7 +31,7 @@
 
                 <div class="mb-3">
                     <label for="remind_at">زمان یادآور</label>
-                    <input type="text" id="remind_at" name="remind_at" class="form-control" required>
+                    <input data-jdp type="text" id="remind_at" name="remind_at" class="form-control" required>
                     @error('remind_at') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
 
@@ -49,17 +49,17 @@
             </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 
     {{-- Flatpickr شمسی --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fa.js"></script>
+
     <script>
-        flatpickr("#remind_at", {
-            enableTime: true,
-            time_24hr: true,
-            locale: "fa",
-            dateFormat: "Y-m-d H:i",
-        });
+          $(document).ready(function() {
+
+jalaliDatepicker.startWatch();
+});
+
     </script>
 </x-app-layout>
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<script type="text/javascript" src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>

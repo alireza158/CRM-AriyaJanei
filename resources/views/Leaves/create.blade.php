@@ -45,14 +45,14 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="start_date" class="block font-medium text-gray-700">تاریخ شروع</label>
-                        <input type="text" id="start_date" name="start_date" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_date') }}">
+                        <input data-jdp type="text" id="start_date" name="start_date" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_date') }}">
                                          @error('start_date')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
                     <div>
                         <label for="start_time" class="block font-medium text-gray-700">ساعت شروع</label>
-                        <input type="time" name="start_time" id="start_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_time') }}">
+                        <input  type="time" name="start_time" id="start_time" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('start_time') }}">
                         @error('start_time')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -61,8 +61,8 @@
 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="end_date" class="block font-medium text-gray-700">تاریخ پایان</label>
-                        <input type="text" name="end_date" id="end_date" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('end_date') }}">
+                        <label  for="end_date" class="block font-medium text-gray-700">تاریخ پایان</label>
+                        <input data-jdp type="text" name="end_date" id="end_date" class="mt-1 block w-full border-gray-300 rounded-md" value="{{ old('end_date') }}">
                         @error('end_date')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -105,14 +105,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     $(document).ready(function() {
-        $("#start_date").persianDatepicker({
-            format: 'YYYY/MM/DD',
-            initialValue: false
-        });
-        $("#end_date").persianDatepicker({
-            format: 'YYYY/MM/DD',
-            initialValue: false
-        });
+
+        jalaliDatepicker.startWatch();
     });
 </script>
 <script>
@@ -133,3 +127,5 @@
 
 
 </script>
+<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+<script type="text/javascript" src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
