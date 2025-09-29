@@ -33,7 +33,7 @@
                     <label for="leave_type">نوع مرخصی</label>
                     <select name="leave_type" id="leave_type" class="form-control" required>
                         <option value="">انتخاب کنید</option>
-                        <option value="اضظراری">اضظراری</option>
+                        <option value="اضظراری">اضطراری</option>
                         <option value="استعلاجی">استعلاجی</option>
                         <option value="استحقاقی">استحقاقی</option>
                     </select>
