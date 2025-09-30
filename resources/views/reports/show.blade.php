@@ -59,26 +59,139 @@
 @endphp
 @if($user->hasRole('Admin') || $user->hasRole('internalManager') ||$user->hasRole('Manager'))
         {{-- فرم ارسال بازخورد --}}
-        
-        <form action="{{ route('user.reports.feedback', [$report]) }}" method="POST" class="space-y-6">
+
+        <form action="{{ route('user.reports.feedback', [$report]) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
             <div class="text-right">
                 <label for="feedback" class="block text-gray-700 font-medium mb-1">بازخورد:</label>
-                <textarea name="feedback"
-                          id="feedback"
-                          rows="4"
-                          class="w-full border rounded-lg p-3 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 text-right"
-                          dir="rtl">{{ $report->feedback ?? '' }}</textarea>
+                <textarea name="feedback" id="feedback" rows="4"
+                    class="w-full border rounded-lg p-3 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 text-right"
+                    dir="rtl">{{ $report->feedback ?? '' }}</textarea>
+            </div>
+
+            <!-- ضبط ویس موبایلی -->
+            <div class="text-right">
+                <label class="block text-gray-700 font-medium mb-1">ارسال ویس (فقط موبایل):</label>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" id="recordBtn"
+                        class="w-12 h-12 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl font-bold">
+                        🎤
+                    </button>
+                    <span id="recordTimer" class="text-gray-700">00:00</span>
+                </div>
+
+                <div id="previewContainer" class="mt-2 hidden">
+                    <audio id="audioPreview" controls class="w-full"></audio>
+                    <div class="flex gap-2 mt-2">
+                        <button type="button" id="sendVoice"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg">ارسال</button>
+                        <button type="button" id="deleteVoice"
+                            class="px-4 py-2 bg-gray-400 text-white rounded-lg">حذف</button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="voice" id="voiceInput">
+
+                @if($report->voice_path ?? false)
+                    <p class="mt-2 text-sm text-gray-600">ویس قبلی:</p>
+                    <audio controls class="w-full">
+                        <source src="{{ asset('storage/' . $report->voice_path) }}" type="audio/mpeg">
+                    </audio>
+                @endif
             </div>
 
             <div class="text-center gap-4">
-                <button type="submit"
-                        class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-400">
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">
                     ذخیره بازخورد
                 </button>
             </div>
         </form>
+
+        <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordStartTime;
+        let timerInterval;
+
+        // فقط موبایل (touch events)
+        const recordBtn = document.getElementById('recordBtn');
+        const recordTimer = document.getElementById('recordTimer');
+        const previewContainer = document.getElementById('previewContainer');
+        const audioPreview = document.getElementById('audioPreview');
+        const voiceInput = document.getElementById('voiceInput');
+        const sendVoice = document.getElementById('sendVoice');
+        const deleteVoice = document.getElementById('deleteVoice');
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // شروع ضبط
+        recordBtn.addEventListener('touchstart', async (e) => {
+            e.preventDefault();
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('ضبط صوت در این دستگاه پشتیبانی نمی‌شود.');
+                return;
+            }
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.start();
+            recordStartTime = Date.now();
+
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - recordStartTime) / 1000);
+                recordTimer.textContent = formatTime(elapsed);
+            }, 500);
+
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+            mediaRecorder.onstop = () => {
+                clearInterval(timerInterval);
+                recordTimer.textContent = '00:00';
+
+                const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                const audioURL = URL.createObjectURL(blob);
+                audioPreview.src = audioURL;
+                previewContainer.classList.remove('hidden');
+
+                // تبدیل به base64
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    voiceInput.value = reader.result;
+                };
+                reader.readAsDataURL(blob);
+            };
+        });
+
+        // پایان ضبط
+        recordBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        });
+
+        // ارسال یا حذف
+        sendVoice.addEventListener('click', () => {
+            previewContainer.classList.add('hidden');
+            alert('ویس آماده ارسال است، حالا فرم را ذخیره کنید.');
+        });
+
+        deleteVoice.addEventListener('click', () => {
+            previewContainer.classList.add('hidden');
+            audioPreview.src = '';
+            voiceInput.value = '';
+        });
+        </script>
+
+
     @else
         {{-- فقط نمایش بازخورد --}}
         @if($report->feedback)
@@ -96,7 +209,7 @@
         </div>
     </div>
         </div>
-       
+
         <!-- Modal برای نمایش تصویر -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 use App\Models\Notification;
-
+use Illuminate\Support\Facades\Storage;
 class ReportController extends Controller
 {
     public function __construct()
@@ -82,10 +82,8 @@ class ReportController extends Controller
 
     return view('user.reports.reportsManagment', compact('reports'));
     }
-    public function feedback(Request $request, Report $report, User $user)
+    public function feedback(Request $request, Report $report)
     {
-       // if (!Auth::user()->hasRole('Admin')||!Auth::user()->hasRole(roles: 'Manager')) abort(403);
-
         if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
             abort(404);
         }
@@ -93,7 +91,16 @@ class ReportController extends Controller
         $data = $request->validate([
             'feedback' => 'nullable|string',
             'rating' => 'nullable|integer|min:1|max:5',
+            'voice' => 'nullable|string', // base64
         ]);
+
+        if ($request->voice) {
+            $voiceData = explode(',', $request->voice);
+            $voiceBinary = base64_decode($voiceData[1]);
+            $fileName = 'voices/' . uniqid() . '.mp3';
+            Storage::disk('public')->put($fileName, $voiceBinary);
+            $data['voice_path'] = $fileName;
+        }
 
         $oldData = $report->getOriginal();
         $report->update($data);
@@ -104,16 +111,17 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $data])
             ->log('ثبت بازخورد برای گزارش');
 
-            Notification::create([
-                'user_id' => $report->user_id,
-                'title' => "بازخورد جدید",
-                'message' => $report->feedback,
-                'seen' => false,
-            ]);
+        Notification::create([
+            'user_id' => $report->user_id,
+            'title' => "بازخورد جدید",
+            'message' => $report->feedback,
+            'seen' => false,
+        ]);
 
-        return back()->with('success', 'بازخورد و امتیاز با موفقیت ذخیره شد.');
-
+        return back()->with('success', 'بازخورد و ویس با موفقیت ذخیره شد.');
     }
+
+
 
     public function create(User $user)
     {
