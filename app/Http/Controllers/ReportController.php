@@ -91,13 +91,13 @@ class ReportController extends Controller
         $data = $request->validate([
             'feedback' => 'nullable|string',
             'rating' => 'nullable|integer|min:1|max:5',
-            'voice' => 'nullable|string', // base64
+            'voice' => 'nullable|string',
         ]);
 
         if ($request->voice) {
             $voiceData = explode(',', $request->voice);
             $voiceBinary = base64_decode($voiceData[1]);
-            $fileName = 'voices/' . uniqid() . '.mp3';
+            $fileName = 'voices/' . uniqid() . '.webm';
             Storage::disk('public')->put($fileName, $voiceBinary);
             $data['voice_path'] = $fileName;
         }
