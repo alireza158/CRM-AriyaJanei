@@ -140,6 +140,18 @@ class ReportController extends Controller
 
     public function store(Request $request, User $user)
     {
+
+          $authUser = Auth::user();
+
+    // بررسی اینکه آیا کاربر امروز گزارش ثبت کرده یا نه
+    $alreadySubmitted = Report::where('user_id', $authUser->id)
+        ->whereDate('submitted_at', now()->toDateString())
+        ->exists();
+
+    if ($alreadySubmitted) {
+        return redirect()->back()->with('error', 'گزارش کار امروز شما قبلاً ثبت شده است.');
+    }
+    
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'required|string',
