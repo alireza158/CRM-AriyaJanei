@@ -1,9 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User; // این خیلی مهم است
+
+
+
 use Illuminate\Validation\Rule;
 
 class UserManagementController extends Controller
@@ -53,7 +56,20 @@ class UserManagementController extends Controller
 
         return redirect()->back()->with('success', 'پسورد کاربر ریست شد و به Ariya1404 تغییر کرد.');
     }
+ public function change(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:4|confirmed',
+        ]);
 
+       $user = auth()->user();
+$user->password = bcrypt($request->password);
+$user->force_password_reset = false;
+$user->save();
+
+
+        return redirect()->route('dashboard')->with('success', 'پسورد با موفقیت تغییر یافت.');
+    }
     public function updateManager(Request $request, User $manager)
     {
         $request->validate([

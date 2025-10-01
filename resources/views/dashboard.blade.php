@@ -185,17 +185,30 @@ document.addEventListener("DOMContentLoaded", function() {
 @endif
 @if(auth()->user()->force_password_reset)
 <!-- Modal -->
-<div class="modal fade" id="passwordResetModal" tabindex="-1" aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+<div class="modal fade" id="passwordResetModal" tabindex="-1" aria-labelledby="passwordResetModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title" id="passwordResetModalLabel">تغییر پسورد الزامی</h5>
             </div>
             <div class="modal-body">
-                شما باید برای ادامه کار، پسورد خود را تغییر دهید.
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('password.change.form') }}" class="btn btn-primary">تغییر پسورد</a>
+                <p>برای ادامه کار باید پسورد خود را تغییر دهید.</p>
+                
+                {{-- فرم تغییر پسورد --}}
+                <form action="{{ route('password.change') }}" method="POST" id="forcePasswordForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="password" class="form-label">پسورد جدید</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password_confirmation" class="form-label">تکرار پسورد</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">تغییر پسورد</button>
+                </form>
             </div>
         </div>
     </div>
@@ -209,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 </script>
 @endif
+
  {{-- Modal یادآورها --}}
     @if($todayReminders->count() > 0)
     <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">

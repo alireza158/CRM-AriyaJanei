@@ -405,3 +405,5 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::post('/admin/users/{id}/reset-password', [UserManagementController::class, 'resetPassword'])
     ->name('admin.users.resetPassword');
+Route::get('/password/change', [UserManagementController::class, 'showChangeForm'])->name('password.change.form');
+Route::post('/password/change', [UserManagementController::class, 'change'])->name('password.change');
