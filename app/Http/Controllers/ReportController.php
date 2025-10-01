@@ -10,6 +10,7 @@ use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image; 
 class ReportController extends Controller
 {
     public function __construct()
@@ -151,7 +152,7 @@ class ReportController extends Controller
     if ($alreadySubmitted) {
         return redirect()->back()->with('error', 'گزارش کار امروز شما قبلاً ثبت شده است.');
     }
-    
+
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'required|string',
@@ -168,16 +169,72 @@ class ReportController extends Controller
         $report = Report::create($data);
 
         // ذخیره فایل‌ها
-        if ($request->hasFile('attachments')) {
+ // ذخیره فایل‌ها
+if ($request->hasFile('attachments')) {
 
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('report_attachments', 'public');
+    foreach ($request->file('attachments') as $file) {
+
+        if (str_starts_with($file->getMimeType(), 'image/')) {
+
+            // نام فایل جدید
+            $fileName = 'report_attachments/' . uniqid() . '.jpg';
+            $path = storage_path('app/public/' . $fileName);
+
+            // باز کردن تصویر بر اساس نوع
+            if ($file->getMimeType() === 'image/jpeg') {
+                $image = imagecreatefromjpeg($file->getPathname());
+            } elseif ($file->getMimeType() === 'image/png') {
+                $image = imagecreatefrompng($file->getPathname());
+            } else {
+                $image = null;
+            }
+
+            if ($image) {
+                // گرفتن ابعاد اصلی
+                $width = imagesx($image);
+                $height = imagesy($image);
+
+                // تنظیم حداکثر عرض
+                $maxWidth = 1200;
+
+                if ($width > $maxWidth) {
+                    $ratio = $maxWidth / $width;
+                    $newWidth = $maxWidth;
+                    $newHeight = intval($height * $ratio);
+
+                    // ساخت تصویر جدید با ابعاد جدید
+                    $resized = imagecreatetruecolor($newWidth, $newHeight);
+                    imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                    // فشرده‌سازی و ذخیره تصویر
+                    imagejpeg($resized, $path, 70);
+
+                    imagedestroy($resized);
+                } else {
+                    // اگر نیازی به resize نیست فقط فشرده‌سازی کن
+                    imagejpeg($image, $path, 70);
+                }
+
+                imagedestroy($image);
+
                 $report->attachments()->create([
-                    'file_path' => $path,
-                    'type' => $file->getClientMimeType(),
+                    'file_path' => $fileName,
+                    'type' => 'image/jpeg',
                 ]);
             }
+
+        } else {
+            // فایل‌های غیرتصویری را بدون تغییر ذخیره کن
+            $path = $file->store('report_attachments', 'public');
+
+            $report->attachments()->create([
+                'file_path' => $path,
+                'type' => $file->getMimeType(),
+            ]);
         }
+    }
+}
+
 
         activity()
             ->causedBy($authUser)
