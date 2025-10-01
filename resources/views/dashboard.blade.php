@@ -183,6 +183,32 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 
 @endif
+@if(auth()->user()->force_password_reset)
+<!-- Modal -->
+<div class="modal fade" id="passwordResetModal" tabindex="-1" aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="passwordResetModalLabel">تغییر پسورد الزامی</h5>
+            </div>
+            <div class="modal-body">
+                شما باید برای ادامه کار، پسورد خود را تغییر دهید.
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('password.change.form') }}" class="btn btn-primary">تغییر پسورد</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- اسکریپت باز کردن مدال --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var myModal = new bootstrap.Modal(document.getElementById('passwordResetModal'));
+        myModal.show();
+    });
+</script>
+@endif
  {{-- Modal یادآورها --}}
     @if($todayReminders->count() > 0)
     <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">

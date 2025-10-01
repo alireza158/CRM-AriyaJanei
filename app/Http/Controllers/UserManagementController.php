@@ -44,6 +44,15 @@ class UserManagementController extends Controller
     {
         return view('admin.users.edit-manager', compact('manager'));
     }
+    public function resetPassword($id)
+    {
+        $user = User::findOrFail($id);
+        $user->password = bcrypt('Ariya1404'); // پسورد دیفالت
+        $user->force_password_reset = true;   // برای اجبار تغییر پسورد
+        $user->save();
+
+        return redirect()->back()->with('success', 'پسورد کاربر ریست شد و به Ariya1404 تغییر کرد.');
+    }
 
     public function updateManager(Request $request, User $manager)
     {

@@ -20,6 +20,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\MessageController;
 
+
 Route::middleware(['auth'])->group(function () {
 
     // لیست Reminder های خود کاربر
@@ -57,6 +58,7 @@ use App\Http\Controllers\Admin\UserBlockController;
 Route::middleware(['auth','blocked'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
 
 
 Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function(){
@@ -401,3 +403,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store'); // پیام جدید
     Route::post('/messages/{otherUser}/reply', [MessageController::class, 'reply'])->name('messages.reply'); // پاسخ پیام
 });
+Route::post('/admin/users/{id}/reset-password', [UserManagementController::class, 'resetPassword'])
+    ->name('admin.users.resetPassword');

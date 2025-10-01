@@ -1,4 +1,3 @@
-```blade
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="fw-bold h4">مدیریت کاربران</h2>
@@ -54,9 +53,16 @@
                                                     </span>
                                                     <span>
                                                         <a href="{{ route('admin.users.editEmployee',$employee->id) }}" class="btn btn-sm btn-outline-success">ویرایش</a>
+
                                                         <form action="{{ route('admin.users.destroyEmployee',$employee->id) }}" method="POST" class="d-inline">
                                                             @csrf @method('DELETE')
                                                             <button onclick="return confirm('حذف کارمند؟')" class="btn btn-sm btn-outline-danger">حذف</button>
+                                                        </form>
+
+                                                        {{-- دکمه ریست پسورد کارمند --}}
+                                                        <form action="{{ route('admin.users.resetPassword',$employee->id) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            <button onclick="return confirm('پسورد ریست شود؟')" class="btn btn-sm btn-info">ریست پسورد</button>
                                                         </form>
                                                     </span>
                                                 </li>
@@ -73,9 +79,16 @@
                                 {{-- ستون عملیات مدیر --}}
                                 <td>
                                     <a href="{{ route('admin.users.editManager',$manager->id) }}" class="btn btn-sm btn-warning">ویرایش</a>
+
                                     <form action="{{ route('admin.users.destroyManager',$manager->id) }}" method="POST" class="d-inline">
                                         @csrf @method('DELETE')
                                         <button onclick="return confirm('حذف مدیر و کارمندانش؟')" class="btn btn-sm btn-danger">حذف</button>
+                                    </form>
+
+                                    {{-- دکمه ریست پسورد مدیر --}}
+                                    <form action="{{ route('admin.users.resetPassword',$manager->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button onclick="return confirm('پسورد ریست شود؟')" class="btn btn-sm btn-info">ریست پسورد</button>
                                     </form>
                                 </td>
                             </tr>
@@ -86,4 +99,3 @@
         </div>
     </div>
 </x-layouts.app>
-```
