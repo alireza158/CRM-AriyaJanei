@@ -407,3 +407,8 @@ Route::post('/admin/users/{id}/reset-password', [UserManagementController::class
     ->name('admin.users.resetPassword');
 Route::get('/password/change', [UserManagementController::class, 'showChangeForm'])->name('password.change.form');
 Route::post('/password/change', [UserManagementController::class, 'change'])->name('password.change');
+
+Route::post('admin/users/{user}/update-roles', [UserManagementController::class, 'updateRoles'])->name('admin.users.updateRoles');
+use App\Http\Controllers\ProductControllerWeb;
+
+Route::get('productsWeb', [ProductControllerWeb::class, 'index'])->name('productsweb.index');

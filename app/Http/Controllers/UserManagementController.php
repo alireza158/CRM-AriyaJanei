@@ -5,17 +5,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User; // این خیلی مهم است
 
-
-
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
+
+
+
 
 class UserManagementController extends Controller
 {
     public function index()
     {
+        $roles = Role::all(); // یا نام رول‌های شما
+
         $managers = User::role('Manager')->with('employees')->get();
-        return view('admin.users.index', compact('managers'));
+        return view('admin.users.index', compact('managers', 'roles'));
     }
+
+    public function updateRoles(Request $request, User $user)
+    {
+        $roles = $request->input('roles', []); // آرایه نقش‌های انتخاب شده
+        $user->syncRoles($roles); // جایگزینی نقش‌ها
+        return back()->with('success', 'نقش‌های کاربر به‌روزرسانی شد.');
+    }
+
 
     // --- مدیر ---
     public function createManager()
