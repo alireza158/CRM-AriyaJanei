@@ -45,9 +45,11 @@
                                 <th>آدرس</th>
                                 <th>نحوه آشنایی</th>
                                 <th>یادداشت‌ها</th>
+                                <th>ارتباط</th> <!-- ستون جدید -->
                                 <th>عملیات</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @forelse($customers as $customer)
                                 <tr>
@@ -62,6 +64,41 @@
                                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#notesModal-{{ $customer->id }}">
                                             مشاهده یادداشت‌ها
                                         </button>
+                                        <td>
+                                            @if($customer->phone)
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                                        ارتباط
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+
+                                                        <!-- واتساپ -->
+                                                        <li>
+                                                            <a class="dropdown-item" href="https://wa.me/{{ preg_replace('/^0/', '98', $customer->phone) }}" target="_blank">
+                                                                <i class="bi bi-whatsapp text-success"></i> واتساپ
+                                                            </a>
+                                                        </li>
+
+                                                        <!-- پیامک -->
+                                                        <li>
+                                                            <a class="dropdown-item" href="sms:{{ $customer->phone }}">
+                                                                <i class="bi bi-chat-dots text-primary"></i> پیامک
+                                                            </a>
+                                                        </li>
+
+                                                        <!-- تماس -->
+                                                        <li>
+                                                            <a class="dropdown-item" href="tel:{{ $customer->phone }}">
+                                                                <i class="bi bi-telephone text-dark"></i> تماس
+                                                            </a>
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
 
                                         <!-- Modal یادداشت‌ها -->
                                         <div class="modal fade" id="notesModal-{{ $customer->id }}" data-customer="{{ $customer->id }}" tabindex="-1" aria-hidden="true">
@@ -116,6 +153,7 @@
 
                                     {{-- عملیات --}}
                                     <td>
+
                                         <a href="{{ route('admin.customersedit.edit', $customer->id) }}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil-square"></i> ویرایش
                                         </a>
@@ -149,12 +187,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Bootstrap Bundle JS (شامل Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- اسکریپت -->
-<script>
 
 document.addEventListener('DOMContentLoaded', function() {
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

@@ -89,22 +89,65 @@
                                             </a>
                                         </td>
                                         <td class="d-flex gap-2">
-                                            <a href="{{ route('marketer.customers.edit', $customer) }}"
-                                               class="btn btn-primary">
+                                            @if($customer->phone)
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton{{ $customer->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-telephone-forward"></i> ارتباط
+                                                </button>
+                                                <ul class="dropdown-menu text-end" aria-labelledby="dropdownMenuButton{{ $customer->id }}">
+
+                                                    <!-- واتساپ -->
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-2"
+                                                           href="https://wa.me/{{ preg_replace('/^0/', '98', $customer->phone) }}"
+                                                           target="_blank">
+                                                            <i class="bi bi-whatsapp text-success fs-5"></i>
+                                                            <span>واتساپ</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- پیامک -->
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-2"
+                                                           href="sms:{{ $customer->phone }}">
+                                                            <i class="bi bi-chat-dots text-warning fs-5"></i>
+                                                            <span>پیامک</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- تماس -->
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-2"
+                                                           href="tel:{{ $customer->phone }}">
+                                                            <i class="bi bi-telephone text-info fs-5"></i>
+                                                            <span>تماس</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        @endif
+
+                                            <!-- دکمه ویرایش -->
+                                            <a href="{{ route('marketer.customers.edit', $customer) }}" class="btn btn-primary">
                                                 ویرایش
                                             </a>
 
-                                            <form action="{{ route('marketer.customers.destroy', $customer) }}"
-                                                  method="POST" class="d-inline">
+                                            <!-- دکمه ارتباط با منو -->
+
+
+                                            <!-- دکمه حذف -->
+                                            <form action="{{ route('marketer.customers.destroy', $customer) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
                                                         onclick="return confirm('آیا از حذف {{ $customer->name }} مطمئن هستید؟')"
-                                                        class="btn  btn-danger">
+                                                        class="btn btn-danger">
                                                     حذف
                                                 </button>
                                             </form>
+
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>
@@ -126,3 +169,6 @@
         </div>
     </div>
 </x-layouts.app>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
