@@ -8,6 +8,8 @@ use App\Models\User;
 use Spatie\Permission\Traits\HasRoles;
 use Hekmatinasser\Verta\Verta;
 use App\Models\Notification;
+  use Kavenegar\KavenegarApi;
+use Illuminate\Support\Facades\Http;
 class LeaveController extends Controller
 {
     public function index()
@@ -75,7 +77,8 @@ class LeaveController extends Controller
     }
 
 
-  public function store(Request $request)
+
+public function store(Request $request)
 {
     $start_date = Verta::parse($request->start_date)->datetime();
     $end_date   = Verta::parse($request->end_date)->datetime();
@@ -89,11 +92,10 @@ class LeaveController extends Controller
         'start_time' => $request->start_time,
         'end_time'   => $request->end_time,
         'reason'     => $request->reason,
-        'manager_id' => $user->manager_id, // مدیر بخش واقعی
+        'manager_id' => $user->manager_id,
         'status'     => 'pending',
     ]);
 
-    // اگر خود کاربر مدیر بخش بود → مستقیم تایید بشه و بره مرحله بعد
     if ($user->hasRole('Manager')) {
         $leave->update([
             'status'     => 'manager_approved',
@@ -101,13 +103,11 @@ class LeaveController extends Controller
         ]);
     }
 
-    $allIds = [];
-    $Ids = User::role(['Admin','Accountant','Manager'])->pluck('id')->toArray();
-    $allIds = array_merge($allIds, $Ids);
-
+    $allIds = User::role(['Admin','Accountant','Manager'])->pluck('id')->toArray();
     $allIds = array_unique($allIds);
-    $message = "یک درخواست مرخصی جدید ثبت شده است." ;
-    $title="درخواست مرخصی جدید" ;
+
+    $message = "یک درخواست مرخصی جدید از طرف {$user->name} ثبت شد.";
+    $title = "درخواست مرخصی جدید" ;
 
     foreach ($allIds as $id) {
         Notification::create([
@@ -118,9 +118,43 @@ class LeaveController extends Controller
         ]);
     }
 
+    $manager = $user->manager;
 
+$phones = User::role('InternalManager')   // همه کاربران با نقش InternalManager
+    ->pluck('phone')                       // فقط شماره تلفن‌ها
+    ->filter()                             // حذف مقادیر null یا خالی
+    ->unique()                             // حذف شماره‌های تکراری
+    ->values()
+    ->toArray();
 
-    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد.');
+    $managerPhone = $manager->phone; // فرض می‌کنیم ستون شماره تلفن phone است
+    $managerId = $manager->id;
+
+    $apiKey = '7867584376656655436E6279396C6148302B41774F317A7359486B76634C74324276584C356964677049413D';
+    $template = 'req';
+$token =  $user->id;
+ 
+foreach ($phones as $phone) {
+   
+
+    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+        'receptor' => $phone,
+        'token'    => $token,
+        'template' => $template,
+    ]);
+      $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+        'receptor' => $managerPhone,
+        'token'    => $token,
+        'template' => $template,
+    ]);
+
+    $results[] = [
+        'phone'    => $phone,
+        'token'    => $token,
+        'response' => $response->json(),
+    ];
+}
+    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و پیامک ارسال گردید.');
 }
 public function approve(Leave $leave)
 {
