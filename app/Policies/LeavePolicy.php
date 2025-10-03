@@ -15,8 +15,10 @@ class LeavePolicy
 
 public function delete(User $user, Leave $leave)
 {
-    return $user->id === $leave->user_id;
+    // فقط صاحب مرخصی می‌تواند حذف کند و مرخصی هنوز تایید نهایی نشده باشد
+    return $leave->user_id === $user->id && $leave->status === 'pending';
 }
+
 
 public function approve(User $user, Leave $leave)
 {

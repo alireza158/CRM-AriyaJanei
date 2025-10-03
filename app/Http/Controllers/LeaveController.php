@@ -70,11 +70,8 @@ class LeaveController extends Controller
         return redirect()->route('leaves')->with('success','مرخصی به‌روزرسانی شد.');
     }
 
-    public function destroy(Leave $leave) {
-        $this->authorize('delete', $leave);
-        $leave->delete();
-        return redirect()->route('leaves')->with('success','مرخصی حذف شد.');
-    }
+
+
 
 
 
@@ -132,28 +129,30 @@ $phones = User::role('InternalManager')   // همه کاربران با نقش I
 
     $apiKey = '7867584376656655436E6279396C6148302B41774F317A7359486B76634C74324276584C356964677049413D';
     $template = 'req';
-$token =  $user->id;
+$token = "."; // تبدیل متن به فرمت مناسب URL
+
  
 foreach ($phones as $phone) {
    
 
     $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
         'receptor' => $phone,
-        'token'    => $token,
+        'token'    =>$token ,
         'template' => $template,
     ]);
-      $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-        'receptor' => $managerPhone,
-        'token'    => $token,
-        'template' => $template,
-    ]);
+  
 
     $results[] = [
         'phone'    => $phone,
-        'token'    => $token,
+        'token'    => $token ,
         'response' => $response->json(),
     ];
 }
+    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+        'receptor' => $managerPhone,
+        'token'    => $token ,
+        'template' => $template,
+    ]);
     return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و پیامک ارسال گردید.');
 }
 public function approve(Leave $leave)
@@ -189,6 +188,7 @@ public function reject(Leave $leave)
 
     return back()->with('error', 'مرخصی رد شد.');
 }
+
 
 
 

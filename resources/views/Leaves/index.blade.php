@@ -101,6 +101,8 @@
 <td class="whitespace-nowrap">
     @php $user = Auth::user(); @endphp
 
+
+
     {{-- مدیر واحد --}}
     @if($user->hasRole('Manager') && $leave->status === 'pending' && $leave->manager_id == $user->id)
         <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">

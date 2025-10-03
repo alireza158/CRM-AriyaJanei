@@ -412,3 +412,4 @@ Route::post('admin/users/{user}/update-roles', [UserManagementController::class,
 use App\Http\Controllers\ProductControllerWeb;
 
 Route::get('productsWeb', [ProductControllerWeb::class, 'index'])->name('productsweb.index');
+Route::delete('leaves/{leave}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
