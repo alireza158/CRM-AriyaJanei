@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
             <div class="modal-body">
                 <p>برای ادامه کار باید پسورد خود را تغییر دهید.</p>
-                
+
                 {{-- فرم تغییر پسورد --}}
                 <form action="{{ route('password.change') }}" method="POST" id="forcePasswordForm">
                     @csrf
@@ -268,6 +268,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'مدیریت کاربران','route'=>'admin.users.index','color'=>'bg-red-200','icon'=>'users'],
        // ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
        // ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+       ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','color'=>'bg-indigo-200','icon'=>'document-text'],
     ];
 
     $cardsMarketer = [
@@ -283,7 +284,7 @@ document.addEventListener("DOMContentLoaded", function() {
                ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                               ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
                               // ['title'=>'مدیریت پیام ها','route'=>'messages.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-
+                              ['title'=>' فرم‌های ارزیابی','route'=>'evaluations.index','color'=>'bg-indigo-200','icon'=>'document-text'],
 
     ];
 

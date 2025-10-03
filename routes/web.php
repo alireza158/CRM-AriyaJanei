@@ -412,3 +412,56 @@ Route::post('admin/users/{user}/update-roles', [UserManagementController::class,
 use App\Http\Controllers\ProductControllerWeb;
 
 Route::get('productsWeb', [ProductControllerWeb::class, 'index'])->name('productsweb.index');
+// routes/web.php
+
+use App\Http\Controllers\Admin\EvaluationFormController;
+
+Route::middleware(['auth','role:Admin'])->prefix('admin')->name('admin.')->group(function(){
+
+    // نمایش لیست فرم‌های ارزیابی
+    Route::get('evaluations/forms', [EvaluationFormController::class, 'index'])
+        ->name('evaluations.forms.index');
+
+    // فرم ایجاد فرم جدید
+    Route::get('evaluations/forms/create', [EvaluationFormController::class, 'create'])
+        ->name('evaluations.forms.create');
+
+    // ذخیره فرم جدید
+    Route::post('evaluations/forms', [EvaluationFormController::class, 'store'])
+        ->name('evaluations.forms.store');
+
+    // نمایش یک فرم خاص
+    Route::get('evaluations/forms/{form}', [EvaluationFormController::class, 'show'])
+        ->name('evaluations.forms.show');
+
+    // فرم ویرایش فرم
+    Route::get('evaluations/forms/{form}/edit', [EvaluationFormController::class, 'edit'])
+        ->name('evaluations.forms.edit');
+
+    // بروزرسانی فرم
+    Route::put('evaluations/forms/{form}', [EvaluationFormController::class, 'update'])
+        ->name('evaluations.forms.update');
+
+    // حذف فرم
+    Route::delete('evaluations/forms/{form}', [EvaluationFormController::class, 'destroy'])
+        ->name('evaluations.forms.destroy');
+
+    // اضافه کردن سوال به فرم
+    Route::post('evaluations/forms/{form}/questions', [EvaluationFormController::class,'addQuestion'])
+        ->name('evaluations.forms.addQuestion');
+
+    // حذف یک سوال از فرم
+    Route::delete('evaluations/questions/{question}', [EvaluationFormController::class,'deleteQuestion'])
+        ->name('evaluations.questions.delete');
+});
+
+
+use App\Http\Controllers\EvaluationController;
+
+Route::middleware(['auth'])->group(function(){
+    Route::get('/evaluations',[EvaluationController::class,'index'])->name('evaluations.index');
+
+    Route::get('/evaluations/{target}',[EvaluationController::class,'evaluate'])->name('evaluations.evaluate');
+    Route::post('/evaluations/{target}',[EvaluationController::class,'store'])->name('evaluations.store');
+});
+// routes/web.php
