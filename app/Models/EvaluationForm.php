@@ -5,7 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class EvaluationForm extends Model
 {
-    protected $fillable = ['title','evaluator_role','target_role','unit_id'];
+    protected $fillable = [
+        'title','evaluator_role','target_role','department_role','unit_id'
+    ];
 
     public function questions() {
         return $this->hasMany(EvaluationQuestion::class,'form_id');

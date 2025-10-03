@@ -1,23 +1,22 @@
 <?php
 // app/Http/Controllers/Admin/EvaluationFormController.php
+// app/Http/Controllers/Admin/EvaluationFormController.php
+// app/Http/Controllers/Admin/EvaluationFormController.php
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\EvaluationForm;
 use App\Models\EvaluationQuestion;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
+
 class EvaluationFormController extends Controller
 {
-    // لیست فرم‌ها
     public function index()
     {
         $forms = EvaluationForm::with('questions')->paginate(10);
         return view('admin.evaluations.forms.index', compact('forms'));
     }
 
-    // ساخت فرم جدید
     public function create()
     {
         return view('admin.evaluations.forms.create');
@@ -26,10 +25,11 @@ class EvaluationFormController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'          => 'required|string|max:255',
-            'evaluator_role' => 'required|string',
-            'target_role'    => 'required|string',
-            'unit_id'        => 'nullable|integer',
+            'title'           => 'required|string|max:255',
+            'evaluator_role'  => 'required|string',
+            'target_role'     => 'required|string',
+            'department_role' => 'nullable|string',
+            'unit_id'         => 'nullable|integer',
         ]);
 
         EvaluationForm::create($request->all());
@@ -38,14 +38,12 @@ class EvaluationFormController extends Controller
             ->with('success','فرم ارزیابی با موفقیت ایجاد شد.');
     }
 
-    // نمایش سوالات یک فرم
     public function show(EvaluationForm $form)
     {
         $form->load('questions');
         return view('admin.evaluations.forms.show', compact('form'));
     }
 
-    // اضافه کردن سوال
     public function addQuestion(Request $request, EvaluationForm $form)
     {
         $request->validate([
@@ -54,11 +52,9 @@ class EvaluationFormController extends Controller
         ]);
 
         $form->questions()->create($request->only('title','description'));
-
         return back()->with('success','سوال اضافه شد.');
     }
 
-    // حذف سوال
     public function deleteQuestion(EvaluationQuestion $question)
     {
         $question->delete();

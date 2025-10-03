@@ -465,3 +465,9 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/evaluations/{target}',[EvaluationController::class,'store'])->name('evaluations.store');
 });
 // routes/web.php
+use App\Http\Controllers\Admin\MonthlyEvaluationController;
+
+Route::middleware(['auth','role:Admin'])->prefix('admin')->name('admin.')->group(function(){
+    Route::get('evaluations/monthly', [MonthlyEvaluationController::class,'index'])
+        ->name('evaluations.monthly');
+});
