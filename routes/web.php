@@ -412,10 +412,7 @@ Route::post('admin/users/{user}/update-roles', [UserManagementController::class,
 use App\Http\Controllers\ProductControllerWeb;
 
 Route::get('productsWeb', [ProductControllerWeb::class, 'index'])->name('productsweb.index');
-<<<<<<< HEAD
-Route::delete('leaves/{leave}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
-=======
-// routes/web.php
+
 
 use App\Http\Controllers\Admin\EvaluationFormController;
 
@@ -468,4 +465,3 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/evaluations/{target}',[EvaluationController::class,'store'])->name('evaluations.store');
 });
 // routes/web.php
->>>>>>> 6f9a82e215a31c2a6b053b7016e2a88e76c07e18
