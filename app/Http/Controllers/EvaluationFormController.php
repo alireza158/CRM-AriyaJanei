@@ -60,4 +60,12 @@ class EvaluationFormController extends Controller
         $question->delete();
         return back()->with('success','سوال حذف شد.');
     }
+    public function destroy(EvaluationForm $form)
+{
+    $form->questions()->delete(); // حذف سوالات مرتبط
+    $form->delete();
+
+    return redirect()->route('admin.evaluations.forms.index')->with('success','فرم ارزیابی حذف شد.');
+}
+
 }

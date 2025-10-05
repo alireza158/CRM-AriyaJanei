@@ -471,3 +471,5 @@ Route::middleware(['auth','role:Admin'])->prefix('admin')->name('admin.')->group
     Route::get('evaluations/monthly', [MonthlyEvaluationController::class,'index'])
         ->name('evaluations.monthly');
 });
+Route::delete('admin/evaluations/forms/{form}', [EvaluationFormController::class,'destroy'])
+    ->name('admin.evaluations.forms.destroy');

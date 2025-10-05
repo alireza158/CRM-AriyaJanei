@@ -7,7 +7,7 @@ use App\Models\EvaluationAnswer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 class EvaluationController extends Controller
 {
     public function index()
@@ -55,37 +55,101 @@ class EvaluationController extends Controller
     // پیش‌فرض
     $evaluatorRole = null;
     $targetRole    = null;
-
+if(in_array('Owner', $targetRoles)){
+      $targetRole = 'Owner';
+        $evaluatorRole = 'User';
+}elseif(in_array('InternalManager', $targetRoles)){
+$targetRole = 'InternalManager';
+        $evaluatorRole = 'User';
+}else{
     // اگر کاربر یا هدف رول Storage داشته باشن
-    if (in_array('Storage', $evaluatorRoles)) {
+    if (in_array('StorageUser', $evaluatorRoles)) {
         // اگه یوزر پرسنل انبار باشه
-        if (in_array('User', $evaluatorRoles)) {
+       
             $evaluatorRole = 'StorageUser';
-        }
+        
         // اگه یوزر مدیر انبار باشه
-      if (in_array('Manager', $evaluatorRoles)) {
+    
+    }elseif (in_array('StorageManager', $evaluatorRoles)) {
             $evaluatorRole = 'StorageManager';
         }
-    }
 
-    if (in_array('Storage', $targetRoles)) {
-        if (in_array('Manager', $targetRoles)) {
+        
+    if (in_array('StorageUser', $targetRoles)) {
+      
+            $targetRole = 'StorageUser';
+       
+        
+    }elseif (in_array('StorageManager', $targetRoles)) {
             $targetRole = 'StorageManager';
         }
-        if (in_array('User', $targetRoles)) {
-            $targetRole = 'StorageUser';
+
+
+
+
+           if (in_array('ITUser', $evaluatorRoles)) {
+        // اگه یوزر پرسنل انبار باشه
+       
+            $evaluatorRole = 'ITUser';
+        
+        // اگه یوزر مدیر انبار باشه
+    
+    }elseif (in_array('ITManager', $evaluatorRoles)) {
+            $evaluatorRole = 'ITManager';
         }
-    }
 
-    // همین روند رو می‌تونی برای IT، Sale، Accountant و ... ادامه بدی
-    // مثال:
-    if (in_array('IT', $evaluatorRoles)) {
-        $evaluatorRole = in_array('Manager', $evaluatorRoles) ? 'ITManager' : 'ITUser';
-    }
-    if (in_array('IT', $targetRoles)) {
-        $targetRole = in_array('Manager', $targetRoles) ? 'ITManager' : 'ITUser';
-    }
+    if (in_array('ITUser', $targetRoles)) {
+      
+            $targetRole = 'ITUser';
+       
+        
+    }elseif (in_array('ITManager', $targetRoles)) {
+            $targetRole = 'ITManager';
+        }
 
+
+   if (in_array('MarketerUser', $evaluatorRoles)) {
+        // اگه یوزر پرسنل انبار باشه
+       
+            $evaluatorRole = 'MarketerUser';
+        
+        // اگه یوزر مدیر انبار باشه
+    
+    }elseif (in_array('MarketerManager', $evaluatorRoles)) {
+            $evaluatorRole = 'MarketerManager';
+        }
+
+    if (in_array('MarketerUser', $targetRoles)) {
+      
+            $targetRole = 'MarketerUser';
+       
+        
+    }elseif (in_array('MarketerManager', $targetRoles)) {
+            $targetRole = 'MarketerManager';
+        }
+
+        
+ if (in_array('SaleUser', $evaluatorRoles)) {
+        // اگه یوزر پرسنل انبار باشه
+       
+            $evaluatorRole = 'SaleUser';
+        
+        // اگه یوزر مدیر انبار باشه
+    
+    }elseif (in_array('SalerManager', $evaluatorRoles)) {
+            $evaluatorRole = 'SaleManager';
+        }
+
+    if (in_array('SaleUser', $targetRoles)) {
+      
+            $targetRole = 'SaleUser';
+       
+        
+    }elseif (in_array('SaleManager', $targetRoles)) {
+            $targetRole = 'SaleManager';
+        }
+
+    }
     // جستجوی فرم براساس نقش مشخص‌شده
     $form = EvaluationForm::with('questions')
         ->where('evaluator_role', $evaluatorRole)
@@ -100,21 +164,36 @@ class EvaluationController extends Controller
 }
 
 
+public function store(Request $request, User $target)
+{
+    $user = Auth::user();
 
-    public function store(Request $request, User $target)
-    {
-        $user = Auth::user();
+    // 1) اعتبارسنجی سمت سرور
+   $validated = $request->validate([
+    'answers'   => ['required', 'array', 'min:1'],
+    'answers.*' => ['required', 'integer', 'between:1,5'],
+]);
 
-        foreach ($request->answers as $questionId => $score) {
-            EvaluationAnswer::create([
-                'question_id'    => $questionId,
-                'user_id'        => $user->id,
-                'target_user_id' => $target->id,
-                'score'          => $score,
-                'comment'        => $request->comments[$questionId] ?? null,
-            ]);
+
+    DB::transaction(function () use ($validated, $user, $target) {
+        foreach ($validated['answers'] as $questionId => $score) {
+            // 2) جلوگیری از رکورد تکراری: اگر قبلاً پاسخ داده، همان را آپدیت کن
+            \App\Models\EvaluationAnswer::updateOrCreate(
+                [
+                    'question_id'    => $questionId,
+                    'user_id'        => $user->id,
+                    'target_user_id' => $target->id,
+                ],
+                [
+                    'score'   => (int) $score,
+                    'comment' => null,
+                ]
+            );
         }
+    });
 
-        return redirect()->route('evaluations.index')->with('success','✅ ارزیابی ثبت شد.');
-    }
+    return redirect()
+        ->route('evaluations.index')
+        ->with('success', '✅ ارزیابی با موفقیت ثبت شد.');
+}
 }

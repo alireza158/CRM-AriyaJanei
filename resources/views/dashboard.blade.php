@@ -269,6 +269,7 @@ document.addEventListener("DOMContentLoaded", function() {
        // ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-red-200','icon'=>'users'],
        // ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
        ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','color'=>'bg-indigo-200','icon'=>'document-text'],
+        ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','color'=>'bg-indigo-200','icon'=>'document-text'],
     ];
 
     $cardsMarketer = [

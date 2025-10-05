@@ -18,7 +18,7 @@
                     <thead>
                         <tr>
                             <th>نام</th>
-                            <th>نقش</th>
+                         
                             <th>عملیات</th>
                         </tr>
                     </thead>
@@ -26,7 +26,7 @@
                         @forelse($targets as $target)
                             <tr>
                                 <td>{{ $target->name }}</td>
-                                <td>{{ $target->getRoleNames()->implode(', ') }}</td>
+                            
                                 <td>
                                     <a href="{{ route('evaluations.evaluate', $target->id) }}" class="btn btn-sm btn-primary">
                                         فرم ارزیابی
