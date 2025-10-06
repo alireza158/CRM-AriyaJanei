@@ -395,14 +395,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','role:Admin'])->group
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
-
-    // استفاده از {otherUser} به جای {user} تا با پارامتر کنترلر تداخل نکند
-    Route::get('/messages/{otherUser}', [MessageController::class, 'show'])->name('messages.show');
-
-    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store'); // پیام جدید
-    Route::post('/messages/{otherUser}/reply', [MessageController::class, 'reply'])->name('messages.reply'); // پاسخ پیام
+    Route::get('/messages',            [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{user}',     [MessageController::class, 'show'])->name('messages.show'); // {user} = other user id
+    Route::post('/messages',           [MessageController::class, 'store'])->name('messages.store');
+    Route::post('/messages/{user}/reply', [MessageController::class, 'reply'])->name('messages.reply');
+    Route::get('/messages/file/{message}', [MessageController::class, 'download'])->name('messages.download');
 });
+
 Route::post('/admin/users/{id}/reset-password', [UserManagementController::class, 'resetPassword'])
     ->name('admin.users.resetPassword');
 Route::get('/password/change', [UserManagementController::class, 'showChangeForm'])->name('password.change.form');
@@ -473,3 +472,16 @@ Route::middleware(['auth','role:Admin'])->prefix('admin')->name('admin.')->group
 });
 Route::delete('admin/evaluations/forms/{form}', [EvaluationFormController::class,'destroy'])
     ->name('admin.evaluations.forms.destroy');
+// routes/web.php
+Route::delete('/leaves/{leave}', [LeaveController::class, 'destroy'])
+    ->name('leaves.destroy');
+use App\Http\Controllers\RequestTicketController;
+
+
+// لیست/ساخت/ویرایش/حذف
+Route::resource('requests', RequestTicketController::class)->names('requests');
+
+
+// تایید و رد
+Route::patch('requests/{requestTicket}/approve', [RequestTicketController::class, 'approve'])->name('requests.approve');
+Route::patch('requests/{requestTicket}/reject', [RequestTicketController::class, 'reject'])->name('requests.reject');

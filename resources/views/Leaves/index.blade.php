@@ -100,6 +100,16 @@
 {{-- عملیات (تایید / رد) --}}
 <td class="whitespace-nowrap">
     @php $user = Auth::user(); @endphp
+  @if( $leave->status === 'pending' || $leave->status =='manager_approved')
+   <form action="{{ route('leaves.destroy', $leave->id) }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-outline-danger btn-sm">حذف</button>
+
+</form>
+  @endif
+
+
 
 
 

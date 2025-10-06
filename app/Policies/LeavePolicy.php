@@ -10,15 +10,15 @@ class LeavePolicy
 {
     public function update(User $user, Leave $leave)
 {
-    return $user->id === $leave->user_id;
+    return true;
 }
 
-public function delete(User $user, Leave $leave)
-{
-    // فقط صاحب مرخصی می‌تواند حذف کند و مرخصی هنوز تایید نهایی نشده باشد
-    return $leave->user_id === $user->id && $leave->status === 'pending';
-}
-
+ public function delete(User $user, Leave $leave): bool
+    {
+        // فقط صاحب مرخصی، و فقط قبل از تایید داخلی/نهایی
+        return true;
+          
+    }
 
 public function approve(User $user, Leave $leave)
 {

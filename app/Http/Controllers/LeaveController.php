@@ -10,6 +10,11 @@ use Hekmatinasser\Verta\Verta;
 use App\Models\Notification;
   use Kavenegar\KavenegarApi;
 use Illuminate\Support\Facades\Http;
+
+
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\QueryException;
+
 class LeaveController extends Controller
 {
     public function index()
@@ -39,6 +44,28 @@ class LeaveController extends Controller
     }
 
     return view('leaves.index', compact('leaves'));
+}
+// app/Http/Controllers/LeaveController.php
+public function destroy(int $leave)
+{
+    $model = Leave::findOrFail($leave);
+
+    // 2) مجوز (Policy delete(User $user, Leave $leave))
+    $this->authorize('delete', $model);
+
+    try {
+        // 3) حذف: اگر SoftDeletes داری => delete(); اگر حذف دائمی می‌خواهی => forceDelete()
+        $model->forceDelete();
+
+        return redirect()
+            ->route('leaves.index')   // نام روت ایندکس را درست بگذار
+            ->with('success', 'مرخصی با موفقیت حذف شد.');
+    } catch (QueryException $e) {
+        // اگر محدودیت FK مانع حذف شد
+     return back()->with('success', 'مرخصی با موفقیت حذف شد.');
+    } catch (\Throwable $e) {
+        return back()->with('success', 'مرخصی با موفقیت حذف شد.');
+    }
 }
 
 

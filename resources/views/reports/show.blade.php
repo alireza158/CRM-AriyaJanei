@@ -1,12 +1,23 @@
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="font-semibold text-2xl text-center text-gray-800">نمایش گزارش</h2>
+        
     </x-slot>
 
     <div class="flex flex-col items-center justify-center px-4 py-8 space-y-12" dir="rtl">
 
         <div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-6 space-y-6 border-t-4 border-green-500">
             <h3 class="text-xl font-bold text-gray-700 border-b pb-2">جزئیات گزارش</h3>
+            <p class="text-center text-gray-600 mt-1">
+    
+    <span class="font-semibold">
+        {{ $report->author_name
+            ?? optional($report->user)->name
+            ?? optional($user)->name
+            ?? 'نامشخص' }}
+    </span>
+</p>
+
             <div class="space-y-3">
                 <div>
                     <h4 class="text-gray-600 font-semibold">عنوان:</h4>

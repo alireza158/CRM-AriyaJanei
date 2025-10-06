@@ -3,10 +3,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Leave extends Model
 {
     use HasFactory;
+       use SoftDeletes; 
  const STATUS_PENDING_MANAGER   = 'pending_manager';   // در انتظار تایید مدیر واحد
     const STATUS_PENDING_INTERNAL  = 'pending_internal';  // در انتظار تایید مدیر داخلی یا ادمین
     const STATUS_PENDING_ACCOUNT   = 'pending_account';   // در انتظار تایید حسابداری

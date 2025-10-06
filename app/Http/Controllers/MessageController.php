@@ -1,101 +1,126 @@
 <?php
-
+// app/Http/Controllers/MessageController.php
 namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Notification;
+
 class MessageController extends Controller
 {
-    // لیست پیام‌ها و کاربران
+    // لیست مکالمات و فرم ارسال
     public function index()
     {
-        $messages = Message::where('sender_id', Auth::id())
-            ->orWhere('receiver_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $authId = Auth::id();
 
-        $users = User::where('id', '!=', Auth::id())->get();
+        // آخرین پیام هر کانورسیشن (طرف مقابل) — ساده و سریع:
+        $latestPerPartner = Message::where(fn($q)=>$q->where('sender_id',$authId)->orWhere('receiver_id',$authId))
+            ->with(['sender:id,name','receiver:id,name'])
+            ->orderByDesc('created_at')
+            ->get()
+            ->unique(fn($m)=> $m->sender_id === $authId ? $m->receiver_id : $m->sender_id)
+            ->values();
 
-        return view('messages.index', compact('messages', 'users'));
+        $users = User::where('id','!=',$authId)->select('id','name')->orderBy('name')->get();
+
+        return view('messages.index', [
+            'threads' => $latestPerPartner,
+            'users'   => $users,
+        ]);
     }
 
-    // نمایش گفتگوی با یک کاربر
-   public function show($otherUserId)
-{
-    $authId = auth()->id();
-    
-    $otherUser = User::findOrFail($otherUserId);
+    // نمایش گفت‌وگو با یک کاربر مشخص + seen
+    public function show(User $user)
+    {
+        $authId = Auth::id();
 
-    $conversation = Message::where(function($q) use ($authId, $otherUserId){
-            $q->where('sender_id', $authId)
-              ->where('receiver_id', $otherUserId);
-        })
-        ->orWhere(function($q) use ($authId, $otherUserId){
-            $q->where('sender_id', $otherUserId)
-              ->where('receiver_id', $authId);
-        })
-        ->orderBy('created_at', 'asc')
-        ->get();
+        // اجازه نده با خودت گفتگو باز شود
+        abort_if($user->id === $authId, 404);
 
-    return view('messages.show', compact('conversation', 'otherUser'));
-}
+        $conversation = Message::between($authId, $user->id)
+            ->with(['sender:id,name','receiver:id,name'])
+            ->orderBy('created_at','asc')
+            ->get();
 
+        // پیام‌های دریافتیِ خوانده‌نشده را seen کن
+        Message::between($authId, $user->id)
+            ->whereNull('seen_at')
+            ->where('receiver_id',$authId)
+            ->update(['seen_at' => now()]);
 
+        return view('messages.show', [
+            'conversation' => $conversation,
+            'otherUser'    => $user,
+        ]);
+    }
 
-    // ارسال پیام جدید
+    // ارسال پیام جدید از لیست
     public function store(Request $request)
     {
         $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'body' => 'required|string',
-            'attachment' => 'nullable|file|max:10240', // 10MB
+            'receiver_id' => 'required|exists:users,id|different:sender_id',
+            'body'        => 'required|string',
+            'attachment'  => 'nullable|file|max:10240',
         ]);
 
-        $attachmentPath = null;
-        if($request->hasFile('attachment')){
-            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
-        }
+        $attachmentPath = $request->file('attachment')
+            ? $request->file('attachment')->store('attachments', 'public')
+            : null;
 
-        Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
-            'body' => $request->body,
-            'attachment' => $attachmentPath,
+        $message = Message::create([
+            'sender_id'   => Auth::id(),
+            'receiver_id' => (int)$request->receiver_id,
+            'body'        => $request->body,
+            'attachment'  => $attachmentPath,
         ]);
 
-         Notification::create([
-            'user_id' =>  $request->receiver_id,
-            'title' => "پیام جدید",
-            'message' => "پیام جدید دارید.",
-            'seen' => false,
+        // اعلان ساده (اختیاری)
+        Notification::create([
+            'user_id' => $message->receiver_id,
+            'title'   => "پیام جدید از ".Auth::user()->name,
+            'message' => mb_strimwidth($message->body, 0, 80, '…', 'UTF-8'),
+            'seen'    => false,
         ]);
-        return back()->with('success', 'پیام ارسال شد.');
+
+        return redirect()->route('messages.show', $message->receiver_id)
+                         ->with('success', 'پیام ارسال شد.');
     }
 
-    // پاسخ به پیام در صفحه گفت‌وگو
+    // پاسخ در صفحه گفتگو
     public function reply(Request $request, User $user)
     {
         $request->validate([
-            'body' => 'required|string',
+            'body'       => 'required|string',
             'attachment' => 'nullable|file|max:10240',
         ]);
 
-        $attachmentPath = null;
-        if($request->hasFile('attachment')){
-            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
-        }
+        $attachmentPath = $request->file('attachment')
+            ? $request->file('attachment')->store('attachments', 'public')
+            : null;
 
         Message::create([
-            'sender_id' => Auth::id(),
+            'sender_id'   => Auth::id(),
             'receiver_id' => $user->id,
-            'body' => $request->body,
-            'attachment' => $attachmentPath,
+            'body'        => $request->body,
+            'attachment'  => $attachmentPath,
         ]);
 
-        return back();
+        return back()->with('success','ارسال شد.');
+    }
+
+    // دانلود امن فایل پیوست
+    public function download(Message $message)
+    {
+        $authId = Auth::id();
+        abort_unless(in_array($authId, [$message->sender_id,$message->receiver_id]), 403);
+
+        if (!$message->attachment || !Storage::disk('public')->exists($message->attachment)) {
+            abort(404);
+        }
+        return Storage::disk('public')->download($message->attachment);
     }
 }

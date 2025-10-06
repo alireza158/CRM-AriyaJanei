@@ -1,6 +1,7 @@
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="font-semibold text-2xl text-center text-gray-800">نمایش گزارش</h2>
+        
     </x-slot>
 
     <div class="flex flex-col items-center justify-center px-4 py-8 space-y-12" dir="rtl">

@@ -308,7 +308,7 @@ if(  $authUser ->hasRole('Marketer')){
     $authUser = Auth::user();
 
 
-    if ($authUser->hasRole('Admin')) {
+    if ($authUser->hasRole('Admin')||$authUser->hasRole('Manager')) {
         if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
             abort(404);
         }
