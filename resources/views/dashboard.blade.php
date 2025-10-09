@@ -257,6 +257,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
            @php
     $cardsAdmin = [
+
         ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','color'=>'bg-blue-200','icon'=>'users'],
         ['title'=>'کاربران مهمان','route'=>'admin.guests.index','color'=>'bg-purple-200','icon'=>'user'],
         ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','color'=>'bg-green-200','icon'=>'archive'],
@@ -270,6 +271,7 @@ document.addEventListener("DOMContentLoaded", function() {
        // ['title'=>'مدیریت گزارش ها','route'=>'user.reports.reportsManagment','color'=>'bg-indigo-300','icon'=>'chart-bar'],
        ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','color'=>'bg-indigo-200','icon'=>'document-text'],
         ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','color'=>'bg-indigo-200','icon'=>'document-text'],
+         ['title'=>'محصولات سایت','route'=>'products.index','color'=>'bg-blue-200','icon'=>'users'],
     ];
 
     $cardsMarketer = [
@@ -280,15 +282,25 @@ document.addEventListener("DOMContentLoaded", function() {
        // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
     ];
 
+
+    // روز جاری به تقویم جلالی
+    $jDay = \Hekmatinasser\Verta\Verta::now()->day;
+    // بازه ۲۸ ام تا ۳ ام ماه بعد (شامل هر دو سر)
+    $showEvalCard = ($jDay >= 28 || $jDay <= 3);
+
     $cardsUser = [
         ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],
-               ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                              ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                             ['title'=>'مدیریت پیام ها','route'=>'messages.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                              ['title'=>'مدیریت درخواست ها','route'=>'requests.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
-                              ['title'=>' فرم‌های ارزیابی','route'=>'evaluations.index','color'=>'bg-indigo-200','icon'=>'document-text'],
-
+        ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+        ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+        ['title'=>'مدیریت پیام ها','route'=>'messages.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+        ['title'=>'مدیریت درخواست ها','route'=>'requests.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
     ];
+
+    if ($showEvalCard) {
+        $cardsUser[] = ['title'=>' فرم‌های ارزیابی','route'=>'evaluations.index','color'=>'bg-indigo-200','icon'=>'document-text'];
+    }
+
+
 
     $cardsManager = [
         // ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-orange-200','icon'=>'document-text'],

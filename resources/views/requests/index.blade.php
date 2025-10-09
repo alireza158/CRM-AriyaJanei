@@ -60,7 +60,7 @@
                                 </td>
                                 <td class="whitespace-nowrap">
                                     @php $user = Auth::user(); @endphp
-
+<a href="{{ route('requests.show', $ticket->id) }}" class="btn btn-outline-primary btn-sm">نمایش</a>
                                     {{-- حذف توسط صاحب درخواست تا قبل از تایید نهایی --}}
                                     @if(in_array($ticket->status, ['pending','manager_approved']) && $ticket->user_id === $user->id)
                                         <form action="{{ route('requests.destroy', $ticket->id) }}" method="POST" class="d-inline">

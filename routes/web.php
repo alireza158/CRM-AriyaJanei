@@ -410,7 +410,10 @@ Route::post('/password/change', [UserManagementController::class, 'change'])->na
 Route::post('admin/users/{user}/update-roles', [UserManagementController::class, 'updateRoles'])->name('admin.users.updateRoles');
 use App\Http\Controllers\ProductControllerWeb;
 
-Route::get('productsWeb', [ProductControllerWeb::class, 'index'])->name('productsweb.index');
+
+
+Route::get('/products', [ProductControllerWeb::class, 'index'])->name('products.index');
+Route::get('/products/{slug}', [ProductControllerWeb::class, 'show'])->name('products.show');
 
 
 use App\Http\Controllers\Admin\EvaluationFormController;
@@ -479,9 +482,11 @@ use App\Http\Controllers\RequestTicketController;
 
 
 // لیست/ساخت/ویرایش/حذف
-Route::resource('requests', RequestTicketController::class)->names('requests');
-
+Route::resource('requests', RequestTicketController::class)
+    ->parameters(['requests' => 'requestTicket'])
+    ->names('requests');
 
 // تایید و رد
 Route::patch('requests/{requestTicket}/approve', [RequestTicketController::class, 'approve'])->name('requests.approve');
 Route::patch('requests/{requestTicket}/reject', [RequestTicketController::class, 'reject'])->name('requests.reject');
+Route::get('requests/{requestTicket}/print', [RequestTicketController::class, 'printView'])->name('requests.print');

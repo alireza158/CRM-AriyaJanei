@@ -124,7 +124,17 @@
             <button class="btn btn-danger btn-sm">رد</button>
         </form>
     @endif
-
+   {{-- مدیر واحد --}}
+    @if($user->hasRole('Owner') && $leave->status === 'pending')
+        <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-success btn-sm">تایید</button>
+        </form>
+        <form action="{{ route('leaves.reject', $leave->id) }}" method="POST" class="d-inline">
+            @csrf @method('PATCH')
+            <button class="btn btn-danger btn-sm">رد</button>
+        </form>
+    @endif
     {{-- مدیر داخلی یا ادمین --}}
     @if(($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved')
         <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
@@ -136,9 +146,9 @@
             <button class="btn btn-danger btn-sm">رد مدیر داخلی / ادمین</button>
         </form>
     @endif
-
+ 
     {{-- حسابداری --}}
-    @if($user->hasRole('Accountant') && $leave->status === 'internal_approved')
+    {{-- @if($user->hasRole('Accountant') && $leave->status === 'internal_approved')
         <form action="{{ route('leaves.approve', $leave->id) }}" method="POST" class="d-inline">
             @csrf @method('PATCH')
             <button class="btn btn-success btn-sm">تایید حسابداری</button>
@@ -148,6 +158,8 @@
             <button class="btn btn-danger btn-sm">رد حسابداری</button>
         </form>
     @endif
+    --}}
+   
 </td>
 
 

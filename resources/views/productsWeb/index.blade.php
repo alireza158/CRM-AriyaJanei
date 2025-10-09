@@ -4,121 +4,146 @@
     </x-slot>
 
     <div class="container mt-4" dir="rtl">
-        {{-- پیام موفقیت / خطا --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+        @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+        @if(session('error'))   <div class="alert alert-danger">{{ session('error') }}</div>   @endif
 
-        {{-- جدول محصولات --}}
-        <div class="card shadow-sm">
-            <div class="card-header bg-light fw-bold">لیست محصولات</div>
-            <div class="card-body p-0">
-                <table class="table table-bordered table-hover mb-0 text-center align-middle">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>نام محصول</th>
-                            <th>تنوع‌ها</th>
-                            <th>قیمت</th>
-                            <th>تخفیف</th>
-                            <th>قیمت نهایی</th>
-                            <th>موجودی</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($products as $product)
-                            <tr class="table-primary">
-                                <td colspan="6" class="text-start">
-                                    <strong>{{ $product['title'] ?? '—' }}</strong>
-                                    <small class="text-muted">({{ $product['slug'] ?? '' }})</small>
-                                </td>
-                            </tr>
+        
 
-                            @foreach($product['varieties'] ?? [] as $variety)
-                            <tr>
-                                <td>—</td>
-
-                                {{-- نام تنوع یا ویژگی --}}
-                                <td>
-                                    @if(!empty($variety['name']))
-                                        {{ $variety['name'] }}
-                                    @elseif(!empty($variety['attributes']))
-                                        @foreach($variety['attributes'] as $attribute)
-                                            {{ $attribute['label'] ?? $attribute['name'] ?? '—' }}:
-                                            {{ $attribute['pivot']['value'] ?? $attribute['value'] ?? '—' }}
-                                        @endforeach
-                                    @else
-                                        —
-                                    @endif
-                                </td>
-
-                                {{-- قیمت --}}
-                                <td>{{ number_format($variety['price'] ?? $product['price'] ?? 0) }} تومان</td>
-
-                                {{-- تخفیف --}}
-                                <td>
-                                    @php
-                                        $discount = $variety['final_price']['discount'] ?? $product['major_final_price']['discount'] ?? 0;
-                                    @endphp
-                                    {{ $discount > 0 ? number_format($discount) . ' تومان' : '—' }}
-                                </td>
-
-                                {{-- قیمت نهایی --}}
-                                <td>
-                                    {{ number_format($variety['final_price']['final_price'] ?? $product['major_final_price']['final_price'] ?? $variety['price'] ?? $product['price'] ?? 0) }}
-                                </td>
-
-                                {{-- موجودی --}}
-                                <td>{{ $variety['quantity'] ?? 0 }}</td>
-                            </tr>
-                        @endforeach
-
-
-
-                            @if(empty($product['varieties']))
-                                <tr>
-                                    <td>—</td>
-                                    <td>—</td>
-                                    <td>{{ number_format($product['price'] ?? 0) }} تومان</td>
-                                    <td>{{ ($product['major_final_price']['discount'] ?? 0) > 0 ? number_format($product['major_final_price']['discount']) . ' تومان' : '—' }}</td>
-                                    <td>{{ number_format($product['major_final_price']['final_price'] ?? $product['price'] ?? 0) }} تومان</td>
-                                    <td>—</td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="6">هیچ محصولی موجود نیست.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        {{-- صفحه‌بندی --}}
-        <div class="mt-3 d-flex justify-content-center">
-            <nav>
-                <ul class="pagination">
-                    {{-- دکمه صفحه قبلی --}}
-                    <li class="page-item {{ $pagination['current_page'] <= 1 ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $pagination['current_page'] - 1]) }}">قبلی</a>
-                    </li>
-
-                    {{-- شماره صفحات --}}
-                    @for($i = 1; $i <= $pagination['last_page']; $i++)
-                        <li class="page-item {{ $pagination['current_page'] == $i ? 'active' : '' }}">
-                            <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+        <div class="row">
+            {{-- سایدبار دسته‌ها --}}
+            <aside class="col-12 col-lg-3 mb-3 mb-lg-0">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light fw-bold">دسته‌بندی‌ها</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item {{ empty($category) ? 'active' : '' }}">
+                            <a class="text-decoration-none {{ empty($category) ? 'text-white' : '' }}"
+                               href="{{ route('products.index', array_filter(['q'=>$query])) }}">
+                                همه
+                            </a>
                         </li>
-                    @endfor
+                        @foreach($categories as $cat)
+                            @php
+                                $val = !empty($cat['slug']) ? $cat['slug'] : ($cat['id'] ?? '');
+                                $isActive = ($category ?? '') == $val;
+                            @endphp
+                            <li class="list-group-item {{ $isActive ? 'active' : '' }}">
+                                <a class="text-decoration-none {{ $isActive ? 'text-white' : '' }}"
+                                   href="{{ route('products.index', array_filter(['q'=>$query, 'category'=>$val])) }}">
+                                    {{ $cat['name'] ?? 'بدون دسته' }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </aside>
 
-                    {{-- دکمه صفحه بعد --}}
-                    <li class="page-item {{ $pagination['current_page'] >= $pagination['last_page'] ? 'disabled' : '' }}">
-                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $pagination['current_page'] + 1]) }}">بعدی</a>
-                    </li>
-                </ul>
-            </nav>
+            {{-- جدول محصولات --}}
+            <section class="col-12 col-lg-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light fw-bold d-flex justify-content-between">
+                        <span>لیست محصولات</span>
+                        @if(!empty($category))
+                            <small class="text-primary">فیلتر دسته: {{ $category }}</small>
+                        @endif
+                    </div>
+
+                    <div class="card-body p-0">
+                        <table class="table table-bordered table-hover mb-0 text-center align-middle">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>نام محصول</th>
+                                  
+                                    <th>تنوع‌ها / ویژگی</th>
+                                    <th>قیمت پایه</th>
+                                    <th>تخفیف</th>
+                                    <th>قیمت نهایی</th>
+                                    <th>موجودی</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($products as $product)
+                                    <tr class="table-primary">
+                                        <td colspan="8" class="text-start">
+                                            <strong>{{ $product['title'] ?? '—' }}</strong>
+                                            <small class="text-muted">({{ $product['slug'] ?? '' }})</small>
+                                        </td>
+                                    </tr>
+
+                                    @php
+                                        $pBase  = data_get($product, '__pricing.base', 0);
+                                        $pFinal = data_get($product, '__pricing.final', $pBase);
+                                        $pDisc  = data_get($product, '__pricing.discount', max(0, $pBase - $pFinal));
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $product['title'] ?? '—' }}</td>
+                                     
+                                        <td>—</td>
+                                        <td>{{ number_format($pBase) }} تومان</td>
+                                        <td>{{ $pDisc > 0 ? number_format($pDisc).' تومان' : '—' }}</td>
+                                        <td>{{ number_format($pFinal) }} تومان</td>
+                                        <td>—</td>
+                                        
+                                    </tr>
+
+                                    @forelse($product['varieties'] ?? [] as $variety)
+                                        @php
+                                            $vBase  = data_get($variety, '__pricing.base', 0);
+                                            $vFinal = data_get($variety, '__pricing.final', $vBase);
+                                            $vDisc  = data_get($variety, '__pricing.discount', max(0, $vBase - $vFinal));
+                                        @endphp
+                                        <tr>
+                                            <td>—</td>
+                                          
+                                            <td>
+                                                @if(!empty($variety['name']))
+                                                    {{ $variety['name'] }}
+                                                @elseif(!empty($variety['attributes']))
+                                                    @foreach($variety['attributes'] as $attribute)
+                                                        {{ $attribute['label'] ?? $attribute['name'] ?? '—' }}:
+                                                        {{ data_get($attribute, 'pivot.value') ?? ($attribute['value'] ?? '—') }}
+                                                        @if(!$loop->last) | @endif
+                                                    @endforeach
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>
+                                            <td>{{ number_format($vBase) }} تومان</td>
+                                            <td>{{ $vDisc > 0 ? number_format($vDisc).' تومان' : '—' }}</td>
+                                            <td>{{ number_format($vFinal) }} تومان</td>
+                                            <td>{{ $variety['quantity'] ?? 0 }}</td>
+                                          
+                                        </tr>
+                                    @empty
+                                        {{-- اگر تنوعی نبود، همان ردیف کلی کفایت می‌کند --}}
+                                    @endforelse
+                                @empty
+                                    <tr><td colspan="8">هیچ محصولی موجود نیست.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- صفحه‌بندی --}}
+                <div class="mt-3 d-flex justify-content-center">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item {{ ($pagination['current_page'] ?? 1) <= 1 ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => ($pagination['current_page'] ?? 1) - 1]) }}">قبلی</a>
+                            </li>
+                            @for($i = 1; $i <= ($pagination['last_page'] ?? 1); $i++)
+                                <li class="page-item {{ ($pagination['current_page'] ?? 1) == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+                            <li class="page-item {{ ($pagination['current_page'] ?? 1) >= ($pagination['last_page'] ?? 1) ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => ($pagination['current_page'] ?? 1) + 1]) }}">بعدی</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
         </div>
     </div>
 </x-layouts.app>

@@ -146,4 +146,16 @@ class RequestTicketController extends Controller
 
         return back()->with('error','درخواست رد شد.');
     }
+
+    public function show(RequestTicket $requestTicket)
+{
+ 
+    return view('requests.show', ['ticket' => $requestTicket]);
+}
+
+public function printView(RequestTicket $requestTicket)
+{
+    $this->authorize('view', $requestTicket);
+    return view('requests.print', ['ticket' => $requestTicket]);
+}
 }

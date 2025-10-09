@@ -25,4 +25,11 @@ if ($user->hasRole('Admin')) return true;
 // اجازه حذف تا قبل از تایید نهایی
 return in_array($ticket->status, ['pending','manager_approved']) && $ticket->user_id === $user->id;
 }
+public function view(User $user, RequestTicket $ticket): bool
+{
+    if ($user->hasRole('Admin') || $user->hasAnyRole(['Manager','InternalManager','internalManager'])) {
+        return true;
+    }
+    return $ticket->user_id === $user->id; // صاحب درخواست
+}
 }
