@@ -2981,9 +2981,14 @@
         {
             "name": "morilog/jalali",
             "version": "v3.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/morilog/jalali.git",
+                "reference": "f475f4db7bd540c6abc01126e46824c897ed1e03"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/morilog/jalali/v3.4.2/morilog-jalali-v3.4.2.zip",
+                "url": "https://api.github.com/repos/morilog/jalali/zipball/f475f4db7bd540c6abc01126e46824c897ed1e03",
                 "reference": "f475f4db7bd540c6abc01126e46824c897ed1e03",
                 "shasum": ""
             },
@@ -3004,6 +3009,7 @@
                     "Morilog\\Jalali\\": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3029,6 +3035,12 @@
                 "issues": "https://github.com/morilog/jalali/issues",
                 "source": "https://github.com/morilog/jalali/tree/v3.4.2"
             },
+            "funding": [
+                {
+                    "url": "https://issuehunt.io/r/morilog",
+                    "type": "issuehunt"
+                }
+            ],
             "time": "2024-05-09T08:44:51+00:00"
         },
         {

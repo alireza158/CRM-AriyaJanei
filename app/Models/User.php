@@ -95,4 +95,7 @@ public function isRole($role)
 {
     return $this->role === $role;
 }
+
+public function notes() { return $this->hasMany(CustomerNote::class, 'user_id'); }
+
 }

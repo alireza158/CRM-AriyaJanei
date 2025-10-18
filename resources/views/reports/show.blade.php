@@ -28,6 +28,28 @@
                     <h4 class="text-gray-600 font-semibold">توضیحات:</h4>
                     <p class="text-gray-800 whitespace-pre-line">{{ $report->description }}</p>
                 </div>
+                @php
+   
+    $user = Auth::user();
+@endphp
+
+               @if($user->hasRole('Marketer')) 
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex items-center gap-2">
+        <h4 class="text-gray-600 font-semibold">📞 تماس‌های موفق:</h4>
+        <span class="text-green-600 font-bold text-lg">
+            {{ $report->successful_calls ?? 0 }}
+        </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+        <h4 class="text-gray-600 font-semibold">❌ تماس‌های ناموفق:</h4>
+        <span class="text-red-600 font-bold text-lg">
+            {{ $report->unsuccessful_calls ?? 0 }}
+        </span>
+    </div>
+</div>
+@endif
 
                 <div>
                     <h4 class="text-gray-600 font-semibold">ارسال‌شده در:</h4>

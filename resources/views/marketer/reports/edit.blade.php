@@ -51,7 +51,37 @@
                         >{{ old('description', $report->description) }}</textarea>
                         @error('description')<p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>@enderror
                     </div>
+                    @if($user->hasRole('Marketer'))
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div>
+        <label for="successful_calls" class="block text-sm font-medium text-gray-700 text-right">
+            تعداد تماس‌های موفق
+        </label>
+        <input type="number" name="successful_calls" id="successful_calls"
+               value="{{ old('successful_calls', $report->successful_calls) }}"
+               min="0"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+               dir="rtl">
+        @error('successful_calls')
+            <p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>
+        @enderror
+    </div>
 
+    <div>
+        <label for="unsuccessful_calls" class="block text-sm font-medium text-gray-700 text-right">
+            تعداد تماس‌های ناموفق
+        </label>
+        <input type="number" name="unsuccessful_calls" id="unsuccessful_calls"
+               value="{{ old('unsuccessful_calls', $report->unsuccessful_calls) }}"
+               min="0"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-right"
+               dir="rtl">
+        @error('unsuccessful_calls')
+            <p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>
+        @enderror
+    </div>
+</div>
+@endif
                     <div class="flex justify-start gap-4">
                         <a href="{{ route('marketer.reports.index') }}">
                             <button type="button"

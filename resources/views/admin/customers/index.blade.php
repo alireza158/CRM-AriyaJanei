@@ -124,7 +124,8 @@
                                                                     @else
                                                                         <span class="badge bg-warning text-dark ms-1" style="color: rgb(255, 255, 255) !important;">بازاریاب</span>
                                                                     @endif
-                                                                <small>{{ $note->created_at->format('Y-m-d H:i') }}</small>
+                                                               <small>{{ \Morilog\Jalali\Jalalian::fromDateTime($note->created_at)->format('Y/m/d H:i') }}</small>
+
 
                                                                         <button class="btn btn-sm btn-danger delete-note">
                                                                             <i class="bi bi-trash"></i> حذف</button>

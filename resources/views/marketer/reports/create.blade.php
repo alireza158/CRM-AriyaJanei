@@ -20,7 +20,7 @@
                 <form action="{{ route('marketer.reports.store') }}" enctype="multipart/form-data"
                       method="POST">
                     @csrf
-
+@if($user->hasRole('Marketer'))
                     <div class="mb-4">
                         <label for="title" class="block text-sm font-medium text-gray-700 text-right">عنوان</label>
                         <input type="text" name="title" id="title" value=""
@@ -36,7 +36,7 @@
                                   dir="rtl"></textarea>
                         @error('description')<p class="text-red-500 text-sm mt-1 text-right">{{ $message }}</p>@enderror
                     </div>
-
+@endif
                     <div class="flex justify-start gap-4">
                         <a href="{{ route('marketer.reports.index') }}">
                             <button type="button"

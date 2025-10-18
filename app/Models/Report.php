@@ -21,6 +21,8 @@ class Report extends Model
         'submitted_at',
         'feedback',
         'rating',
+        'successful_calls',
+    'unsuccessful_calls',
     ];
 
     protected $casts = [

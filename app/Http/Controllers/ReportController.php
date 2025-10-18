@@ -138,117 +138,116 @@ class ReportController extends Controller
         return view($view, $authUser->hasRole('Admin') ? compact('user') : []);
     }
 
-    public function store(Request $request, User $user)
-    {
-        $authUser = Auth::user();
+   public function store(Request $request, User $user)
+{
+    $authUser = Auth::user();
 
-        $alreadySubmitted = Report::where('user_id', $authUser->id)
-            ->whereDate('submitted_at', now()->toDateString())
-            ->exists();
+    // بررسی تکرار گزارش روزانه
+    $alreadySubmitted = Report::where('user_id', $authUser->id)
+        ->whereDate('submitted_at', now()->toDateString())
+        ->exists();
 
-        if ($alreadySubmitted) {
-            return redirect()->back()->with('error', 'گزارش کار امروز شما قبلاً ثبت شده است.');
-        }
+    if ($alreadySubmitted) {
+        return redirect()->back()->with('error', 'گزارش کار امروز شما قبلاً ثبت شده است.');
+    }
 
-        $data = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'attachments.*' => 'nullable|file|max:10240', // حداکثر 10MB
-        ]);
+    // اعتبارسنجی داده‌ها
+    $data = $request->validate([
+        'title' => 'nullable|string|max:255',
+        'description' => 'required|string',
+        'attachments.*' => 'nullable|file|max:10240',
+        'successful_calls' => 'nullable|integer|min:0',
+        'unsuccessful_calls' => 'nullable|integer|min:0',
+    ]);
 
-        $userId = $authUser->id;
+    $data['submitted_at'] = now();
+    $data['user_id'] = $authUser->id;
+    $data['status'] = Report::STATUS_SUBMITTED;
 
-        $data['submitted_at'] = now();
-        $data['user_id'] = $authUser->id;
-        $data['status'] = Report::STATUS_SUBMITTED;
+    // ایجاد گزارش
+    $report = Report::create($data);
 
-        $report = Report::create($data);
+    // 📎 ذخیره فایل‌ها (بدون تغییر)
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            if (str_starts_with($file->getMimeType(), 'image/')) {
+                $fileName = 'report_attachments/' . uniqid() . '.jpg';
+                $path = storage_path('app/public/' . $fileName);
 
-        // ذخیره فایل‌ها
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                if (str_starts_with($file->getMimeType(), 'image/')) {
-                    $fileName = 'report_attachments/' . uniqid() . '.jpg';
-                    $path = storage_path('app/public/' . $fileName);
-
-                    if ($file->getMimeType() === 'image/jpeg') {
-                        $image = imagecreatefromjpeg($file->getPathname());
-                    } elseif ($file->getMimeType() === 'image/png') {
-                        $image = imagecreatefrompng($file->getPathname());
-                    } else {
-                        $image = null;
-                    }
-
-                    if ($image) {
-                        $width = imagesx($image);
-                        $height = imagesy($image);
-                        $maxWidth = 1200;
-
-                        if ($width > $maxWidth) {
-                            $ratio = $maxWidth / $width;
-                            $newWidth = $maxWidth;
-                            $newHeight = intval($height * $ratio);
-
-                            $resized = imagecreatetruecolor($newWidth, $newHeight);
-                            imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-                            imagejpeg($resized, $path, 70);
-                            imagedestroy($resized);
-                        } else {
-                            imagejpeg($image, $path, 70);
-                        }
-
-                        imagedestroy($image);
-
-                        $report->attachments()->create([
-                            'file_path' => $fileName,
-                            'type' => 'image/jpeg',
-                        ]);
-                    }
+                if ($file->getMimeType() === 'image/jpeg') {
+                    $image = imagecreatefromjpeg($file->getPathname());
+                } elseif ($file->getMimeType() === 'image/png') {
+                    $image = imagecreatefrompng($file->getPathname());
                 } else {
-                    $path = $file->store('report_attachments', 'public');
+                    $image = null;
+                }
+
+                if ($image) {
+                    $width = imagesx($image);
+                    $height = imagesy($image);
+                    $maxWidth = 1200;
+
+                    if ($width > $maxWidth) {
+                        $ratio = $maxWidth / $width;
+                        $newWidth = $maxWidth;
+                        $newHeight = intval($height * $ratio);
+
+                        $resized = imagecreatetruecolor($newWidth, $newHeight);
+                        imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                        imagejpeg($resized, $path, 70);
+                        imagedestroy($resized);
+                    } else {
+                        imagejpeg($image, $path, 70);
+                    }
+
+                    imagedestroy($image);
 
                     $report->attachments()->create([
-                        'file_path' => $path,
-                        'type' => $file->getMimeType(),
+                        'file_path' => $fileName,
+                        'type' => 'image/jpeg',
                     ]);
                 }
+            } else {
+                $path = $file->store('report_attachments', 'public');
+
+                $report->attachments()->create([
+                    'file_path' => $path,
+                    'type' => $file->getMimeType(),
+                ]);
             }
         }
-
-        activity()
-            ->causedBy($authUser)
-            ->performedOn($report)
-            ->withProperties(['new' => $data])
-            ->log('ارسال گزارش با فایل');
-
-        if ($authUser->hasRole('Marketer')) {
-            $route = 'user.reports.index';
-        } elseif ($authUser->hasRole('Manager')) {
-            $route = 'user.reports.index';
-        } else {
-            $route = 'user.reports.index';
-        }
-
-        $allIds = [];
-        $Ids = User::role(['Admin','Manager'])->pluck('id')->toArray();
-        $allIds = array_merge($allIds, $Ids);
-        $allIds = array_unique($allIds);
-
-        $message = "گزارش کار جدید ثبت شده است.";
-        $title="گزارش کار جدید";
-
-        foreach ($allIds as $id) {
-            Notification::create([
-                'user_id' => $id,
-                'title' => $title,
-                'message' => $message,
-                'seen' => false,
-            ]);
-        }
-
-        return redirect()->route($route, $userId)
-            ->with('success', 'گزارش با موفقیت ثبت شد.');
     }
+
+    // 🧾 لاگ ارسال گزارش شامل تماس‌ها
+    activity()
+        ->causedBy($authUser)
+        ->performedOn($report)
+        ->withProperties([
+            'title' => $data['title'] ?? null,
+           
+            'description' => $data['description'],
+        ])
+        ->log('ارسال گزارش با تماس‌ها و فایل‌ها');
+
+    // مسیر بازگشت بر اساس نقش
+    $route = 'user.reports.index';
+
+    // 🔔 نوتیفیکیشن برای مدیران و ادمین‌ها
+    $managerIds = User::role(['Admin', 'Manager'])->pluck('id')->toArray();
+    $uniqueIds = array_unique($managerIds);
+
+    foreach ($uniqueIds as $id) {
+        Notification::create([
+            'user_id' => $id,
+            'title' => 'گزارش کار جدید',
+            'message' => "گزارش جدیدی ثبت شده است.",
+            'seen' => false,
+        ]);
+    }
+
+    return redirect()->route($route, $authUser->id)
+        ->with('success', 'گزارش با موفقیت ثبت شد.');
+}
 
     public function submit(Report $report)
     {
@@ -341,34 +340,37 @@ class ReportController extends Controller
         return view($view, $authUser->hasRole('Admin') ? compact('report', 'user') : compact('report'));
     }
 
-    public function update(Request $request, Report $report, User $user = null)
-    {
-        $data = $request->validate([
-            'title' => 'nullable|string|max:255',
-            'description' => 'required|string',
-        ]);
+   public function update(Request $request, Report $report, User $user = null)
+{
+    $data = $request->validate([
+        'title' => 'nullable|string|max:255',
+        'description' => 'required|string',
+        'successful_calls' => 'nullable|integer|min:0',
+        'unsuccessful_calls' => 'nullable|integer|min:0',
+    ]);
 
-        $authUser = Auth::user();
+    $authUser = Auth::user();
 
-        if ($authUser->hasRole('Admin')) {
-            $report = Report::where('id', $report->id)->firstOrFail();
-        } elseif ($authUser->hasRole('Manager')) {
-            $report = Report::where('id', $report->id)->firstOrFail();
-        } else {
-            $report = Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();
-        }
-
-        $oldData = $report->getOriginal();
-        $report->update($data);
-
-        activity()
-            ->causedBy($authUser)
-            ->performedOn($report)
-            ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
-            ->log('ویرایش گزارش');
-
-        return redirect()->back()->with('success', 'گزارش با موفقیت ویرایش شد.');
+    if ($authUser->hasRole('Admin')) {
+        $report = Report::where('id', $report->id)->firstOrFail();
+    } elseif ($authUser->hasRole('Manager')) {
+        $report = Report::where('id', $report->id)->firstOrFail();
+    } else {
+        $report = Report::where('user_id', $authUser->id)->where('id', $report->id)->firstOrFail();
     }
+
+    $oldData = $report->getOriginal();
+    $report->update($data);
+
+    activity()
+        ->causedBy($authUser)
+        ->performedOn($report)
+        ->withProperties(['old' => $oldData, 'new' => $report->toArray()])
+        ->log('ویرایش گزارش (با بروزرسانی تماس‌ها)');
+
+    return redirect()->back()->with('success', 'گزارش با موفقیت بروزرسانی شد.');
+}
+
 
     public function destroy(Report $report, User $user = null)
     {

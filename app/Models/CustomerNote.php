@@ -23,7 +23,7 @@ class CustomerNote extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
+public function customers() { return $this->hasMany(Customer::class, 'user_id'); }
 
 public function creator()
 {

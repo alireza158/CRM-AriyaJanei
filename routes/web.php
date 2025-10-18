@@ -490,3 +490,7 @@ Route::resource('requests', RequestTicketController::class)
 Route::patch('requests/{requestTicket}/approve', [RequestTicketController::class, 'approve'])->name('requests.approve');
 Route::patch('requests/{requestTicket}/reject', [RequestTicketController::class, 'reject'])->name('requests.reject');
 Route::get('requests/{requestTicket}/print', [RequestTicketController::class, 'printView'])->name('requests.print');
+
+Route::get('/admin/reports', [App\Http\Controllers\AdminController::class, 'reports'])
+    ->name('admin.reports')
+    ->middleware(['auth', 'role:Admin|Manager']);

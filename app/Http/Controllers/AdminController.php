@@ -6,9 +6,89 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserProduct;
 use App\Models\Product;
-
+use App\Models\Customer;
+use Illuminate\Support\Facades\DB;
+use Morilog\Jalali\Jalalian;
+use App\Models\CustomerNote;
+use App\Models\Report;
+use Carbon\Carbon;
+use Hekmatinasser\Verta\Verta; 
 class AdminController extends Controller
 {
+public function reports(Request $request)
+{
+    // 📊 داده‌های نمودار دایره‌ای
+    $referenceData = Customer::selectRaw('reference_type_id, COUNT(*) as count')
+        ->groupBy('reference_type_id')
+        ->with('referenceType:id,name')
+        ->get()
+        ->map(fn($item) => [
+            'label' => optional($item->referenceType)->name ?? 'نامشخص',
+            'count' => $item->count,
+        ]);
+
+    // 📈 داده‌های نمودار میله‌ای
+    $cityData = Customer::selectRaw('address, COUNT(*) as count')
+        ->whereNotNull('address')
+        ->where('address', '<>', '')
+        ->groupBy('address')
+        ->orderByDesc('count')
+        ->get()
+        ->map(fn($item) => [
+            'city' => $item->address,
+            'count' => $item->count,
+        ]);
+
+    // 📋 جدول بازاریاب‌ها
+    $marketerStats = User::role('Marketer')
+        ->withCount([
+            'customers as customers_count',
+            'notes as notes_count',
+            'reports as reports_count',
+        ])
+        ->get();
+
+$year = (int) $request->input('year', Jalalian::now()->getYear());
+$month = (int) $request->input('month', Jalalian::now()->getMonth());
+$marketerId = $request->input('marketer_id');
+
+// 🧮 به‌دست‌آوردن تعداد روزهای ماه انتخابی
+$daysInMonth = (new Jalalian($year, $month, 1))->getMonthDays();
+
+// ✅ ساخت بازه ماه شمسی و تبدیل به میلادی (بدون fromFormat)
+$startOfMonth = (new Jalalian($year, $month, 1))->toCarbon()->startOfDay();
+$endOfMonth   = (new Jalalian($year, $month, $daysInMonth))->toCarbon()->endOfDay();
+
+
+// ✅ تبدیل به میلادی برای فیلتر دیتابیس
+$startOfMonthGregorian = $startOfMonth->toDateTimeString(); // خروجی Carbon میلادی
+$endOfMonthGregorian = $endOfMonth->toDateTimeString();
+
+$query = Report::query()
+    ->whereBetween('submitted_at', [$startOfMonthGregorian, $endOfMonthGregorian]);
+
+if ($marketerId) {
+    $query->where('user_id', $marketerId);
+}
+
+$reportsByDay = $query
+    ->selectRaw('DATE(submitted_at) as day_date, SUM(successful_calls) as successful, SUM(unsuccessful_calls) as unsuccessful')
+    ->groupBy('day_date')
+    ->orderBy('day_date')
+    ->get()
+    ->map(function ($item) {
+        $v = Verta::instance($item->day_date);
+        return [
+            'date' => $v->format('j F'), // مثل "۱۳ مهر"
+            'successful' => (int) $item->successful,
+            'unsuccessful' => (int) $item->unsuccessful,
+        ];
+    });
+    $marketers = User::role('Marketer')->get();
+
+    return view('admin.reports.dashboard', compact(
+        'referenceData', 'cityData', 'marketerStats', 'marketers', 'reportsByDay', 'month', 'year', 'marketerId'
+    ));}
     // ویرایش محصول
     public function updateProduct(Request $request, Product $product)
     {

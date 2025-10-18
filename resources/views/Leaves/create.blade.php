@@ -15,20 +15,6 @@
                 </div>
             @endif
 
-                @if(Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Manager'))
-                    <div class="mb-4">
-                        <label for="user_id" class="block font-medium text-gray-700">انتخاب کارمند</label>
-                        <select name="user_id" id="user_id" class="mt-1 block w-full border-gray-300 rounded-md">
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('user_id')
-                            <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-                @endif
-
                 <div class="mb-4">
                     <label for="leave_type">نوع مرخصی</label>
                     <select name="leave_type" id="leave_type" class="form-control" required>

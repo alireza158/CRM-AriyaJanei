@@ -272,6 +272,8 @@ document.addEventListener("DOMContentLoaded", function() {
        ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','color'=>'bg-indigo-200','icon'=>'document-text'],
         ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','color'=>'bg-indigo-200','icon'=>'document-text'],
          ['title'=>'محصولات سایت','route'=>'products.index','color'=>'bg-blue-200','icon'=>'users'],
+         ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','color'=>'bg-orange-200','icon'=>'chart-bar'],
+
     ];
 
     $cardsMarketer = [
