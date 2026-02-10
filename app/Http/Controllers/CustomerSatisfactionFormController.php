@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CustomerSatisfactionForm;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,6 +121,23 @@ class CustomerSatisfactionFormController extends Controller
 
         return redirect()->route('customer-satisfaction-forms.index')
             ->with('success', 'فرم رضایت مشتری با موفقیت حذف شد.');
+    }
+
+
+
+    public function markAssignedReferralsSeen(): JsonResponse
+    {
+        $user = Auth::user();
+
+        $updated = CustomerSatisfactionForm::query()
+            ->where('assigned_to_user_id', $user->id)
+            ->whereNull('referral_seen_at')
+            ->update(['referral_seen_at' => now()]);
+
+        return response()->json([
+            'success' => true,
+            'updated' => $updated,
+        ]);
     }
 
     public function submitResult(Request $request, CustomerSatisfactionForm $customerSatisfactionForm)
