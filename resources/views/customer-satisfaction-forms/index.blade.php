@@ -40,7 +40,7 @@
                             <td>{{ $form->id }}</td>
                             <td>{{ \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d') }}</td>
                             <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
-                            <td>{{ $form->customer_full_name }}</td>
+                            <td>{{ $form->customer_name }} {{ $form->customer_family }}</td>
                             <td>
                                 @switch($form->shipping_method)
                                     @case('barbari') باربری @break

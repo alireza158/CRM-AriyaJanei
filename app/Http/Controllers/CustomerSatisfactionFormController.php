@@ -56,33 +56,31 @@ class CustomerSatisfactionFormController extends Controller
         }
 
         $validated = $request->validate([
-            'customers' => ['required', 'array', 'min:1'],
-            'customers.*.submitted_at' => ['required', 'date'],
-            'customers.*.shipment_sent_at_fa' => ['required', 'string'],
-            'customers.*.customer_full_name' => ['required', 'string', 'max:255'],
-            'customers.*.shipping_method' => ['required', 'in:barbari,tipax,rahmati,ghafari,nadi,hozori'],
-            'customers.*.satisfaction_status' => ['required', 'in:satisfied,unsatisfied'],
-            'customers.*.assigned_to_user_id' => ['required', 'integer'],
-            'customers.*.referral_note' => ['nullable', 'string'],
+            'submitted_at' => ['required', 'date'],
+            'shipment_sent_at_fa' => ['required', 'string'],
+            'customer_name' => ['required', 'string', 'max:255'],
+            'customer_family' => ['required', 'string', 'max:255'],
+            'shipping_method' => ['required', 'in:barbari,tipax,rahmati,ghafari,nadi,hozori'],
+            'satisfaction_status' => ['required', 'in:satisfied,unsatisfied'],
+            'assigned_to_user_id' => ['required', 'integer'],
+            'referral_note' => ['nullable', 'string'],
         ]);
 
-        foreach ($validated['customers'] as $formData) {
-            $assignedUser = User::role('customer_review')->findOrFail($formData['assigned_to_user_id']);
+        $assignedUser = User::role('customer_review')->findOrFail($validated['assigned_to_user_id']);
 
-            CustomerSatisfactionForm::create([
-                'submitted_at' => $formData['submitted_at'],
-                'shipment_sent_at' => Verta::parse($formData['shipment_sent_at_fa'])->datetime()->format('Y-m-d'),
-                'customer_name' => trim($formData['customer_full_name']),
-                'customer_family' => null,
-                'shipping_method' => $formData['shipping_method'],
-                'satisfaction_status' => $formData['satisfaction_status'],
-                'assigned_to_user_id' => $assignedUser->id,
-                'created_by_user_id' => $user->id,
-                'referral_note' => $formData['referral_note'] ?? null,
-            ]);
-        }
+        CustomerSatisfactionForm::create([
+            'submitted_at' => $validated['submitted_at'],
+            'shipment_sent_at' => Verta::parse($validated['shipment_sent_at_fa'])->datetime()->format('Y-m-d'),
+            'customer_name' => $validated['customer_name'],
+            'customer_family' => $validated['customer_family'],
+            'shipping_method' => $validated['shipping_method'],
+            'satisfaction_status' => $validated['satisfaction_status'],
+            'assigned_to_user_id' => $assignedUser->id,
+            'created_by_user_id' => $user->id,
+            'referral_note' => $validated['referral_note'] ?? null,
+        ]);
 
-        return redirect()->route('customer-satisfaction-forms.index')->with('success', 'فرم‌های رضایت مشتری با موفقیت ثبت شدند.');
+        return redirect()->route('customer-satisfaction-forms.index')->with('success', 'فرم رضایت مشتری با موفقیت ثبت شد.');
     }
 
     public function show(CustomerSatisfactionForm $customerSatisfactionForm)
