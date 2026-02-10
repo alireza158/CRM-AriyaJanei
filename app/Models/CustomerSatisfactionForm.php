@@ -12,6 +12,7 @@ class CustomerSatisfactionForm extends Model
     protected $fillable = [
         'submitted_at',
         'customer_name',
+        'shipment_sent_at',
         'customer_family',
         'shipping_method',
         'satisfaction_status',
@@ -24,6 +25,7 @@ class CustomerSatisfactionForm extends Model
 
     protected $casts = [
         'submitted_at' => 'date',
+        'shipment_sent_at' => 'date',
         'result_filled_at' => 'datetime',
     ];
 

@@ -9,8 +9,22 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label class="form-label">تاریخ</label>
+                    <label class="form-label">تاریخ ثبت فرم</label>
                     <input type="date" name="submitted_at" class="form-control" value="{{ old('submitted_at', now()->toDateString()) }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">تاریخ ارسال بار (تقویم فارسی)</label>
+                    <input
+                        type="text"
+                        name="shipment_sent_at_fa"
+                        class="form-control"
+                        data-jdp
+                        autocomplete="off"
+                        placeholder="مثال: 1404/11/21"
+                        value="{{ old('shipment_sent_at_fa') }}"
+                        required
+                    >
                 </div>
 
                 <div class="mb-3">
@@ -69,4 +83,10 @@
             </form>
         </div>
     </div>
+
+    <link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
+    <script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
+    <script>
+        jalaliDatepicker.startWatch();
+    </script>
 </x-app-layout>

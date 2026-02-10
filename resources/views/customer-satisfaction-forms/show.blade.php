@@ -16,6 +16,10 @@
                     <td>{{ \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d') }}</td>
                 </tr>
                 <tr>
+                    <th>تاریخ ارسال بار</th>
+                    <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
+                </tr>
+                <tr>
                     <th>نام مشتری</th>
                     <td>{{ $form->customer_name }}</td>
                 </tr>
@@ -75,6 +79,15 @@
             </div>
         @endif
 
-        <a href="{{ route('customer-satisfaction-forms.index') }}" class="btn btn-secondary">بازگشت</a>
+        <div class="d-flex gap-2">
+            @if(auth()->id() === $form->created_by_user_id)
+                <form action="{{ route('customer-satisfaction-forms.destroy', $form) }}" method="POST" onsubmit="return confirm('از حذف این فرم مطمئن هستید؟');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">حذف فرم</button>
+                </form>
+            @endif
+            <a href="{{ route('customer-satisfaction-forms.index') }}" class="btn btn-secondary">بازگشت</a>
+        </div>
     </div>
 </x-app-layout>

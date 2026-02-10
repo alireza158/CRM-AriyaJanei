@@ -543,6 +543,8 @@ Route::middleware(['auth', 'role:customer_review|Admin|internalManager|InternalM
         ->name('customer-satisfaction-forms.store');
     Route::get('customer-satisfaction-forms/{customerSatisfactionForm}', [CustomerSatisfactionFormController::class, 'show'])
         ->name('customer-satisfaction-forms.show');
+    Route::delete('customer-satisfaction-forms/{customerSatisfactionForm}', [CustomerSatisfactionFormController::class, 'destroy'])
+        ->name('customer-satisfaction-forms.destroy');
     Route::patch('customer-satisfaction-forms/{customerSatisfactionForm}/submit-result', [CustomerSatisfactionFormController::class, 'submitResult'])
         ->name('customer-satisfaction-forms.submit-result');
 });

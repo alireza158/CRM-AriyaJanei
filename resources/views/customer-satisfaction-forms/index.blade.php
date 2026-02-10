@@ -7,6 +7,9 @@
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
         @if(auth()->user()->hasRole('customer_review'))
             <div class="mb-4">
@@ -20,7 +23,8 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>تاریخ</th>
+                        <th>تاریخ فرم</th>
+                        <th>تاریخ ارسال بار</th>
                         <th>مشتری</th>
                         <th>روش ارسال</th>
                         <th>رضایت</th>
@@ -35,6 +39,7 @@
                         <tr>
                             <td>{{ $form->id }}</td>
                             <td>{{ \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d') }}</td>
+                            <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
                             <td>{{ $form->customer_name }} {{ $form->customer_family }}</td>
                             <td>
                                 @switch($form->shipping_method)
@@ -56,13 +61,21 @@
                             <td>{{ optional($form->assignedToUser)->name ?? '—' }}</td>
                             <td>{{ optional($form->createdByUser)->name ?? '—' }}</td>
                             <td>{{ $form->result ? 'ثبت شده' : 'ثبت نشده' }}</td>
-                            <td>
+                            <td class="d-flex gap-2">
                                 <a href="{{ route('customer-satisfaction-forms.show', $form) }}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+
+                                @if(auth()->id() === $form->created_by_user_id)
+                                    <form action="{{ route('customer-satisfaction-forms.destroy', $form) }}" method="POST" onsubmit="return confirm('از حذف این فرم مطمئن هستید؟');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center text-muted">فرمی ثبت نشده است.</td>
+                            <td colspan="10" class="text-center text-muted">فرمی ثبت نشده است.</td>
                         </tr>
                     @endforelse
                     </tbody>
