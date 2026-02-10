@@ -21,12 +21,14 @@ class CustomerSatisfactionForm extends Model
         'referral_note',
         'result',
         'result_filled_at',
+        'referral_seen_at',
     ];
 
     protected $casts = [
         'submitted_at' => 'date',
         'shipment_sent_at' => 'date',
         'result_filled_at' => 'datetime',
+        'referral_seen_at' => 'datetime',
     ];
 
     public function assignedToUser()

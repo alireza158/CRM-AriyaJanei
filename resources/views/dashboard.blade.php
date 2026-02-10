@@ -447,7 +447,34 @@ document.querySelectorAll('.task-checkbox').forEach(el => {
     </script>
     @endif
 
-    @if($notifications->count() > 0)
+    
+@if(($newAssignedCustomerSatisfactionFormsCount ?? 0) > 0)
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            title: 'ارجاع جدید فرم رضایت مشتری',
+            text: '{{ $newAssignedCustomerSatisfactionFormsCount }} تا مشتری ارجاع شده در فرم رضایت مشتری',
+            icon: 'info',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: true,
+            confirmButtonText: 'خواندم'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{{ route('customer-satisfaction-forms.mark-assigned-seen') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+            }
+        });
+    });
+</script>
+@endif
+
+@if($notifications->count() > 0)
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let notifications = @json($notifications);

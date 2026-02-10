@@ -547,6 +547,8 @@ Route::middleware(['auth', 'role:customer_review|Admin|internalManager|InternalM
         ->name('customer-satisfaction-forms.destroy');
     Route::patch('customer-satisfaction-forms/{customerSatisfactionForm}/submit-result', [CustomerSatisfactionFormController::class, 'submitResult'])
         ->name('customer-satisfaction-forms.submit-result');
+    Route::post('customer-satisfaction-forms/mark-assigned-seen', [CustomerSatisfactionFormController::class, 'markAssignedReferralsSeen'])
+        ->name('customer-satisfaction-forms.mark-assigned-seen');
 });
 
 Route::post('/embed/order-store', [MarketerOrderController::class, 'embedStore'])
