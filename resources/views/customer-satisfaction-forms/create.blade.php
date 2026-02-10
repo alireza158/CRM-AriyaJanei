@@ -8,13 +8,13 @@
             <form action="{{ route('customer-satisfaction-forms.store') }}" method="POST">
                 @csrf
 
-                <div class="mb-3">
+                <div class="mb-3 hidden">
                     <label class="form-label">تاریخ ثبت فرم</label>
                     <input type="date" name="submitted_at" class="form-control" value="{{ old('submitted_at', now()->toDateString()) }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">تاریخ ارسال بار (تقویم فارسی)</label>
+                    <label class="form-label">تاریخ ارسال بار </label>
                     <input
                         type="text"
                         name="shipment_sent_at_fa"
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">ارجاع به کاربر دارای رول customer_review</label>
+                    <label class="form-label">ارجاع به کاربر </label>
                     <select name="assigned_to_user_id" class="form-select" required>
                         <option value="">انتخاب کنید</option>
                         @foreach($reviewUsers as $reviewUser)

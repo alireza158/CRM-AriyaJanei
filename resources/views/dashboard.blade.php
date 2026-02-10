@@ -273,7 +273,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','color'=>'bg-indigo-200','icon'=>'document-text'],
          ['title'=>'محصولات سایت','route'=>'products.index','color'=>'bg-blue-200','icon'=>'users'],
          ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','color'=>'bg-orange-200','icon'=>'chart-bar'],
-         ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
+                 ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
+        
 
     ];
 
@@ -322,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
           ['title'=>'مدیریت تسک ها','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
-          ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
+         
                       //                  ['title'=>'مدیریت یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
 
