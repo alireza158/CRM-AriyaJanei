@@ -28,13 +28,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">نام مشتری</label>
-                    <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" required>
+                    <label class="form-label">نام و نام خانوادگی مشتری (تکی)</label>
+                    <input
+                        type="text"
+                        name="customer_full_name"
+                        class="form-control"
+                        value="{{ old('customer_full_name') }}"
+                        placeholder="مثال: علی محمدی"
+                    >
+                    <small class="text-muted">اگر فقط یک مشتری دارید، همین فیلد را پر کنید.</small>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">نام خانوادگی مشتری</label>
-                    <input type="text" name="customer_family" class="form-control" value="{{ old('customer_family') }}" required>
+                    <label class="form-label">ورود گروهی مشتریان (شبیه اکسل)</label>
+                    <textarea
+                        name="customers_bulk_input"
+                        class="form-control"
+                        rows="6"
+                        placeholder="هر خط یک مشتری. مثال:\nعلی محمدی\nرضا\tکریمی\nمریم احمدی"
+                    >{{ old('customers_bulk_input') }}</textarea>
+                    <small class="text-muted">
+                        می‌توانید چند ردیف را مستقیم از اکسل Paste کنید. هر خط یک فرم ثبت می‌کند.
+                    </small>
                 </div>
 
                 <div class="mb-3">
