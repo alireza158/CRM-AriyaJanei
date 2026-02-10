@@ -69,11 +69,14 @@ class CustomerSatisfactionFormController extends Controller
         foreach ($validated['customers'] as $formData) {
             $assignedUser = User::role('customer_review')->findOrFail($formData['assigned_to_user_id']);
 
+            $fullName = preg_replace('/\s+/', ' ', trim($formData['customer_full_name']));
+            $nameParts = explode(' ', $fullName, 2);
+
             CustomerSatisfactionForm::create([
                 'submitted_at' => $formData['submitted_at'],
                 'shipment_sent_at' => Verta::parse($formData['shipment_sent_at_fa'])->datetime()->format('Y-m-d'),
-                'customer_name' => trim($formData['customer_full_name']),
-                'customer_family' => null,
+                'customer_name' => $nameParts[0],
+                'customer_family' => $nameParts[1] ?? '',
                 'shipping_method' => $formData['shipping_method'],
                 'satisfaction_status' => $formData['satisfaction_status'],
                 'assigned_to_user_id' => $assignedUser->id,
