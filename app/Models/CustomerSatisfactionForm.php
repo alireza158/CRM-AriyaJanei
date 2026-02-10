@@ -40,4 +40,9 @@ class CustomerSatisfactionForm extends Model
     {
         return $this->belongsTo(User::class, 'created_by_user_id');
     }
+
+    public function getCustomerFullNameAttribute(): string
+    {
+        return trim(($this->customer_name ?? '').' '.($this->customer_family ?? ''));
+    }
 }
