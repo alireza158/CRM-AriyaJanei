@@ -10,27 +10,37 @@ use Illuminate\Support\Facades\Auth;
 class CustomerSatisfactionFormController extends Controller
 {
     public function index()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        if ($user->hasAnyRole(['Admin', 'internalManager', 'InternalManager'])) {
-            $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
-                ->latest()
-                ->paginate(20);
-        } elseif ($user->hasRole('customer_review')) {
-            $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
-                ->where(function ($q) use ($user) {
-                    $q->where('created_by_user_id', $user->id)
-                        ->orWhere('assigned_to_user_id', $user->id);
-                })
-                ->latest()
-                ->paginate(20);
-        } else {
-            abort(403);
-        }
+    $specialUserIds = [21]; // <-- اینجا 3 تا id خاصت رو بگذار
 
-        return view('customer-satisfaction-forms.index', compact('forms'));
+    if (in_array($user->id, $specialUserIds, true)) {
+        $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
+            ->latest()
+            ->paginate(20);
+
+    } elseif ($user->hasAnyRole(['Admin', 'internalManager', 'InternalManager'])) {
+        $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
+            ->latest()
+            ->paginate(20);
+
+    } elseif ($user->hasRole('customer_review')) {
+        $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
+            ->where(function ($q) use ($user) {
+                $q->where('created_by_user_id', $user->id)
+                  ->orWhere('assigned_to_user_id', $user->id);
+            })
+            ->latest()
+            ->paginate(20);
+
+    } else {
+        abort(403);
     }
+
+    return view('customer-satisfaction-forms.index', compact('forms'));
+}
+
 
     public function create()
     {
