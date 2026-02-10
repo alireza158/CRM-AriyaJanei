@@ -6,23 +6,104 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\User;
 use App\Models\ReferenceType;
+use App\Models\Note;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use Morilog\Jalali\Jalalian;
+use App\Models\CustomerNote;
 class CustomerAdminController extends Controller
 {
-    public function index(Request $request)
-    {
-        $search = $request->get('search');
+  
 
-        $customers = Customer::with('marketer')
-            ->when($search, function($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('phone', 'like', "%{$search}%");
-            })
-            ->paginate(15);
+public function index(Request $request)
+{
+    $search = $request->get('search');
+    $sort   = $request->get('sort'); // last_note | null
 
-        return view('admin.customers.index', compact('customers', 'search'));
+    // تاریخ‌ها ممکنه با اعداد فارسی بیان
+    $noteFrom = $this->faToEnDigits($request->get('note_from')); // YYYY/MM/DD
+    $noteTo   = $this->faToEnDigits($request->get('note_to'));   // YYYY/MM/DD
+
+    $fromCarbon = null;
+    $toCarbon   = null;
+
+    try {
+        if ($noteFrom) {
+            $fromCarbon = Jalalian::fromFormat('Y/m/d', $noteFrom)->toCarbon()->startOfDay();
+        }
+        if ($noteTo) {
+            $toCarbon = Jalalian::fromFormat('Y/m/d', $noteTo)->toCarbon()->endOfDay();
+        }
+    } catch (\Throwable $e) {
+        // اگر فرمت غلط بود، بازه اعمال نشه
+        $fromCarbon = null;
+        $toCarbon = null;
     }
+
+    // ساب‌کوئری: آخرین زمان یادداشت هر مشتری
+    $lastNoteSub = CustomerNote::query()
+        ->select('customer_id', DB::raw('MAX(created_at) as last_note_at'))
+        ->groupBy('customer_id');
+
+    $customersQuery = Customer::query()
+        ->with([
+            'marketer',
+            'notes' => fn ($q) => $q->latest(),
+            'invoices',
+            'referenceType',
+        ])
+        ->leftJoinSub($lastNoteSub, 'ln', fn ($join) => $join->on('ln.customer_id', '=', 'customers.id'))
+        ->addSelect('customers.*', 'ln.last_note_at');
+
+    // سرچ
+    $customersQuery->when($search, function ($query, $search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('customers.name', 'like', "%{$search}%")
+              ->orWhere('customers.phone', 'like', "%{$search}%");
+        });
+    });
+
+    // ✅ حالت last_note: فیلتر بازه + مرتب‌سازی
+    if ($sort === 'last_note') {
+
+        // ✅ اینجا کلید حل مشکل است: فیلتر روی last_note_at
+        if ($fromCarbon && $toCarbon) {
+            $customersQuery->whereBetween('ln.last_note_at', [$fromCarbon, $toCarbon]);
+        } elseif ($fromCarbon) {
+            $customersQuery->where('ln.last_note_at', '>=', $fromCarbon);
+        } elseif ($toCarbon) {
+            $customersQuery->where('ln.last_note_at', '<=', $toCarbon);
+        }
+
+        // اگر بازه وارد شده، مشتری‌های بدون یادداشت باید حذف شوند (چون داخل بازه نیستند)
+        if ($fromCarbon || $toCarbon) {
+            $customersQuery->whereNotNull('ln.last_note_at');
+        }
+
+        $customersQuery
+            ->orderByDesc('ln.last_note_at')
+            ->orderByDesc('customers.id');
+
+    } else {
+        $customersQuery->orderByDesc('customers.id');
+    }
+
+    $customers = $customersQuery->paginate(15);
+
+    return view('admin.customers.index', compact('customers', 'search', 'sort'));
+}
+
+private function faToEnDigits(?string $value): ?string
+{
+    if ($value === null) return null;
+
+    $fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٫','٬'];
+    $en = ['0','1','2','3','4','5','6','7','8','9','.',''];
+
+    return str_replace($fa, $en, trim($value));
+}
+
+
 
     public function create()
     {
@@ -47,7 +128,6 @@ class CustomerAdminController extends Controller
 
         $customer = Customer::create($request->all());
 
-        // 📌 لاگ اضافه کردن مشتری
         activity()
             ->performedOn($customer)
             ->causedBy(auth()->user())
@@ -55,7 +135,7 @@ class CustomerAdminController extends Controller
             ->log('ایجاد مشتری جدید');
 
         return redirect()->route('admin.customersAdmin.index')
-                         ->with('success', 'مشتری جدید ثبت شد.');
+            ->with('success', 'مشتری جدید ثبت شد.');
     }
 
     public function edit(Customer $customer)
@@ -89,7 +169,6 @@ class CustomerAdminController extends Controller
             'marketer_changed_at' => $customer->marketer_changed_at,
         ]);
 
-        // 📌 لاگ ویرایش مشتری
         activity()
             ->performedOn($customer)
             ->causedBy(auth()->user())
@@ -106,7 +185,6 @@ class CustomerAdminController extends Controller
 
         $customer->delete();
 
-        // 📌 لاگ حذف مشتری
         activity()
             ->performedOn($customer)
             ->causedBy(auth()->user())

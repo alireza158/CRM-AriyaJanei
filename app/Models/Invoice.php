@@ -15,7 +15,8 @@ class Invoice extends Model
         'user_id',
         'invoice_date',
         'total_amount',
-        'description'
+        'description',
+         'attachment_path', // 👈 این رو اضافه کن
     ];
 
     public function customer()
@@ -30,4 +31,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+    public function attachments()
+{
+    return $this->hasMany(InvoiceAttachment::class);
+}
+
 }

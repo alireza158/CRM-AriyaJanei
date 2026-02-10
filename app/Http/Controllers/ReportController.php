@@ -18,15 +18,31 @@ class ReportController extends Controller
     {
         $this->middleware('role:Admin|Marketer|User|Manager');
     }
+private function allowedReportUserIds(): array
+{
+    $authId = Auth::id();
+
+    // پیشفرض: فقط گزارش‌های خود فرد
+    $ids = [$authId];
+
+    // دسترسی ویژه: کاربر 35 گزارش‌های کاربر 31 رو هم ببینه
+    if ($authId == 35) {
+        $ids[] = 31;
+    }
+
+    return array_values(array_unique($ids));
+}
 
     public function index(User $user)
     {
         $authUser = Auth::user();
         $view = $authUser->hasRole('Marketer') ? 'user.reports.index' : 'user.reports.index';
 
-        $reports = Report::where('user_id', $authUser->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+       $allowedIds = $this->allowedReportUserIds();
+
+$reports = Report::whereIn('user_id', $allowedIds)
+    ->orderBy('created_at', 'desc')
+    ->paginate(15);
 
         activity()
             ->causedBy($authUser)
@@ -36,31 +52,73 @@ class ReportController extends Controller
         return view($view, compact('reports'));
     }
 
-    public function reportsManagment(User $user)
-    {
-        if (Auth::user()->hasRole('Admin')) {
-            $reports = Report::whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
-                ->orderBy('created_at', 'desc')
-                ->paginate(15);
+   public function reportsManagment(User $user)
+{
+    $auth = Auth::user();
+    $yesterday = Carbon::yesterday();
 
-            $view = 'user.reports.reportsManagment';
+    // این IDها کلاً در هیچ لیستی نمایش داده نشوند
+    $excludedUserIds = [17, 43, 42, 32, 1,30,36,26];
 
-            activity()
-                ->causedBy(Auth::user())
-                ->withProperties(['action' => 'view_list'])
-                ->log('مشاهده لیست تمامی گزارش‌ها');
+    // =======================
+    // Admin
+    // =======================
+    if ($auth->hasRole('Admin')) {
 
-            return view($view, compact('reports'));
-        }
+        // کاربرانی که دیروز گزارش submitted/read ثبت نکرده‌اند (به جز excluded ها)
+        $usersWithoutYesterdayReport = User::query()
+            ->whereNotIn('id', $excludedUserIds)
+            ->whereHas('roles', function ($q) {
+                $q->whereIn('name', ['User', 'Marketer', 'Manager']);
+            })
+            ->whereDoesntHave('reports', function ($q) use ($yesterday) {
+                $q->whereDate('submitted_at', $yesterday->toDateString())
+                  ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
+            })
+            ->orderBy('name')
+            ->get();
 
-        $manager = auth()->user();
+        // جدول گزارش‌ها (به جز excluded ها)
+        $reports = Report::query()
+            ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
+            ->whereHas('user', function ($q) use ($excludedUserIds) {
+                $q->whereNotIn('id', $excludedUserIds);
+            })
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
-        $reports = Report::whereHas('user', function ($query) use ($manager) {
-            $query->where('manager_id', $manager->id);
-        })->with('user')->latest()->paginate(15);
-
-        return view('user.reports.reportsManagment', compact('reports'));
+        return view('user.reports.reportsManagment', compact('reports', 'usersWithoutYesterdayReport'));
     }
+
+    // =======================
+    // Manager: فقط کارمندهای خودش
+    // =======================
+    $manager = $auth;
+
+    $usersWithoutYesterdayReport = User::query()
+        ->where('manager_id', $manager->id)
+        ->whereNotIn('id', $excludedUserIds)
+        ->whereDoesntHave('reports', function ($q) use ($yesterday) {
+            $q->whereDate('submitted_at', $yesterday->toDateString())
+              ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
+        })
+        ->orderBy('name')
+        ->get();
+
+    $reports = Report::query()
+        ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
+        ->whereHas('user', function ($q) use ($manager, $excludedUserIds) {
+            $q->where('manager_id', $manager->id)
+              ->whereNotIn('id', $excludedUserIds);
+        })
+        ->with('user')
+        ->latest()
+        ->paginate(15);
+
+    return view('user.reports.reportsManagment', compact('reports', 'usersWithoutYesterdayReport'));
+}
+
 
     public function feedback(Request $request, Report $report)
     {
@@ -113,12 +171,20 @@ class ReportController extends Controller
             ->withProperties(['old' => $oldData, 'new' => $data])
             ->log('ثبت بازخورد برای گزارش');
 
-        Notification::create([
-            'user_id' => $report->user_id,
-            'title'   => "بازخورد جدید",
-            'message' => $report->feedback,
-            'seen'    => false,
-        ]);
+       $reportTitle = $report->title ?? ('گزارش #' . $report->id);
+
+$feedbackText = trim((string) $report->feedback);
+if ($feedbackText === '') {
+    $feedbackText = '— بدون متن بازخورد —';
+}
+
+Notification::create([
+    'user_id' => $report->user_id,
+    'title'   => "بازخورد جدید برای: {$reportTitle}",
+    'message' => "بازخورد ثبت‌شده: {$feedbackText}",
+    'seen'    => false,
+]);
+
 
         return back()->with('success', 'بازخورد و ویس با موفقیت ذخیره شد.');
     }
@@ -147,10 +213,25 @@ class ReportController extends Controller
         ->whereDate('submitted_at', now()->toDateString())
         ->exists();
 
-    if ($alreadySubmitted) {
-        return redirect()->back()->with('error', 'گزارش کار امروز شما قبلاً ثبت شده است.');
+
+    $unlimitedPhone = '099999';
+
+    if ($authUser->phone != $unlimitedPhone) {
+
+        // فقط برای کاربران معمولی محدودیت اعمال شود
+        $reportCount = Report::where('user_id', $authUser->id)
+            ->whereDate('submitted_at', now()->toDateString())
+            ->count();
+
+        // محدودیت تعداد گزارش‌ها در روز (مثال: 1 بار)
+        $maxReportsPerDay = 1;
+
+        if ($reportCount >= $maxReportsPerDay) {
+            return redirect()->back()->with('error', 'امکان ثبت بیش از یک گزارش در روز وجود ندارد.');
+        }
     }
 
+    
     // اعتبارسنجی داده‌ها
     $data = $request->validate([
         'title' => 'nullable|string|max:255',
@@ -281,41 +362,59 @@ class ReportController extends Controller
             ->with('success', 'گزارش ارسال شد.');
     }
 
-    public function show(Report $report, User $user = null)
-    {
-        $authUser = Auth::user();
+   public function show(Report $report, User $user = null)
+{
+    $authUser = Auth::user();
 
-        if ($authUser->hasRole('Admin') || $authUser->hasRole('Manager')) {
-            if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
-                abort(404);
-            }
-
-            if ($report->status === Report::STATUS_SUBMITTED) {
-                $report->markAsRead();
-            }
-
-            activity()
-                ->causedBy($authUser)
-                ->performedOn($report)
-                ->withProperties(['action' => 'view'])
-                ->log('مشاهده گزارش توسط ادمین');
-
-            return view('reports.show', compact('report', 'user'));
+    // =====================
+    // Admin / Manager
+    // =====================
+    if ($authUser->hasRole('Admin') || $authUser->hasRole('Manager')) {
+        if (!in_array($report->status, [Report::STATUS_SUBMITTED, Report::STATUS_READ])) {
+            abort(404);
         }
 
-        if ($authUser->hasRole('Manager')) {
-            $isEmployeeReport = $report->user && $report->user->manager_id == $authUser->id;
-            // می‌توانید در صورت نیاز از $isEmployeeReport استفاده کنید
+        if ($report->status === Report::STATUS_SUBMITTED) {
+            $report->markAsRead();
         }
 
         activity()
             ->causedBy($authUser)
             ->performedOn($report)
             ->withProperties(['action' => 'view'])
-            ->log('مشاهده گزارش');
+            ->log('مشاهده گزارش توسط ادمین/مدیر');
 
-        return view('user.reports.show', compact('report'));
+        return view('reports.show', compact('report', 'user'));
     }
+
+    // =====================
+    // سایر کاربران (از جمله 35)
+    // =====================
+    $allowedIds = $this->allowedReportUserIds();
+
+    if (!in_array($report->user_id, $allowedIds)) {
+        abort(403);
+    }
+
+    // ✅ اگر 35 گزارش‌های 31 رو دید => خوانده شده بزن
+    if ($authUser->id == 35 && $report->user_id == 31) {
+        // فقط گزارش‌های ارسالی/خوانده‌شده قابل مشاهده باشند
+      
+
+        if ($report->status === Report::STATUS_SUBMITTED) {
+            $report->markAsRead();
+        }
+    }
+
+    activity()
+        ->causedBy($authUser)
+        ->performedOn($report)
+        ->withProperties(['action' => 'view'])
+        ->log('مشاهده گزارش');
+
+    return view('user.reports.show', compact('report'));
+}
+
 
     public function edit(Report $report, User $user = null)
     {

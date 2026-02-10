@@ -29,5 +29,10 @@ public function creator()
 {
     return $this->belongsTo(User::class, 'created_by');
 }
+// Note.php
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
 
 }

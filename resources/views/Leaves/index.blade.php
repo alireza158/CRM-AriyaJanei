@@ -18,9 +18,35 @@
         @endif
 
         <a href="{{ route('leaves.create') }}" class="btn btn-primary mb-4">ایجاد مرخصی جدید</a>
+      <div class="card mb-3 shadow-sm">
+    <div class="card-body">
+        <form method="GET" action="{{ route('leaves.export.csv') }}" class="row g-2 align-items-end">
 
+            <div class="col-md-3">
+                <label class="form-label">از تاریخ</label>
+                <input type="text" name="from" class="form-control jalali-datepicker"
+                       value="{{ request('from') }}" placeholder="1404/11/01" required>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">تا تاریخ</label>
+                <input type="text" name="to" class="form-control jalali-datepicker"
+                       value="{{ request('to') }}" placeholder="1404/11/30" required>
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-file-earmark-excel"></i> خروجی CSV
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
         <div class="bg-white shadow-sm rounded-lg p-4 sm:p-6" dir="rtl">
             <div class="overflow-x-auto">
+          
+
                 <table class="table table-bordered table-striped w-full text-center min-w-[700px] sm:min-w-full">
                     <thead>
                         <tr>
@@ -180,3 +206,17 @@
         </div>
     </div>
 </x-app-layout>
+<link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
+
+<script src="{{ asset('lib/jquery.min.js') }}"></script>
+<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    jalaliDatepicker.startWatch({
+        selector: '.jalali-datepicker',
+        time: false,
+        format: 'YYYY/MM/DD'
+    });
+});
+</script>

@@ -36,7 +36,7 @@
 
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -280,11 +280,20 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'مشتریان من','route'=>'marketer.customers.index','color'=>'bg-teal-200','icon'=>'users'],
         // ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-indigo-200','icon'=>'document-text'],
         ['title'=>'فروش (درحال توسعه و تکمیل)','route'=>'dashboard','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+         ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','color'=>'bg-purple-200','icon'=>'user-group'],
         // ['title'=>'فروش (درحال توسعه و تکمیل)','route'=>'marketer.sales.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
        // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+         
     ];
 
-
+ $cardsSales = [
+        ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','color'=>'bg-teal-200','icon'=>'users']
+        // ['title'=>'گزارش‌های من','route'=>'user.reports.index','color'=>'bg-indigo-200','icon'=>'document-text'],
+       
+        // ['title'=>'فروش (درحال توسعه و تکمیل)','route'=>'marketer.sales.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+       // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+         
+    ];
     // روز جاری به تقویم جلالی
     $jDay = \Hekmatinasser\Verta\Verta::now()->day;
     // بازه ۲۸ ام تا ۳ ام ماه بعد (شامل هر دو سر)
@@ -296,6 +305,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>' یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت پیام ها','route'=>'messages.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت درخواست ها','route'=>'requests.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
+
+          ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','color'=>'bg-orange-200','icon'=>'document-text'],
     ];
 
     if ($showEvalCard) {
@@ -365,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function() {
             @endphp
 
             {{-- Render Cards --}}
-            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser, 'Manager'=>$cardsManager] as $role=>$cards)
+            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser, 'Manager'=>$cardsManager,'Sales'=>$cardsSales] as $role=>$cards)
                 @hasrole($role)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8" dir="rtl">
                     @foreach($cards as $card)
@@ -492,4 +503,4 @@ showNextNotification();
 @endif
 
 </x-app-layout>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://lib.arvancloud.ir/limonte-sweetalert2/9.9.0/sweetalert2.all.js"></script>

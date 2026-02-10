@@ -24,7 +24,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">آدرس</label>
-                        <input type="text" name="address" value="{{ old('address', $customer->address) }}" class="form-control" required>
+                        <input type="text" name="address" value="{{ old('address', $customer->address) }}" class="form-control" >
                         @error('address') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
                    

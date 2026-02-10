@@ -16,7 +16,7 @@ class MarketerController extends Controller
 
     public function index()
     {
-        $marketers = User::role('Marketer')->paginate(15);
+        $marketers = User::role('Marketer')->paginate(20);
         return view('admin.marketers.index', compact('marketers'));
     }
 

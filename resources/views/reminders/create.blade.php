@@ -61,7 +61,6 @@
             </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 
     {{-- Flatpickr شمسی --}}
     <script>
@@ -71,6 +70,15 @@
 
 
     </script>
+    <link rel="stylesheet" href="{{ asset('lib/persian-datepicker.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
+
+<script src="{{ asset('lib/jquery.min.js') }}"></script>
+<script src="{{ asset('lib/persian-date.min.js') }}"></script>
+<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
+<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
+<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
     <script>
           $(document).ready(function() {
             flatpickr("#remind_time", {
@@ -85,9 +93,3 @@ jalaliDatepicker.startWatch();
 
     </script>
 </x-app-layout>
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
-<script type="text/javascript" src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

@@ -108,7 +108,10 @@ Route::prefix('admin/customers')->name('admin.customers.')->group(function() {
     Route::patch('notes/{note}', [CustomerNotesController::class, 'update'])->name('notes.update');
     Route::delete('notes/{note}', [CustomerNotesController::class, 'destroy'])->name('notes.destroy');
 });
+Route::prefix('admin/customers')->name('admin.customers.')->group(function() {
+    Route::post('{customer}/notes2', [CustomerNotesController::class, 'store2'])->name('notes.store2');
 
+});
 
 // Marketer
 Route::middleware(['role:Marketer'])->group(function(){
@@ -372,10 +375,7 @@ Route::prefix('admin')->group(function() {
 Route::prefix('admin')->group(function() {
     Route::get('/customersedit/{customer}', [CustomerAdminController::class, 'edit'])
     ->name('admin.customersedit.edit');
-    Route::get('/customersCreate', [CustomerAdminController::class, 'create'])
-    ->name('admin.customersCreate.create');
-    Route::post('/customersCreate', [CustomerAdminController::class, 'store'])
-    ->name('admin.customersCreate.store');
+  
 Route::put('/customersupdate/{customer}', [CustomerAdminController::class, 'update'])
     ->name('admin.customersupdate.update');
     Route::get('/customersdelete/{customer}', [CustomerAdminController::class, 'destroy'])
@@ -385,14 +385,26 @@ Route::put('/customersupdate/{customer}', [CustomerAdminController::class, 'upda
 
 
 });
+  Route::get('/customersCreate', [CustomerAdminController::class, 'create'])
+    ->name('admin.customersCreate.create');
+    Route::post('/customersCreate', [CustomerAdminController::class, 'store'])
+    ->name('admin.customersCreate.store');
 // پنل کاربر
 Route::middleware('auth')->group(function() {
     Route::get('/user/panel', [UserPanelController::class, 'index'])->name('user.panel');
 });
-Route::prefix('admin')->name('admin.')->middleware(['auth','role:Admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     Route::resource('customersAdmin', \App\Http\Controllers\Admin\CustomerAdminController::class);
 });
+Route::prefix('')->name('')->middleware(['auth','role:marketer'])->group(function () {
+    Route::resource('customersAdmin', \App\Http\Controllers\Admin\CustomerAdminController::class);
+});
+Route::delete('/customers/{customer}/invoices/{invoice}', 
+    [InvoiceController::class, 'destroy']
+)->name('marketer.invoices.destroy');
 
+  Route::get('/customersAdmin2', [\App\Http\Controllers\Admin\CustomerAdminController::class, 'index'])
+    ->name('customersAdmin2.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/messages',            [MessageController::class, 'index'])->name('messages.index');
@@ -494,3 +506,146 @@ Route::get('requests/{requestTicket}/print', [RequestTicketController::class, 'p
 Route::get('/admin/reports', [App\Http\Controllers\AdminController::class, 'reports'])
     ->name('admin.reports')
     ->middleware(['auth', 'role:Admin|Manager']);
+use App\Http\Controllers\MarketerOrderController;
+
+
+    Route::get('/marketer/orders/create', [MarketerOrderController::class, 'create'])->name('marketer.orders.create');
+    Route::post('/marketer/orders', [MarketerOrderController::class, 'store'])->name('marketer.orders.store');
+
+// routes/api.php
+// routes/api.php
+Route::get('/products/search', function (Illuminate\Http\Request $request) {
+    $q = $request->q;
+    return \App\Models\Product::where('name', 'like', "%$q%")
+             ->select('id', 'name', 'price')
+             ->limit(10)
+             ->get();
+});
+
+// routes/web.php
+Route::get('/customers/find', [MarketerOrderController::class, 'findCustomer'])
+    ->name('customers.find'); // بدون ->middleware('auth')
+
+
+use App\Models\EmbedToken;
+use Illuminate\Http\Request;
+
+Route::get('/embed/order-create', [MarketerOrderController::class, 'embedCreate'])
+    ->name('marketer.orders.embed');
+
+Route::post('/embed/order-store', [MarketerOrderController::class, 'embedStore'])
+    ->name('marketer.orders.embed.store');
+use App\Http\Controllers\FormController;
+
+Route::view('/contact/success', 'contact_success')->name('contact.success');
+
+// ✅ فرم: visitor فقط عدد باشد
+Route::get('/contact/{visitor}', [FormController::class, 'show'])
+    ->whereNumber('visitor')
+    ->name('contact.form');
+
+// ✅ ارسال فرم
+Route::post('/contact/{visitor}', [FormController::class, 'submit'])
+    ->whereNumber('visitor')
+    ->name('contact.submit');
+
+
+// --- admin ---
+Route::get('/admin/contacts', [FormController::class, 'list'])->name('admin.contacts')-> middleware(['auth','role:Sales']);;
+
+Route::delete('/admin/contacts/{id}', [FormController::class, 'delete'])
+    ->name('contacts.delete');
+
+Route::get('/admin/contacts/export', [FormController::class, 'exportCsv'])
+    ->name('contacts.export');
+
+
+Route::get('/leaves/export/csv', [LeaveController::class, 'exportCsv'])->name('leaves.export.csv');
+
+
+Route::post('/admin/access-code', function (\Illuminate\Http\Request $request) {
+
+    $code = $request->input('code');
+    $codes = config('access_codes');
+
+    if (!isset($codes[$code])) {
+        return back()->withErrors(['code' => 'کد نامعتبر است']);
+    }
+
+    session([
+        'access_code' => $code,
+        'allowed_visitor' => $codes[$code]['visitor_name'],
+    ]);
+
+    return back()->with('success', 'دسترسی فعال شد');
+})->name('admin.access.code');
+
+use App\Http\Controllers\ContactController;
+
+Route::get('/admin/contacts/{contact}/edit', [FormController::class, 'edit'])
+    ->middleware('visitor.access')
+    ->name('contacts.edit');
+
+Route::put('/admin/contacts/{contact}', [FormController::class, 'update'])
+    ->middleware('visitor.access')
+    ->name('contacts.update');
+
+
+    Route::get('c', [FormController::class, 'list2'])->name('c');
+
+Route::delete('/admin/contacts/{id}', [FormController::class, 'delete'])
+    ->name('contacts.delete');
+
+Route::get('/admin/contacts/export', [FormController::class, 'exportCsv'])
+    ->name('contacts.export');
+
+
+
+
+// Draft در CRM
+Route::prefix('crm/orders')->name('crm.orders.')->group(function () {
+    Route::post('/draft', [MarketerOrderController::class, 'saveDraft'])->name('draft.save');
+    Route::get('/{uuid}/edit', [MarketerOrderController::class, 'editDraft'])->name('draft.edit');
+    Route::put('/{uuid}', [MarketerOrderController::class, 'updateDraft'])->name('draft.update');
+    Route::post('/{uuid}/submit', [MarketerOrderController::class, 'submitDraft'])->name('draft.submit');
+});
+
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // ✅ لیست پیش‌نویس‌ها
+    Route::get('/crm/orders/drafts', [MarketerOrderController::class, 'draftIndex'])
+        ->name('crm.orders.draft.index');
+
+    // ✅ گرفتن قفل (وقتی صفحه ادیت باز می‌شود)
+    Route::post('/crm/orders/drafts/{uuid}/lock', [MarketerOrderController::class, 'draftAcquireLock'])
+        ->name('crm.orders.draft.lock');
+
+    // ✅ تمدید قفل (heartbeat)
+    Route::post('/crm/orders/drafts/{uuid}/heartbeat', [MarketerOrderController::class, 'draftHeartbeat'])
+        ->name('crm.orders.draft.heartbeat');
+
+    // ✅ آزاد کردن قفل
+    Route::post('/crm/orders/drafts/{uuid}/unlock', [MarketerOrderController::class, 'draftReleaseLock'])
+        ->name('crm.orders.draft.unlock');
+
+    // ✅ ادیت پیش‌نویس (همان قبلی)
+    Route::get('/crm/orders/drafts/{uuid}/edit', [MarketerOrderController::class, 'editDraft'])
+        ->name('crm.orders.draft.edit');
+});
+// routes/web.php
+Route::get('/marketer/orders/embed/products-excel', [MarketerOrderController::class, 'exportProductsExcel'])
+    ->name('marketer.orders.embed.products.excel');
+// routes/web.php
+Route::get('/marketer/products-excel', [MarketerOrderController::class, 'exportProductsExcel'])
+  ->name('marketer.products.excel');
+  
+use App\Http\Controllers\PublicProductsController;
+
+Route::get('/public/products', [PublicProductsController::class, 'index']);
+Route::get('/public/products/{ariya_id}', [PublicProductsController::class, 'show']);
+
+

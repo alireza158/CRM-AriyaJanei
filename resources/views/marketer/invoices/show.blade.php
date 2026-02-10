@@ -5,9 +5,8 @@
                 فاکتور شماره #{{ $invoice->id }}
             </h2>
             <h3>
-
                 |
-                <a href="{{ route('marketer.invoices.index', $customer) }}" class=" hover:underline">
+                <a href="{{ route('marketer.invoices.index', $invoice->customer) }}" class=" hover:underline">
                     بازگشت به لیست
                 </a>
             </h3>
@@ -16,138 +15,35 @@
 
     <style>
         @media print {
-            body * {
-                visibility: hidden;
-                margin: 0;
-                padding: 0;
-            }
-            .invoice-box, .invoice-box * {
-                visibility: visible;
-            }
-            .invoice-box {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                margin: 0;
-                padding: 20px;
-                box-shadow: none;
-                border: none;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .page-break {
-                page-break-after: always;
-            }
-            body {
-                font-size: 12pt;
-                line-height: 1.5;
-            }
-            table {
-                page-break-inside: auto;
-            }
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
+            body * { visibility: hidden; margin:0; padding:0;}
+            .invoice-box, .invoice-box * { visibility: visible; }
+            .invoice-box { position:absolute; top:0; left:0; width:100%; margin:0; padding:20px; box-shadow:none; border:none; }
+            .no-print { display:none !important; }
+            body { font-size:12pt; line-height:1.5; }
         }
 
-        .invoice-box {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-        }
-
-        .invoice-header {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .invoice-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        .invoice-details {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .total-row {
-            font-weight: bold;
-            background-color: #f5f5f5;
-        }
-
-        .thank-you {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 2px dashed #eee;
-            font-style: italic;
-            color: #555;
-        }
-
-        .print-btn {
-            transition: all 0.3s ease;
-        }
-
-        .print-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        /* RTL specific styles */
-        .rtl-table th,
-        .rtl-table td {
-            text-align: right;
-        }
-
-        .rtl-table th:first-child,
-        .rtl-table td:first-child {
-            text-align: center;
-        }
-
-        .flex-rtl {
-            flex-direction: row-reverse;
-        }
-
-        .text-rtl {
-            text-align: right;
-        }
-
-        .justify-rtl {
-            justify-content: flex-start;
-        }
-
-        .justify-rtl-reverse {
-            justify-content: flex-end;
-        }
+        .invoice-box { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; direction:rtl; text-align:right; }
+        .invoice-header { border-bottom:2px solid #eee; padding-bottom:20px; margin-bottom:30px; }
+        .invoice-title { font-size:24px; font-weight:bold; color:#2c3e50; }
+        .invoice-details { background-color:#f9f9f9; padding:15px; border-radius:5px; margin-bottom:20px; }
+        .thank-you { margin-top:50px; padding-top:20px; border-top:2px dashed #eee; font-style:italic; color:#555; }
+        .print-btn { transition: all 0.3s ease; }
+        .print-btn:hover { transform: translateY(-2px); box-shadow:0 4px 8px rgba(0,0,0,0.1); }
     </style>
 
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-8 rounded-xl shadow-lg invoice-box">
-
-                <div class="flex justify-rtl mb-6 space-x-3 no-print">
+                <div class="flex justify-between mb-6 no-print">
                     <button onclick="window.print()"
-                            class="print-btn bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
+                        class="print-btn bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg">
                         چاپ فاکتور
                     </button>
                 </div>
 
-                <div class="flex flex-rtl justify-between items-center invoice-header">
+                <div class="flex justify-between invoice-header">
                     <div>
                         <h1 class="invoice-title">فاکتور فروش</h1>
-                        <p class="text-gray-600 mt-1">شماره: INV-{{ str_pad($invoice->id, 5, '0', STR_PAD_LEFT) }}</p>
                     </div>
                     <div class="text-rtl">
                         <p class="text-gray-600"><strong>تاریخ:</strong> {{ \Morilog\Jalali\Jalalian::fromDateTime($invoice->invoice_date)->format('Y/m/d') }}</p>
@@ -158,60 +54,87 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div class="invoice-details">
                         <h3 class="font-bold text-lg mb-3 text-blue-600">فروشنده</h3>
-                        <p><strong>نام:</strong> {{ config('app.name') }}</p>
-                        <p><strong>بازاریاب:</strong> {{ \Illuminate\Support\Facades\Auth::user()->name }}</p>
-                        <p><strong>تلفن:</strong> <span dir="ltr">{{ \Illuminate\Support\Facades\Auth::user()->phone }}</span></p>
+                      
+                        <p><strong>بازاریاب:</strong> {{ auth()->user()->name }}</p>
+                        <p><strong>تلفن:</strong> <span dir="ltr">{{ auth()->user()->phone }}</span></p>
                     </div>
 
                     <div class="invoice-details">
                         <h3 class="font-bold text-lg mb-3 text-blue-600">مشتری</h3>
                         <p><strong>نام:</strong> {{ $invoice->customer->name }}</p>
-                        <p><strong>تاریخ خرید:</strong> {{ \Morilog\Jalali\Jalalian::fromDateTime($invoice->created_at)->format('Y/m/d H:i') }}</p>
+                        <p><strong>تاریخ ثبت:</strong> {{ \Morilog\Jalali\Jalalian::fromDateTime($invoice->created_at)->format('Y/m/d H:i') }}</p>
                     </div>
-                </div>
-
-                <div class="mb-8">
-                    <table class="w-full border-collapse rtl-table">
-                        <thead>
-                        <tr class="bg-gray-100 text-rtl">
-                            <th class="border border-gray-300 px-4 py-3">#</th>
-                            <th class="border border-gray-300 px-4 py-3">نام محصول</th>
-                            <th class="border border-gray-300 px-4 py-3">تعداد</th>
-                            <th class="border border-gray-300 px-4 py-3">قیمت واحد (ریال)</th>
-                            <th class="border border-gray-300 px-4 py-3">مبلغ (ریال)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @php $total = 0; @endphp
-                        @foreach($invoice->items as $index => $item)
-                            @php
-                                $subtotal = $item->quantity * $item->unit_price;
-                                $total += $subtotal;
-                            @endphp
-                            <tr class="hover:bg-gray-50">
-                                <td class="border border-gray-300 px-4 py-2">{{ $index+1 }}</td>
-                                <td class="border border-gray-300 px-4 py-2 text-rtl">{{ $item->product->name }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ number_format($item->quantity) }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ number_format($item->unit_price) }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ number_format($subtotal) }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                        <tfoot>
-                        <tr class="total-row">
-                            <td colspan="4" class="text-rtl font-bold px-4 py-3 border border-gray-300">جمع کل:</td>
-                            <td class="font-bold px-4 py-3 border border-gray-300">{{ number_format($total) }} ریال</td>
-                        </tr>
-                        </tfoot>
-                    </table>
                 </div>
 
                 @if($invoice->description)
-                    <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
                         <h4 class="font-semibold text-lg mb-2 text-blue-600">توضیحات:</h4>
-                        <p class="whitespace-pre-wrap text-gray-700 text-rtl">{{ $invoice->description }}</p>
+                        <p class="whitespace-pre-wrap text-gray-700">{{ $invoice->description }}</p>
                     </div>
                 @endif
+
+              @if($invoice->attachments->count())
+    <div class="mb-8 rtl-text no-print">
+        <h3 class="font-bold text-lg mb-3 text-blue-600">پیوست‌های فاکتور</h3>
+
+        @foreach($invoice->attachments as $attachment)
+            @php
+                $path = asset('storage/' . $attachment->path);
+                $ext  = strtolower(pathinfo($attachment->path, PATHINFO_EXTENSION));
+            @endphp
+
+            {{-- Images --}}
+            @if(in_array($ext, ['jpg','jpeg','png','webp','gif']))
+                <img src="{{ $path }}"
+                     alt="پیوست فاکتور {{ $loop->iteration }}"
+                     class="max-h-96 rounded-lg border mb-4">
+
+            {{-- PDF preview --}}
+            @elseif($ext === 'pdf')
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600 mb-2">PDF پیوست {{ $loop->iteration }}</p>
+                    <iframe
+                        src="{{ $path }}"
+                        class="w-full rounded-lg border"
+                        style="height: 600px;"
+                    ></iframe>
+
+                    <a href="{{ $path }}" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">
+                        باز کردن / دانلود PDF
+                    </a>
+                </div>
+
+            {{-- HTML preview --}}
+            @elseif(in_array($ext, ['html','htm']))
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600 mb-2">HTML پیوست {{ $loop->iteration }}</p>
+                    <iframe
+                        src="{{ $path }}"
+                        class="w-full rounded-lg border"
+                        style="height: 600px;"
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+                    ></iframe>
+
+                    <a href="{{ $path }}" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">
+                        باز کردن HTML در تب جدید
+                    </a>
+                </div>
+
+            {{-- Other files --}}
+            @else
+                <div class="mb-3">
+                    <a href="{{ $path }}"
+                       target="_blank"
+                       class="text-blue-600 hover:underline">
+                        دانلود فایل پیوست {{ $loop->iteration }} ({{ $ext }})
+                    </a>
+                </div>
+            @endif
+        @endforeach
+    </div>
+@endif
+
+       
 
                 <div class="thank-you">
                     <p class="text-center text-lg">با تشکر از اعتماد شما</p>

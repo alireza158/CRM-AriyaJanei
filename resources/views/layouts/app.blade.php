@@ -10,7 +10,7 @@
 {{--        <!-- Fonts -->--}}
 {{--        <link rel="preconnect" href="https://fonts.bunny.net">--}}
 {{--        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />--}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/instrument-sans.css') }}">
 
 
@@ -36,6 +36,6 @@
             </main>
         </div>
     </body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
 
 </html>

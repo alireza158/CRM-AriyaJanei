@@ -27,7 +27,7 @@
                         <span class="text-red-600 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
-
+       
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="start_date" class="block font-medium text-gray-700">تاریخ شروع</label>
@@ -81,14 +81,15 @@
 
     </div>
 </x-app-layout>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
-<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/persian-date/dist/persian-date.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+<link rel="stylesheet" href="{{ asset('lib/persian-datepicker.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
 
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{{ asset('lib/jquery.min.js') }}"></script>
+<script src="{{ asset('lib/persian-date.min.js') }}"></script>
+<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
+<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
+<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
 <script>
     $(document).ready(function() {
 
@@ -113,5 +114,3 @@
 
 
 </script>
-<link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
-<script type="text/javascript" src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>

@@ -31,7 +31,7 @@
 
                                     <th scope="col">تلفن</th>
                                     <th scope="col">DISC</th>
-                                    <th scope="col">دسته‌بندی</th>
+                                    <th scope="col">آدرس</th>
                                     <th scope="col">منبع</th>
                                     <th scope="col" style="width:140px">فاکتور</th>
                                     <th scope="col" style="width:160px">یادداشت‌ها</th>
@@ -74,7 +74,7 @@
                                             @endswitch
                                         </td>
 
-                                        <td>{{ $customer->category->name }}</td>
+                                        <td>{{ $customer->address }}</td>
                                         <td>{{ $customer->referenceType->name }}</td>
                                         <td>
                                             <a href="{{ route('marketer.invoices.index', ['customer' => $customer->id]) }}"

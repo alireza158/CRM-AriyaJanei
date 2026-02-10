@@ -6,6 +6,21 @@
             
         </div>
     </x-slot>
+@if(isset($usersWithoutYesterdayReport))
+    <div class="alert alert-info " dir="rtl">
+        <div class="fw-bold mb-2">افرادی که دیروز گزارش ارسال نکرده‌اند:</div>
+
+        @if($usersWithoutYesterdayReport->count())
+            <div class="d-flex flex-wrap gap-2">
+                @foreach($usersWithoutYesterdayReport as $u)
+                    <span class="badge bg-secondary">{{ $u->name }}</span>
+                @endforeach
+            </div>
+        @else
+            <div class="text-success">همه دیروز گزارش ارسال کرده‌اند ✅</div>
+        @endif
+    </div>
+@endif
 
     <div class="py-4">
         <div class="container">

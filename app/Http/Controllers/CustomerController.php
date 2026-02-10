@@ -48,7 +48,7 @@ class CustomerController extends Controller
             });
         }
 
-        $customers = $query->paginate(15)->withQueryString();
+        $customers = $query->paginate(20)->withQueryString();
 
         return view('marketer.customers.index', compact('customers'));
     }

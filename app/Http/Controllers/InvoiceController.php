@@ -4,301 +4,229 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Invoice;
-use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Admin')->only(
-            'indexByMarketer',
-            'createForAdmin',
-            'storeForAdmin',
-            'showByAdmin',
-            'editByAdmin',
-            'updateByAdmin',
-            'destroyByAdmin',
-        );
-        $this->middleware('role:Marketer')->only(
-            'index',
-            'create',
-            'store',
-            'show',
-            'edit',
-            'update',
-            'destroy',
-        );
+        // محدود کردن دسترسی بر اساس نقش
+        $this->middleware('role:Admin')->only([
+            'indexByMarketer', 'createForAdmin', 'storeForAdmin',
+            'showByAdmin', 'editByAdmin', 'updateByAdmin', 'destroyByAdmin'
+        ]);
+
+        $this->middleware('role:Marketer')->only([
+            'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
+        ]);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+    // ================= Helpers =================
+
+    protected function validateInvoice(Request $request): array
+    {
+        return $request->validate([
+            'invoice_date' => 'required|date',
+            'description'  => 'nullable|string',
+            'attachment'   => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+    }
+
+    protected function handleAttachment(Request $request, ?Invoice $invoice = null): ?string
+    {
+        if (! $request->hasFile('attachment')) {
+            return $invoice?->attachment_path;
+        }
+
+        // حذف فایل قبلی
+        if ($invoice && $invoice->attachment_path) {
+            Storage::disk('public')->delete($invoice->attachment_path);
+        }
+
+        return $request->file('attachment')->store('invoices', 'public');
+    }
+
+    // ================= Marketer =================
+
     public function index(Customer $customer)
     {
-        $user = Auth::user();
-//        dd($user);
         $invoices = $customer->invoices()
-            ->with('items.product')
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(15);
-//        $invoices = Invoice::with(['customer', 'items'])
-//            ->where('user_id', $user->id)
-//            ->where('customer_id', $customer->id)
-//            ->orderByDesc('created_at')
-//            ->paginate(15);
 
         return view('marketer.invoices.index', compact('invoices', 'customer'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Customer $customer)
     {
-        $products  = Product::all();
+        $action  = route('marketer.invoices.store', $customer);
+        $invoice = null;
 
-        return view('marketer.invoices.create', compact('customer', 'products'));
+       return view('marketer.invoices.create', compact('customer', 'action', 'invoice'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Customer $customer)
-    {
-        $request->validate([
-//            'customer_id'         => 'required|exists:customers,id',
-            'invoice_date'        => 'required|date',
-            'items'               => 'required|array|min:1',
-            'items.*.product_id'  => 'required|exists:products,id',
-            'items.*.quantity'    => 'required|integer|min:1',
-            'items.*.unit_price'  => 'required|numeric|min:0',
-            'description'         => 'nullable|string',
-        ]);
+{
+    $data = $this->validateInvoice($request);
 
-//        $data = $request->only(['customer_id', 'invoice_date', 'description']);
-        $data = $request->only(['invoice_date', 'description']);
-        $data['user_id'] = Auth::id();
-        $data['customer_id'] = $customer->id;
+    $data['user_id']      = Auth::id();
+    $data['customer_id']  = $customer->id;
+    $data['total_amount'] = 0;
 
-        $items = collect($request->input('items'))->map(function($item) {
-            $item['sub_total'] = $item['quantity'] * $item['unit_price'];
-            return $item;
-        })->toArray();
+    // اگر دیگه attachment_path رو نمی‌خوای، این خط رو حذف کن
+    // $data['attachment_path'] = $this->handleAttachment($request);
 
-        $total = collect($items)->sum('sub_total');
+    $invoice = Invoice::create($data);
 
-        // ذخیره درون تراکنش
-        DB::transaction(function() use ($data, $items, $total) {
-            $invoice = Invoice::create(array_merge($data, [
-                'total_amount' => $total,
-            ]));
-            $invoice->items()->createMany($items);
-        });
+    // ذخیره چند فایل
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('invoices', 'public');
 
-        return redirect()
-            ->route('marketer.invoices.index', $customer)
-            ->with('success', 'فاکتور با موفقیت ثبت شد.');
+            $invoice->attachments()->create([
+                'path' => $path,
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    return redirect()
+        ->route('marketer.invoices.index', $customer)
+        ->with('success', 'فاکتور با موفقیت ثبت شد.');
+}
+
     public function show(Customer $customer, Invoice $invoice)
     {
-        if ($invoice->customer_id !== $customer->id) {
-            abort(404);
-        }
-        $invoice->load(['customer', 'items.product']);
-        return view('marketer.invoices.show', compact( 'customer','invoice'));
+        abort_if($invoice->customer_id !== $customer->id, 404);
+
+        return view('marketer.invoices.show', compact('customer', 'invoice'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Customer $customer, Invoice $invoice)
     {
-        if ($invoice->customer_id !== $customer->id) {
-            abort(404);
-        }
-        $invoice->load('items');
-        $products  = Product::all();
+        abort_if($invoice->customer_id !== $customer->id, 404);
 
-        return view('marketer.invoices.edit', compact('customer','invoice',  'products'));
+        $action = route('marketer.invoices.update', [$customer, $invoice]);
+
+        return view('marketer.invoices.form', compact('customer', 'invoice', 'action'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Customer $customer, Invoice $invoice)
     {
-        $request->validate([
-//            'customer_id'         => 'required|exists:customers,id',
-            'invoice_date'        => 'required|date',
-            'items'               => 'required|array|min:1',
-            'items.*.product_id'  => 'required|exists:products,id',
-            'items.*.quantity'    => 'required|integer|min:1',
-            'items.*.unit_price'  => 'required|numeric|min:0',
-            'description'         => 'nullable|string',
-        ]);
+        abort_if($invoice->customer_id !== $customer->id, 404);
 
-        $data = [
-            'invoice_date'  => $request->invoice_date,
-            'description'   => $request->description,
-            'customer_id'   => $customer->id,
-        ];
+        $data = $this->validateInvoice($request);
 
-        $items = collect($request->input('items'))->map(function($item) {
-            $item['sub_total'] = $item['quantity'] * $item['unit_price'];
-            return $item;
-        })->toArray();
+        $data['attachment_path'] = $this->handleAttachment($request, $invoice);
 
-        $total = collect($items)->sum('sub_total');
-
-        DB::transaction(function() use ($invoice, $data, $items, $total) {
-            $invoice->items()->delete();
-
-            $invoice->update(array_merge($data, [
-                'total_amount' => $total,
-            ]));
-
-            $invoice->items()->createMany($items);
-        });
+        $invoice->update($data);
 
         return redirect()
             ->route('marketer.invoices.index', $customer)
             ->with('success', 'فاکتور با موفقیت بروزرسانی شد.');
     }
+public function destroy(Customer $customer, Invoice $invoice)
+{
+    abort_if($invoice->customer_id !== $customer->id, 404);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Customer $customer, Invoice $invoice)
-    {
-        if ($invoice->customer_id !== $customer->id) {
-            abort(404);
-        }
-        $invoice->delete();
-        return redirect()
-            ->route('marketer.invoices.index', $customer)
-            ->with('success', 'فاکتور با موفقیت حذف شد.');
+    // حذف چند پیوست متصل به فاکتور
+    foreach ($invoice->attachments as $attachment) {
+        Storage::disk('public')->delete($attachment->path);
     }
 
-    // ------------------- بخش مدیریت (Admin) -------------------
+    $invoice->delete();
+
+    return redirect()
+        ->route('marketer.invoices.index', $customer)
+        ->with('success', 'فاکتور با موفقیت حذف شد.');
+}
+
+    // ================= Admin =================
 
     public function indexByMarketer(User $marketer, Customer $customer)
     {
-        $invoices = Invoice::with(['customer', 'items'])
-            ->where('user_id', $marketer->id)
+        $invoices = Invoice::where('user_id', $marketer->id)
             ->where('customer_id', $customer->id)
-            ->orderByDesc('created_at')
+            ->latest()
             ->paginate(15);
 
-        return view('admin.marketers.customers.invoices.index', compact('invoices', 'marketer', 'customer'));
+        return view(
+            'admin.marketers.customers.invoices.index',
+            compact('invoices', 'marketer', 'customer')
+        );
     }
 
     public function createForAdmin(User $marketer, Customer $customer)
     {
-        $products = Product::all();
-        return view('admin.marketers.customers.invoices.create', compact('marketer', 'customer', 'products'));
+        $action  = route('admin.marketers.invoices.store', [$marketer, $customer]);
+        $invoice = null;
+
+        return view(
+            'admin.marketers.customers.invoices.form',
+            compact('marketer', 'customer', 'action', 'invoice')
+        );
     }
 
     public function storeForAdmin(Request $request, User $marketer, Customer $customer)
     {
-        $request->validate([
-            'invoice_date'        => 'required|date',
-            'items'               => 'required|array|min:1',
-            'items.*.product_id'  => 'required|exists:products,id',
-            'items.*.quantity'    => 'required|integer|min:1',
-            'items.*.unit_price'  => 'required|numeric|min:0',
-            'description'         => 'nullable|string',
-        ]);
+        $data = $this->validateInvoice($request);
 
-        $data = [
-            'user_id'        => $marketer->id,
-            'customer_id'    => $customer->id,
-            'invoice_date'   => $request->input('invoice_date'),
-            'description'    => $request->input('description'),
-        ];
+        $data['user_id']      = $marketer->id;
+        $data['customer_id']  = $customer->id;
+        $data['total_amount'] = 0;
 
-        $items = collect($request->input('items'))->map(function($item) {
-            $item['sub_total'] = $item['quantity'] * $item['unit_price'];
-            return $item;
-        })->toArray();
+        $data['attachment_path'] = $this->handleAttachment($request);
 
-        $total = collect($items)->sum('sub_total');
-
-        DB::transaction(function() use ($data, $items, $total) {
-            $invoice = Invoice::create(array_merge($data, [
-                'total_amount' => $total,
-            ]));
-            $invoice->items()->createMany($items);
-        });
+        Invoice::create($data);
 
         return redirect()
-            ->route('admin.marketers.invoices.index', ['marketer' => $marketer->id, 'customer' => $customer->id])
+            ->route('admin.marketers.invoices.index', [$marketer, $customer])
             ->with('success', 'فاکتور با موفقیت ثبت شد.');
     }
 
     public function showByAdmin(User $marketer, Customer $customer, Invoice $invoice)
     {
-        $invoice->load(['customer', 'items.product']);
-        return view('admin.marketers.customers.invoices.show', compact('invoice', 'marketer'));
+        return view(
+            'admin.marketers.customers.invoices.show',
+            compact('invoice', 'marketer', 'customer')
+        );
     }
 
     public function editByAdmin(User $marketer, Customer $customer, Invoice $invoice)
     {
-        $products = Product::all();
-        $invoice->load('items');
-        return view('admin.marketers.customers.invoices.edit', compact('invoice', 'marketer', 'products'));
+        $action = route('admin.marketers.invoices.update', [$marketer, $customer, $invoice]);
+
+        return view(
+            'admin.marketers.customers.invoices.form',
+            compact('marketer', 'customer', 'invoice', 'action')
+        );
     }
 
     public function updateByAdmin(Request $request, User $marketer, Customer $customer, Invoice $invoice)
     {
-        $request->validate([
-            // 'customer_id' => 'required|exists:customers,id',
-            'invoice_date'      => 'required|date',
-            'items'             => 'required|array|min:1',
-            'items.*.product_id'=> 'required|exists:products,id',
-            'items.*.quantity'  => 'required|integer|min:1',
-            'items.*.unit_price'=> 'required|numeric|min:0',
-            'description'       => 'nullable|string',
-        ]);
+        $data = $this->validateInvoice($request);
 
-        $data = [
-            'customer_id'  => $customer->id,
-            'invoice_date' => $request->invoice_date,
-            'description'  => $request->description,
-            ];
+        $data['attachment_path'] = $this->handleAttachment($request, $invoice);
 
-            $items = collect($request->input('items'))->map(function($item) {
-            $item['sub_total'] = $item['quantity'] * $item['unit_price'];
-            return $item;
-        })->toArray();
-
-        $total = collect($items)->sum('sub_total');
-
-        DB::transaction(function() use ($invoice, $data, $items, $total) {
-            $invoice->items()->delete();
-            $invoice->update(array_merge($data, [
-                'total_amount' => $total,
-            ]));
-            $invoice->items()->createMany($items);
-        });
+        $invoice->update($data);
 
         return redirect()
-            ->route('admin.marketers.invoices.index', ['marketer' => $marketer->id, 'customer'=> $customer->id])
+            ->route('admin.marketers.invoices.index', [$marketer, $customer])
             ->with('success', 'فاکتور با موفقیت بروزرسانی شد.');
     }
 
     public function destroyByAdmin(User $marketer, Customer $customer, Invoice $invoice)
     {
+        if ($invoice->attachment_path) {
+            Storage::disk('public')->delete($invoice->attachment_path);
+        }
+
         $invoice->delete();
+
         return redirect()
-            ->route('admin.marketers.invoices.index', ['marketer' => $marketer->id, 'customer'=> $customer->id])
+            ->route('admin.marketers.invoices.index', [$marketer, $customer])
             ->with('success', 'فاکتور با موفقیت حذف شد.');
     }
 }

@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+'ariya' => [
+    'url' => env('ARIYA_API_URL'),
+    'token' => env('ARIYA_API_TOKEN'),
+],
 
 ];

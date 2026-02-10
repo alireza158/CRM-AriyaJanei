@@ -12,9 +12,11 @@
             </h3>
             |
             <h3>
-                <a href="{{ route('marketer.customers.index') }}" class="btn btn-sm btn-dark">
-                    بازگشت به مشتریان
-                </a>
+          <a href="{{ session('customers_previous_url', route('marketer.customers.index')) }}" class="btn btn-sm btn-dark">
+    بازگشت به مشتریان
+</a>
+
+
             </h3>
         </div>
     </x-slot>

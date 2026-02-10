@@ -186,13 +186,17 @@ public function approve(Leave $leave)
 {
     $user = auth()->user();
 
+    
     if ($user->hasRole('Manager') && $leave->status === 'pending' && $leave->manager_id == $user->id) {
         $leave->update(['status' => 'manager_approved', 'manager_id' => $user->id]);
     } elseif (($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved') {
         $leave->update(['status' => 'internal_approved', 'super_manager_id' => $user->id]);
     } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
         $leave->update(['status' => 'final_approved', 'accountant_id' => $user->id]);
-    } else {
+    }else if ($user->hasRole('Admin') && $leave->status === 'pending') {
+         $leave->update(['status' => 'final_approved', 'accountant_id' => $user->id]);
+    }
+     else {
         abort(403, 'شما مجوز تایید این مرخصی را ندارید.');
     }
 
@@ -209,6 +213,8 @@ public function reject(Leave $leave)
         $leave->update(['status' => 'internal_rejected', 'super_manager_id' => $user->id]);
     } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
         $leave->update(['status' => 'accounting_rejected', 'accountant_id' => $user->id]);
+    }else if ($user->hasRole('Admin') && $leave->status === 'pending') {
+          $leave->update(['status' => 'accounting_rejected', 'accountant_id' => $user->id]);
     } else {
         abort(403, 'شما مجوز رد این مرخصی را ندارید.');
     }
@@ -216,7 +222,94 @@ public function reject(Leave $leave)
     return back()->with('error', 'مرخصی رد شد.');
 }
 
+  public function exportCsv(Request $request)
+    {
+        $request->validate([
+            'from' => 'required|string',
+            'to'   => 'required|string',
+        ]);
 
+        // تبدیل تاریخ جلالی به datetime میلادی
+        $from = Verta::parse($request->from)->startDay()->datetime();
+        $to   = Verta::parse($request->to)->endDay()->datetime();
+
+        $user = Auth::user();
+
+        // Query اصلی
+        $query = Leave::query()->with(['user', 'manager']);
+
+        // فیلتر بر اساس نقش‌ها (مثل منطق index شما)
+        if ($user->hasRole('Admin')) {
+            // همه مرخصی‌ها
+        } elseif ($user->hasRole('Manager')) {
+            $query->where('manager_id', $user->id);
+        } elseif ($user->hasRole('Accountant')) {
+            // اگر می‌خواهی محدود کنی اینجا شرط بگذار
+            // مثلا فقط internal_approved:
+            // $query->where('status', 'internal_approved');
+        } elseif ($user->hasRole('User')) {
+            $query->where('user_id', $user->id);
+        } else {
+            abort(403);
+        }
+
+        // فیلتر بازه زمانی
+        // اگر معیار شما created_at است، این خط را به created_at تغییر بده
+        $query->whereBetween('start_date', [$from, $to])->latest();
+
+$fromSafe = str_replace('/', '-', $request->from);
+$toSafe   = str_replace('/', '-', $request->to);
+
+$filename = "leaves_{$fromSafe}_to_{$toSafe}.csv";
+
+
+        return response()->streamDownload(function () use ($query) {
+
+            $out = fopen('php://output', 'w');
+
+            // BOM برای نمایش درست فارسی در Excel
+            fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // سرستون‌ها
+            fputcsv($out, [
+                'ID',
+                'کارمند',
+                'نوع مرخصی',
+                'از تاریخ',
+                'تا تاریخ',
+                'از ساعت',
+                'تا ساعت',
+                'دلیل',
+                'مدیر',
+                'وضعیت',
+                'تاریخ ثبت'
+            ]);
+
+            // خروجی chunk برای دیتا زیاد
+            $query->chunk(500, function ($leaves) use ($out) {
+                foreach ($leaves as $leave) {
+                    fputcsv($out, [
+                        $leave->id,
+                        $leave->user?->name ?? '-',
+                        $leave->leave_type ?? '-',
+                        $leave->start_date ? Verta::instance($leave->start_date)->format('Y/m/d') : '-',
+                        $leave->end_date ? Verta::instance($leave->end_date)->format('Y/m/d') : '-',
+                        $leave->start_time ?? '-',
+                        $leave->end_time ?? '-',
+                        $leave->reason ?? '-',
+                        $leave->manager?->name ?? '-',
+                        $leave->status ?? '-',
+                        $leave->created_at ? Verta::instance($leave->created_at)->format('Y/m/d H:i') : '-',
+                    ]);
+                }
+            });
+
+            fclose($out);
+
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
 
 
 }
