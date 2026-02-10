@@ -273,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
         ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','color'=>'bg-indigo-200','icon'=>'document-text'],
          ['title'=>'محصولات سایت','route'=>'products.index','color'=>'bg-blue-200','icon'=>'users'],
          ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','color'=>'bg-orange-200','icon'=>'chart-bar'],
+         ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
 
     ];
 
@@ -321,9 +322,18 @@ document.addEventListener("DOMContentLoaded", function() {
         // ['title'=>'ثبت مرخصی','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
         ['title'=>'مدیریت مرخصی ها','route'=>'leaves','color'=>'bg-indigo-300','icon'=>'chart-bar'],
           ['title'=>'مدیریت تسک ها','route'=>'admin.tasks.index','color'=>'bg-yellow-200','icon'=>'user-group'],
+          ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
                       //                  ['title'=>'مدیریت یادآور ها','route'=>'reminders.index','color'=>'bg-indigo-300','icon'=>'chart-bar'],
 
 
+    ];
+
+    $cardsCustomerReview = [
+        ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
+    ];
+
+    $cardsInternalManager = [
+        ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','color'=>'bg-green-200','icon'=>'document-text'],
     ];
 
 @endphp
@@ -376,7 +386,7 @@ document.addEventListener("DOMContentLoaded", function() {
             @endphp
 
             {{-- Render Cards --}}
-            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser, 'Manager'=>$cardsManager,'Sales'=>$cardsSales] as $role=>$cards)
+            @foreach(['Admin'=>$cardsAdmin,'Marketer'=>$cardsMarketer,'User'=>$cardsUser, 'Manager'=>$cardsManager,'internalManager'=>$cardsInternalManager,'InternalManager'=>$cardsInternalManager,'Sales'=>$cardsSales,'customer_review'=>$cardsCustomerReview] as $role=>$cards)
                 @hasrole($role)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8" dir="rtl">
                     @foreach($cards as $card)
@@ -436,7 +446,34 @@ document.querySelectorAll('.task-checkbox').forEach(el => {
     </script>
     @endif
 
-    @if($notifications->count() > 0)
+    
+@if(($newAssignedCustomerSatisfactionFormsCount ?? 0) > 0)
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            title: 'ارجاع جدید فرم رضایت مشتری',
+            text: '{{ $newAssignedCustomerSatisfactionFormsCount }} تا مشتری ارجاع شده در فرم رضایت مشتری',
+            icon: 'info',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: true,
+            confirmButtonText: 'خواندم'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{{ route('customer-satisfaction-forms.mark-assigned-seen') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+            }
+        });
+    });
+</script>
+@endif
+
+@if($notifications->count() > 0)
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let notifications = @json($notifications);

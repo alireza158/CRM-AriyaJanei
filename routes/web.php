@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\CustomerSatisfactionFormController;
 
 
 Route::middleware(['auth'])->group(function () {
@@ -533,6 +534,23 @@ use Illuminate\Http\Request;
 Route::get('/embed/order-create', [MarketerOrderController::class, 'embedCreate'])
     ->name('marketer.orders.embed');
 
+Route::middleware(['auth', 'role:customer_review|Admin|internalManager|InternalManager'])->group(function () {
+    Route::get('customer-satisfaction-forms', [CustomerSatisfactionFormController::class, 'index'])
+        ->name('customer-satisfaction-forms.index');
+    Route::get('customer-satisfaction-forms/create', [CustomerSatisfactionFormController::class, 'create'])
+        ->name('customer-satisfaction-forms.create');
+    Route::post('customer-satisfaction-forms', [CustomerSatisfactionFormController::class, 'store'])
+        ->name('customer-satisfaction-forms.store');
+    Route::get('customer-satisfaction-forms/{customerSatisfactionForm}', [CustomerSatisfactionFormController::class, 'show'])
+        ->name('customer-satisfaction-forms.show');
+    Route::delete('customer-satisfaction-forms/{customerSatisfactionForm}', [CustomerSatisfactionFormController::class, 'destroy'])
+        ->name('customer-satisfaction-forms.destroy');
+    Route::patch('customer-satisfaction-forms/{customerSatisfactionForm}/submit-result', [CustomerSatisfactionFormController::class, 'submitResult'])
+        ->name('customer-satisfaction-forms.submit-result');
+    Route::post('customer-satisfaction-forms/mark-assigned-seen', [CustomerSatisfactionFormController::class, 'markAssignedReferralsSeen'])
+        ->name('customer-satisfaction-forms.mark-assigned-seen');
+});
+
 Route::post('/embed/order-store', [MarketerOrderController::class, 'embedStore'])
     ->name('marketer.orders.embed.store');
 use App\Http\Controllers\FormController;
@@ -647,5 +665,4 @@ use App\Http\Controllers\PublicProductsController;
 
 Route::get('/public/products', [PublicProductsController::class, 'index']);
 Route::get('/public/products/{ariya_id}', [PublicProductsController::class, 'show']);
-
 

@@ -42,6 +42,7 @@ class PermissionSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'Admin']);
         $marketer = Role::firstOrCreate(['name' => 'Marketer']);
         $guest = Role::firstOrCreate(['name' => 'Guest']);
+        Role::firstOrCreate(['name' => 'customer_review']);
 
         $admin->syncPermissions($permissions);
 
