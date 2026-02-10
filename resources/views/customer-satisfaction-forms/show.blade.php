@@ -20,12 +20,8 @@
                     <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
                 </tr>
                 <tr>
-                    <th>نام مشتری</th>
-                    <td>{{ $form->customer_name }}</td>
-                </tr>
-                <tr>
-                    <th>نام خانوادگی مشتری</th>
-                    <td>{{ $form->customer_family }}</td>
+                    <th>نام و نام خانوادگی مشتری</th>
+                    <td>{{ $form->customer_full_name }}</td>
                 </tr>
                 <tr>
                     <th>روش ارسال</th>
