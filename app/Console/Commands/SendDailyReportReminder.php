@@ -15,7 +15,7 @@ class SendDailyReportReminder extends Command
 
     public function handle()
     {
-        $excludedUserIds = [17, 43, 42,  1, 30, 36, 26];
+        $excludedUserIds = [17, 43, 42,  1, 30, 36, 26,32];
 
         $today = Carbon::today()->toDateString();
 

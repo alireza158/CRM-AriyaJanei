@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تست سریع: اسکن بارکد و افزودن چند محصول</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f6f7fb;margin:0;padding:18px}
+    .wrap{max-width:980px;margin:0 auto}
+    .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.05);padding:16px}
+    h1{font-size:18px;margin:0 0 10px}
+    .hint{color:#6c757d;font-size:13px;line-height:1.7}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    button{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn-primary{background:#0d6efd;color:#fff}
+    .btn-secondary{background:#6c757d;color:#fff}
+    .btn-danger{background:#dc3545;color:#fff}
+    .btn-light{background:#f1f3f5;color:#111}
+    .scanner{
+      width:100%;
+      min-height:340px;
+      background:#000;
+      border-radius:14px;
+      overflow:hidden;
+      position:relative;
+      margin-top:12px;
+    }
+    .badge{
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#f1f3f5;
+      font-size:13px;
+    }
+    .ok{background:#d1e7dd}
+    .err{background:#f8d7da}
+    .warn{background:#fff3cd}
+    input, select{
+      border:1px solid rgba(0,0,0,.15);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:14px;
+      box-sizing:border-box;
+    }
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .grid2{display:grid;grid-template-columns:1fr 160px;gap:10px}
+    @media (max-width:520px){ .grid2{grid-template-columns:1fr} }
+    table{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:12px}
+    th{font-size:12px;color:#6c757d;text-align:right}
+    td{background:#f8f9fa;border:1px solid rgba(0,0,0,.06);padding:10px;border-left:none;border-right:none}
+    tr td:first-child{border-radius:12px 0 0 12px;border-right:1px solid rgba(0,0,0,.06)}
+    tr td:last-child{border-radius:0 12px 12px 0;border-left:1px solid rgba(0,0,0,.06)}
+    .qty{width:90px}
+    .actions{display:flex;gap:8px;justify-content:flex-start}
+    .smallbtn{padding:8px 10px;border-radius:10px;font-weight:800}
+    .muted{color:#6c757d}
+    .topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div class="right">
+          <h1 style="margin:0">📷 تست سریع: اسکن بارکد و افزودن چند محصول</h1>
+          <span id="status" class="badge">آماده</span>
+        </div>
+        <div class="row">
+          <button id="startBtn" class="btn-primary">شروع اسکن</button>
+          <button id="stopBtn" class="btn-danger" disabled>توقف</button>
+          <button id="clearBtn" class="btn-light" title="پاک کردن لیست">پاک‌سازی لیست</button>
+        </div>
+      </div>
+
+      <div class="hint" style="margin-top:8px">
+        • برای کارکرد دوربین، باید روی <b>HTTPS</b> اجرا شود (یا روی <span class="mono">localhost</span>).<br/>
+        • حالت تست: هر بار اسکن، یک «محصول» با کد بارکد اضافه می‌کند. اگر همان بارکد دوباره اسکن شود، تعدادش +1 می‌شود.
+      </div>
+
+      <div class="scanner" id="scanner"></div>
+
+      <div style="margin-top:14px" class="row">
+        <span class="badge ok">آخرین اسکن:</span>
+        <span id="lastScan" class="badge ok mono">—</span>
+        <span class="badge warn">تعداد اقلام:</span>
+        <span id="itemsCount" class="badge warn mono">0</span>
+      </div>
+
+      <hr style="border:none;border-top:1px solid rgba(0,0,0,.08);margin:14px 0">
+
+      <div class="hint" style="margin-bottom:8px">افزودن دستی (بدون دوربین):</div>
+      <div class="grid2">
+        <input id="manual" placeholder="مثلاً 6261234567890" inputmode="numeric" />
+        <button id="manualBtn" class="btn-secondary">افزودن</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:52px">#</th>
+            <th>کد بارکد (به‌جای محصول)</th>
+            <th style="width:110px">تعداد</th>
+            <th style="width:170px">عملیات</th>
+          </tr>
+        </thead>
+        <tbody id="listBody">
+          <tr><td colspan="4" class="muted" style="background:transparent;border:none;padding:8px 0">هنوز چیزی اضافه نشده…</td></tr>
+        </tbody>
+      </table>
+
+      <div class="hint" style="margin-top:10px">
+        اگر بعداً خواستی این را به سیستم واقعی وصل کنی، داخل تابع <span class="mono">addOrIncrement(code)</span>
+        می‌تونی به‌جای «بارکد به‌عنوان محصول»، از سرور محصول را پیدا کنی و عنوان/قیمت را نمایش بدهی.
+      </div>
+    </div>
+  </div>
+
+  <!-- Quagga2 -->
+  <script src="https://unpkg.com/@ericblade/quagga2/dist/quagga.min.js"></script>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn  = document.getElementById('stopBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusEl = document.getElementById('status');
+    const scannerEl= document.getElementById('scanner');
+    const lastScanEl = document.getElementById('lastScan');
+    const itemsCountEl = document.getElementById('itemsCount');
+    const listBody = document.getElementById('listBody');
+
+    // Map<barcode, {code, qty}>
+    const items = new Map();
+
+    let running = false;
+    let lastCode = null;
+    let lastAt = 0;
+
+    function setStatus(text, kind){
+      statusEl.textContent = text;
+      statusEl.className = 'badge' + (kind ? (' ' + kind) : '');
+    }
+
+    function normalizeBarcode(code){
+      return String(code || '').trim();
+    }
+
+    function render(){
+      const arr = Array.from(items.values());
+      itemsCountEl.textContent = String(arr.reduce((s,x)=>s + (x.qty||0), 0));
+
+      if (!arr.length){
+        listBody.innerHTML = '<tr><td colspan="4" class="muted" style="background:transparent;border:none;padding:8px 0">هنوز چیزی اضافه نشده…</td></tr>';
+        return;
+      }
+
+      listBody.innerHTML = '';
+      arr.forEach((it, idx) => {
+        const tr = document.createElement('tr');
+
+        const tdIdx = document.createElement('td');
+        tdIdx.textContent = String(idx + 1);
+        tr.appendChild(tdIdx);
+
+        const tdCode = document.createElement('td');
+        tdCode.innerHTML = '<span class="mono">' + escapeHtml(it.code) + '</span>';
+        tr.appendChild(tdCode);
+
+        const tdQty = document.createElement('td');
+        const qtyInput = document.createElement('input');
+        qtyInput.className = 'qty';
+        qtyInput.type = 'number';
+        qtyInput.min = '1';
+        qtyInput.value = String(it.qty || 1);
+        qtyInput.addEventListener('input', () => {
+          const v = parseInt(qtyInput.value, 10);
+          it.qty = Number.isFinite(v) && v > 0 ? v : 1;
+          items.set(it.code, it);
+          render();
+        });
+        tdQty.appendChild(qtyInput);
+        tr.appendChild(tdQty);
+
+        const tdAct = document.createElement('td');
+        const act = document.createElement('div');
+        act.className = 'actions';
+
+        const plus = document.createElement('button');
+        plus.className = 'btn-light smallbtn';
+        plus.textContent = '+1';
+        plus.addEventListener('click', () => {
+          it.qty = (it.qty || 0) + 1;
+          items.set(it.code, it);
+          render();
+        });
+
+        const minus = document.createElement('button');
+        minus.className = 'btn-light smallbtn';
+        minus.textContent = '−1';
+        minus.addEventListener('click', () => {
+          it.qty = Math.max((it.qty || 1) - 1, 1);
+          items.set(it.code, it);
+          render();
+        });
+
+        const del = document.createElement('button');
+        del.className = 'btn-danger smallbtn';
+        del.textContent = 'حذف';
+        del.addEventListener('click', () => {
+          items.delete(it.code);
+          render();
+        });
+
+        act.appendChild(plus);
+        act.appendChild(minus);
+        act.appendChild(del);
+        tdAct.appendChild(act);
+        tr.appendChild(tdAct);
+
+        listBody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function addOrIncrement(code){
+      code = normalizeBarcode(code);
+      if (!code) return;
+
+      lastScanEl.textContent = code;
+
+      if (items.has(code)){
+        const it = items.get(code);
+        it.qty = (it.qty || 0) + 1;
+        items.set(code, it);
+      } else {
+        items.set(code, { code, qty: 1 });
+      }
+
+      setStatus('اضافه شد ✅ (اسکن را ادامه بده)', 'ok');
+      render();
+    }
+
+    function start(){
+      if (running) return;
+      running = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      setStatus('در حال شروع دوربین...', '');
+
+      Quagga.init({
+        inputStream: {
+          type: "LiveStream",
+          target: scannerEl,
+          constraints: { facingMode: "environment" }
+        },
+        locate: true,
+        decoder: {
+          readers: [
+            "ean_reader",
+            "ean_8_reader",
+            "code_128_reader",
+            "code_39_reader",
+            "upc_reader",
+            "upc_e_reader"
+          ]
+        }
+      }, function(err){
+        if (err){
+          console.error(err);
+          setStatus('خطا در دوربین ❌ (Permission/HTTPS)', 'err');
+          running = false;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          return;
+        }
+
+        Quagga.start();
+        setStatus('در حال اسکن... (هر بارکد = اضافه شدن/افزایش تعداد)', '');
+
+        Quagga.onDetected((result) => {
+          const code = result && result.codeResult && result.codeResult.code;
+          if (!code) return;
+
+          // جلوگیری از تکرار پشت‌سرهم
+          const now = Date.now();
+          if (code === lastCode && (now - lastAt) < 1200) return;
+          lastCode = code;
+          lastAt = now;
+
+          // ادامه اسکن (Stop نمی‌کنیم)
+          addOrIncrement(code);
+        });
+      });
+    }
+
+    function stop(){
+      if (!running) return;
+      running = false;
+
+      try { Quagga.offDetected(); } catch(e){}
+      try { Quagga.stop(); } catch(e){}
+
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      setStatus('متوقف شد', '');
+    }
+
+    startBtn.addEventListener('click', () => start());
+    stopBtn.addEventListener('click', () => stop());
+
+    clearBtn.addEventListener('click', () => {
+      items.clear();
+      lastScanEl.textContent = '—';
+      render();
+      setStatus('لیست پاک شد', 'warn');
+    });
+
+    document.getElementById('manualBtn').addEventListener('click', () => {
+      const v = (document.getElementById('manual').value || '').trim();
+      if (!v) { setStatus('یک بارکد وارد کن', 'err'); return; }
+      addOrIncrement(v);
+    });
+
+    // init render
+    render();
+  </script>
+</body>
+</html>

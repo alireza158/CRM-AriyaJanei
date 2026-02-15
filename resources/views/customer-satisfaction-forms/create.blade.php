@@ -20,22 +20,19 @@
             <form action="{{ route('customer-satisfaction-forms.store') }}" method="POST" id="customer-satisfaction-form">
                 @csrf
 
-<<<<<<< HEAD
-                <div class="mb-3 hidden">
-=======
                 <div id="customers-container" class="d-flex flex-column gap-3">
                     @foreach($oldCustomers as $index => $customer)
                         <details class="border rounded p-3 customer-card" @if($index === 0) open @endif>
                             <summary class="fw-bold cursor-pointer">مشتری {{ $index + 1 }}</summary>
 
                             <div class="mt-3">
-                                <div class="mb-3">
+                                <div class="mb-3 hidden">
                                     <label class="form-label">تاریخ ثبت فرم</label>
                                     <input type="date" name="customers[{{ $index }}][submitted_at]" class="form-control" value="{{ $customer['submitted_at'] ?? now()->toDateString() }}" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">تاریخ ارسال بار (تقویم فارسی)</label>
+                                    <label class="form-label">تاریخ ارسال بار </label>
                                     <input
                                         type="text"
                                         name="customers[{{ $index }}][shipment_sent_at_fa]"
@@ -76,7 +73,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">ارجاع به کاربر دارای رول customer_review</label>
+                                    <label class="form-label">ارجاع به کاربر </label>
                                     <select name="customers[{{ $index }}][assigned_to_user_id]" class="form-select" required>
                                         <option value="">انتخاب کنید</option>
                                         @foreach($reviewUsers as $reviewUser)
@@ -114,7 +111,6 @@
 
             <div class="mt-3">
                 <div class="mb-3">
->>>>>>> a6c85cf5404570ff92106850640942ea49c534f7
                     <label class="form-label">تاریخ ثبت فرم</label>
                     <input type="date" name="customers[__INDEX__][submitted_at]" class="form-control" value="{{ now()->toDateString() }}" required>
                 </div>
@@ -160,13 +156,8 @@
                 </div>
 
                 <div class="mb-3">
-<<<<<<< HEAD
                     <label class="form-label">ارجاع به کاربر </label>
-                    <select name="assigned_to_user_id" class="form-select" required>
-=======
-                    <label class="form-label">ارجاع به کاربر دارای رول customer_review</label>
                     <select name="customers[__INDEX__][assigned_to_user_id]" class="form-select" required>
->>>>>>> a6c85cf5404570ff92106850640942ea49c534f7
                         <option value="">انتخاب کنید</option>
                         @foreach($reviewUsers as $reviewUser)
                             <option value="{{ $reviewUser->id }}">{{ $reviewUser->name }}</option>
