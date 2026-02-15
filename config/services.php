@@ -39,4 +39,8 @@ return [
     'token' => env('ARIYA_API_TOKEN'),
 ],
 
+'external_sync' => [
+    'token' => env('EXTERNAL_SYNC_TOKEN'),
+],
+
 ];

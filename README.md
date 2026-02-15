@@ -106,3 +106,18 @@ php artisan migrate --seed
 ## 🏷️ نسخه
 
 **v1.0.0** – اولین نسخه لاراولی سیستم CRM
+
+## 🔄 API همگام‌سازی کاربران برای پروژه دوم
+
+برای دریافت کاربران همراه با نقش‌ها و **hash پسورد** (قابل استفاده در یک پروژه Laravel دیگر)، این endpoint اضافه شده است:
+
+- `GET /api/external/users`
+- Header: `Authorization: Bearer {EXTERNAL_SYNC_TOKEN}`
+
+پارامترهای اختیاری:
+- `updated_since` (فرمت تاریخ)
+- `per_page` (بین 1 تا 500)
+
+نمونه پاسخ شامل `name`، `phone`، `password_hash`، `roles` و زمان‌های ایجاد/ویرایش کاربر است.
+
+> مقدار `EXTERNAL_SYNC_TOKEN` را در فایل `.env` تنظیم کنید.
