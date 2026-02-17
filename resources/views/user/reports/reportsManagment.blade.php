@@ -7,7 +7,7 @@
         </div>
     </x-slot>
 @if(isset($usersWithoutYesterdayReport))
-    <div class="alert alert-info " dir="rtl">
+    <div class="alert alert-info card-soft mb-3" dir="rtl">
         <div class="fw-bold mb-2">افرادی که دیروز گزارش ارسال نکرده‌اند:</div>
 
         @if($usersWithoutYesterdayReport->count())
@@ -22,9 +22,9 @@
     </div>
 @endif
 
-    <div class="py-4">
+    <div class="py-4 dash-wrap">
         <div class="container">
-            <div class="card shadow-sm border-0" dir="rtl">
+            <div class="card card-soft shadow-sm border-0 bg-white" dir="rtl">
                 <div class="card-body">
 
                     {{-- پیام‌ها --}}
@@ -40,10 +40,10 @@
 
                     {{-- جدول --}}
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle text-center">
-                            <thead class="table-light">
-<tr>
-    <th>#</th>
+                        <table class="table table-bordered table-striped align-middle text-center bg-white">
+                            <thead>
+<tr class="text-dark">
+    <th class="fw-semibold">#</th>
     <th>نویسنده</th> {{-- اضافه شد --}}
     <th>عنوان</th>
     <th>توضیحات</th>
