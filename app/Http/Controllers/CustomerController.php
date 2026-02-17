@@ -6,9 +6,13 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\ReferenceType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -16,7 +20,7 @@ class CustomerController extends Controller
     {
         $this->middleware('role:Admin')->only(['allNotes', 'marketers', 'customersOfMarketer']);
         $this->middleware('role:Admin|Marketer')->only([
-            'index', 'create', 'store', 'show', 'edit', 'update', 'destroy'
+            'index', 'create', 'store', 'show', 'edit', 'update', 'destroy', 'exportExcel'
         ]);
     }
 
@@ -51,6 +55,85 @@ class CustomerController extends Controller
         $customers = $query->paginate(20)->withQueryString();
 
         return view('marketer.customers.index', compact('customers'));
+    }
+
+    public function exportExcel(Request $request, $marketerId = null)
+    {
+        if (Auth::user()->hasRole('Admin') && $marketerId) {
+            $marketer = User::findOrFail($marketerId);
+            $customers = Customer::with(['category', 'referenceType', 'marketer', 'notes.author'])
+                ->where('user_id', $marketer->id)
+                ->get();
+            $filename = 'customers-' . $marketer->id . '-' . now()->format('Ymd-His') . '.xlsx';
+        } else {
+            $customers = Customer::with(['category', 'referenceType', 'marketer', 'notes.author'])
+                ->where('user_id', Auth::id())
+                ->get();
+            $filename = 'customers-' . Auth::id() . '-' . now()->format('Ymd-His') . '.xlsx';
+        }
+
+        $rows = $customers->map(function ($customer) {
+            $notes = $customer->notes
+                ->sortBy('created_at')
+                ->map(function ($note, $index) {
+                    $createdAt = $note->created_at instanceof Carbon
+                        ? $note->created_at->format('Y-m-d H:i')
+                        : '-';
+
+                    return sprintf(
+                        '%d) [%s] %s: %s',
+                        $index + 1,
+                        $createdAt,
+                        $note->author->name ?? 'نامشخص',
+                        trim(($note->title ? $note->title . ' - ' : '') . ($note->content ?? ''))
+                    );
+                })
+                ->implode("\n");
+
+            return [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'phone' => $customer->phone,
+                'disc' => $customer->DISC,
+                'address' => $customer->address,
+                'category' => $customer->category->name ?? '-',
+                'reference_type' => $customer->referenceType->name ?? '-',
+                'marketer' => $customer->marketer->name ?? '-',
+                'created_at' => optional($customer->created_at)->format('Y-m-d H:i'),
+                'updated_at' => optional($customer->updated_at)->format('Y-m-d H:i'),
+                'notes' => $notes,
+            ];
+        })->toArray();
+
+        $export = new class($rows) implements FromArray, WithHeadings {
+            public function __construct(private array $rows)
+            {
+            }
+
+            public function array(): array
+            {
+                return $this->rows;
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'شناسه مشتری',
+                    'نام مشتری',
+                    'تلفن',
+                    'DISC',
+                    'آدرس',
+                    'دسته‌بندی',
+                    'منبع آشنایی',
+                    'نام بازاریاب',
+                    'تاریخ ایجاد',
+                    'تاریخ آخرین ویرایش',
+                    'یادداشت‌ها',
+                ];
+            }
+        };
+
+        return Excel::download($export, $filename);
     }
 
     public function create($marketerId = null)
