@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" data-bs-theme="dark">
+<html lang="fa" dir="rtl" data-bs-theme="light">
 
 <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
     <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
@@ -48,6 +48,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <head>
+<script>
+    (function () {
+        const storedTheme = localStorage.getItem('theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = storedTheme || systemTheme;
+
+        document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+</script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -66,6 +76,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <style>
     :root {
+        --surface: #ffffff;
+        --border: rgba(15,23,42,.08);
+        --text: #0f172a;
+        --muted: #64748b;
+        --hover-bg: rgba(15,23,42,.06);
+        --input-bg: #ffffff;
+        --input-border: rgba(15,23,42,.16);
+        --table-striped: rgba(15,23,42,.03);
+        --dash-bg: #f6f7fb;
+    }
+
+    [data-bs-theme="dark"] {
         --surface: rgba(255,255,255,.04);
         --border: rgba(148,163,184,.18);
         --text: #e2e8f0;
@@ -74,18 +96,18 @@ document.addEventListener("DOMContentLoaded", function() {
         --input-bg: rgba(15,23,42,.45);
         --input-border: rgba(148,163,184,.28);
         --table-striped: rgba(148,163,184,.08);
+        --dash-bg: #0b1220;
     }
 
     html, body, .min-h-screen, #global-loader {
-        background-color: #0b1220 !important;
+        background-color: var(--dash-bg) !important;
         color: var(--text);
     }
 
     #global-loader { transition: opacity .3s ease; }
 
-
     .dash-wrap {
-        background: linear-gradient(180deg, #0b1220 0%, #0f172a 50%, #0b1220 100%);
+        background: linear-gradient(180deg, var(--dash-bg) 0%, var(--surface) 50%, var(--dash-bg) 100%);
     }
 
     .card-soft {
@@ -96,8 +118,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     .card-soft:hover {
-        box-shadow: 0 12px 30px rgba(0,0,0,.35);
+        box-shadow: 0 12px 30px rgba(0,0,0,.12);
         transform: translateY(-1px);
+    }
+
+    [data-bs-theme="dark"] .card-soft:hover {
+        box-shadow: 0 12px 30px rgba(0,0,0,.35);
     }
 
     .bg-white, .bg-light, .bg-gray-50, .bg-gray-100, .bg-gray-200, .card, .modal-content, .offcanvas {
@@ -138,7 +164,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     .form-control::placeholder, textarea::placeholder, input::placeholder { color: var(--muted) !important; }
-    .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
+
+    [data-bs-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
 </style>
 
 </head>
@@ -254,5 +281,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const switchers = document.querySelectorAll('[data-theme-switcher]');
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+
+    const syncSwitchers = (theme) => {
+        switchers.forEach((switcher) => {
+            switcher.value = theme;
+        });
+    };
+
+    syncSwitchers(currentTheme);
+
+    switchers.forEach((switcher) => {
+        switcher.addEventListener('change', function (event) {
+            const selectedTheme = event.target.value;
+
+            document.documentElement.setAttribute('data-bs-theme', selectedTheme);
+            localStorage.setItem('theme', selectedTheme);
+            syncSwitchers(selectedTheme);
+        });
+    });
+});
+
     </script>
 </html>
