@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Morilog\Jalali\Jalalian;
 use App\Models\CustomerNote;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Facades\Excel;
 class CustomerAdminController extends Controller
 {
   
@@ -105,7 +109,70 @@ private function faToEnDigits(?string $value): ?string
 
 
 
-    public function create()
+    
+public function exportExcelAllCustomers()
+{
+    $customers = Customer::with(['marketer', 'referenceType', 'notes.author'])->orderByDesc('id')->get();
+
+    $rows = $customers->map(function ($customer) {
+        $notes = $customer->notes
+            ->sortBy('created_at')
+            ->map(function ($note, $index) {
+                $createdAt = $note->created_at instanceof Carbon
+                    ? $note->created_at->format('Y-m-d H:i')
+                    : '-';
+
+                $noteText = trim(($note->title ? $note->title . ' - ' : '') . ($note->content ?? ''));
+
+                return sprintf('%d) [%s] %s: %s', $index + 1, $createdAt, $note->author->name ?? 'نامشخص', $noteText);
+            })
+            ->implode("\n");
+
+        return [
+            $customer->id,
+            $customer->name,
+            $customer->phone,
+            $customer->address,
+            $customer->referenceType?->name ?? '-',
+            $customer->marketer?->name ?? '-',
+            optional($customer->created_at)->format('Y-m-d H:i'),
+            optional($customer->updated_at)->format('Y-m-d H:i'),
+            $notes,
+        ];
+    })->toArray();
+
+    $export = new class($rows) implements FromArray, WithHeadings {
+        public function __construct(private array $rows)
+        {
+        }
+
+        public function array(): array
+        {
+            return $this->rows;
+        }
+
+        public function headings(): array
+        {
+            return [
+                'شناسه مشتری',
+                'نام مشتری',
+                'تلفن',
+                'آدرس',
+                'نحوه آشنایی',
+                'نام بازاریاب',
+                'تاریخ ایجاد',
+                'تاریخ آخرین ویرایش',
+                'یادداشت‌ها',
+            ];
+        }
+    };
+
+    $filename = 'all-customers-' . now()->format('Ymd-His') . '.xlsx';
+
+    return Excel::download($export, $filename);
+}
+
+public function create()
     {
         $marketers = User::role('Marketer')->get();
         $refrenses = ReferenceType::get();

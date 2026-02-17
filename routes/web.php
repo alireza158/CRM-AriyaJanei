@@ -399,6 +399,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/user/panel', [UserPanelController::class, 'index'])->name('user.panel');
 });
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('customersAdmin/export/excel', [\App\Http\Controllers\Admin\CustomerAdminController::class, 'exportExcelAllCustomers'])
+        ->name('customersAdmin.export.excel');
     Route::resource('customersAdmin', \App\Http\Controllers\Admin\CustomerAdminController::class);
 });
 Route::prefix('')->name('')->middleware(['auth','role:marketer'])->group(function () {
