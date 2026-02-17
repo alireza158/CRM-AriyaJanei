@@ -56,6 +56,11 @@
 
         --scroll-thumb: rgba(0,0,0,.15);
         --progress-bg: rgba(2,6,23,.08);
+
+        --input-bg: #ffffff;
+        --input-border: rgba(15,23,42,.16);
+        --table-striped: rgba(15,23,42,.03);
+        --hover-bg: rgba(15,23,42,.04);
     }
 
     /* Dark tokens (Bootstrap 5.3 theme attribute) */
@@ -74,6 +79,25 @@
 
         --scroll-thumb: rgba(255,255,255,.16);
         --progress-bg: rgba(255,255,255,.10);
+
+        --input-bg: rgba(15,23,42,.45);
+        --input-border: rgba(148,163,184,.28);
+        --table-striped: rgba(148,163,184,.08);
+        --hover-bg: rgba(148,163,184,.10);
+    }
+
+    html,
+    body {
+        background-color: var(--dash-bg-from);
+        color: var(--text);
+    }
+
+    [data-bs-theme="dark"] body,
+    [data-bs-theme="dark"] .bg-gray-100,
+    [data-bs-theme="dark"] .bg-light,
+    [data-bs-theme="dark"] .bg-white {
+        background-color: var(--surface) !important;
+        color: var(--text) !important;
     }
 
     .dash-wrap {
@@ -94,21 +118,99 @@
     .icon { width: 22px; height: 22px; }
     .icon-wrap { width: 44px; height: 44px; border-radius: 14px; display:flex; align-items:center; justify-content:center; }
 
-    /* فقط داخل داشبورد: bg-white / text-dark / text-muted را با توکن‌ها هماهنگ کن */
-    .dash-wrap .bg-white { background-color: var(--surface) !important; }
-    .dash-wrap .text-dark { color: var(--text) !important; }
-    .dash-wrap .text-muted { color: var(--muted) !important; }
-    .dash-wrap .border-bottom { border-bottom-color: var(--border) !important; }
+    /* هماهنگ‌سازی عمومی رنگ‌ها با توکن‌ها */
+    .bg-white { background-color: var(--surface) !important; }
+    .text-dark,
+    .link-dark { color: var(--text) !important; }
+    .text-muted { color: var(--muted) !important; }
+    .border,
+    .border-bottom,
+    .border-top,
+    .border-start,
+    .border-end { border-color: var(--border) !important; }
 
     /* لیست‌ها */
-    .dash-wrap .list-group-item {
+    .list-group-item,
+    .dropdown-menu,
+    .dropdown-item {
         background: transparent;
         color: var(--text);
         border-color: var(--border);
     }
 
+    .dropdown-item:hover,
+    .dropdown-item:focus,
+    .list-group-item:hover {
+        background: var(--hover-bg);
+        color: var(--text);
+    }
+
+    .table,
+    .table > :not(caption) > * > * {
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: var(--table-striped);
+        color: var(--text);
+    }
+
     /* Progress */
-    .dash-wrap .progress { background-color: var(--progress-bg); }
+    .progress { background-color: var(--progress-bg); }
+
+    .form-control,
+    .form-select,
+    .input-group-text,
+    textarea,
+    input {
+        background-color: var(--input-bg) !important;
+        color: var(--text) !important;
+        border-color: var(--input-border) !important;
+    }
+
+    .form-control::placeholder,
+    .form-select::placeholder,
+    textarea::placeholder,
+    input::placeholder {
+        color: var(--muted) !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus,
+    textarea:focus,
+    input:focus {
+        box-shadow: 0 0 0 .2rem rgba(59,130,246,.20) !important;
+        border-color: rgba(59,130,246,.55) !important;
+    }
+
+    .navbar,
+    .nav,
+    .offcanvas,
+    .accordion-item,
+    .accordion-button,
+    .alert {
+        border-color: var(--border) !important;
+    }
+
+    .accordion-button,
+    .offcanvas,
+    .modal-content {
+        background-color: var(--surface);
+        color: var(--text);
+    }
+
+    .pagination .page-link {
+        background-color: var(--surface);
+        color: var(--text);
+        border-color: var(--border);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+        color: #fff;
+    }
 
     /* Scrollbar */
     .soft-scroll::-webkit-scrollbar{ width: 8px; }
@@ -133,6 +235,7 @@
     [data-bs-theme="dark"] .modal-content { background: #0f172a; color: var(--text); border: 1px solid var(--border); }
     [data-bs-theme="dark"] .modal-header { border-bottom-color: var(--border); }
     [data-bs-theme="dark"] .modal-footer { border-top-color: var(--border); }
+    [data-bs-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
 
     [data-bs-theme="dark"] .swal2-popup { background: #0f172a !important; color: var(--text) !important; border: 1px solid var(--border); }
     [data-bs-theme="dark"] .swal2-title { color: var(--text) !important; }
