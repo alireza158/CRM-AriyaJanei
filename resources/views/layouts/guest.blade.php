@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-bs-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <script>
+            (function () {
+                const storedTheme = localStorage.getItem('theme');
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                const theme = storedTheme || systemTheme;
+
+                document.documentElement.setAttribute('data-bs-theme', theme);
+            })();
+        </script>
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -16,9 +26,43 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            [data-bs-theme="dark"] body {
+                background-color: #0f172a;
+                color: #e2e8f0;
+            }
+
+            [data-bs-theme="dark"] .bg-white,
+            [data-bs-theme="dark"] .bg-gray-100 {
+                background-color: #1e293b !important;
+                color: #e2e8f0 !important;
+            }
+
+            [data-bs-theme="dark"] .text-gray-900,
+            [data-bs-theme="dark"] .text-gray-800,
+            [data-bs-theme="dark"] .text-gray-700,
+            [data-bs-theme="dark"] .text-gray-600,
+            [data-bs-theme="dark"] .text-gray-500 {
+                color: #e2e8f0 !important;
+            }
+
+            [data-bs-theme="dark"] input {
+                background-color: #334155 !important;
+                border-color: #475569 !important;
+                color: #f8fafc !important;
+            }
+        </style>
     </head>
     <body class="font-sans text-gray-900 antialiased" dir="rtl">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+            <div class="w-full max-w-md px-6 mb-3">
+                <label for="theme-switcher-guest" class="block mb-1 text-sm text-gray-600">انتخاب تم</label>
+                <select id="theme-switcher-guest" data-theme-switcher class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
+                    <option value="light">لایت</option>
+                    <option value="dark">دارک</option>
+                </select>
+            </div>
             <div>
                 <a href="/">
                     <div class="" style="
@@ -38,5 +82,30 @@
                 {{ $slot }}
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const switchers = document.querySelectorAll('[data-theme-switcher]');
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+
+                const syncSwitchers = (theme) => {
+                    switchers.forEach((switcher) => {
+                        switcher.value = theme;
+                    });
+                };
+
+                syncSwitchers(currentTheme);
+
+                switchers.forEach((switcher) => {
+                    switcher.addEventListener('change', function (event) {
+                        const selectedTheme = event.target.value;
+
+                        document.documentElement.setAttribute('data-bs-theme', selectedTheme);
+                        localStorage.setItem('theme', selectedTheme);
+                        syncSwitchers(selectedTheme);
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
