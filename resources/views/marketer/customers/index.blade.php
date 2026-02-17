@@ -20,6 +20,9 @@
                             <input type="text" name="search" value="{{ request('search') }}"
                                    class="form-control" placeholder="جستجو بر اساس نام یا شماره تلفن...">
                             <button type="submit" class="btn btn-primary">جستجو</button>
+                            <a href="{{ route('marketer.customers.export.excel') }}" class="btn btn-success">
+                                خروجی اکسل مشتری‌ها
+                            </a>
                         </form>
                     </div>
                     <div class="table-responsive">

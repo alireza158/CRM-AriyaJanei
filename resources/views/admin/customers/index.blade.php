@@ -59,6 +59,12 @@
                         </a>
                     </div>
 
+                    <div class="col-md-3">
+                        <a href="{{ route('admin.customersAdmin.export.excel') }}" class="btn btn-outline-success w-100">
+                            <i class="bi bi-file-earmark-excel"></i> خروجی اکسل همه مشتری‌ها
+                        </a>
+                    </div>
+
                     {{-- بازه تاریخی (فقط وقتی last_note انتخاب شده) --}}
                     @if(request('sort') === 'last_note')
                         <div class="col-md-3">
