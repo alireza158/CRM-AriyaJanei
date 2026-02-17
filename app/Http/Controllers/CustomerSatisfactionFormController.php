@@ -19,6 +19,9 @@ class CustomerSatisfactionFormController extends Controller
             $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
                 ->latest()
                 ->paginate(20);
+                $groupedForms = $forms->getCollection()->groupBy(function ($form) {
+    return \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d');
+});
         } elseif ($user->hasRole('customer_review')) {
             $forms = CustomerSatisfactionForm::with(['assignedToUser', 'createdByUser'])
                 ->where(function ($q) use ($user) {
@@ -27,12 +30,15 @@ class CustomerSatisfactionFormController extends Controller
                 })
                 ->latest()
                 ->paginate(20);
+                $groupedForms = $forms->getCollection()->groupBy(function ($form) {
+    return \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d');
+});
         } else {
             abort(403);
         }
 
-        return view('customer-satisfaction-forms.index', compact('forms'));
-    }
+
+return view('customer-satisfaction-forms.index', compact('forms', 'groupedForms'));    }
 
     public function create()
     {
@@ -61,8 +67,8 @@ class CustomerSatisfactionFormController extends Controller
             'customers.*.shipment_sent_at_fa' => ['required', 'string'],
             'customers.*.customer_full_name' => ['required', 'string', 'max:255'],
             'customers.*.shipping_method' => ['required', 'in:barbari,tipax,rahmati,ghafari,nadi,hozori'],
-            'customers.*.satisfaction_status' => ['required', 'in:satisfied,unsatisfied'],
-            'customers.*.assigned_to_user_id' => ['required', 'integer'],
+            'customers.*.satisfaction_status' => ['required', 'in:satisfied,unsatisfied','nullable'],
+            'customers.*.assigned_to_user_id' => ['required', 'integer','nullable'],
             'customers.*.referral_note' => ['nullable', 'string'],
         ]);
 

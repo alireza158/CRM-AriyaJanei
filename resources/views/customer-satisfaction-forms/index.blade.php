@@ -35,50 +35,62 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($forms as $form)
-                        <tr>
-                            <td>{{ $form->id }}</td>
-                            <td>{{ \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d') }}</td>
-                            <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
-                            <td>{{ $form->customer_full_name }}</td>
-                            <td>
-                                @switch($form->shipping_method)
-                                    @case('barbari') باربری @break
-                                    @case('tipax') تیپاکس @break
-                                    @case('rahmati') رحمتی @break
-                                    @case('ghafari') غفاری @break
-                                    @case('nadi') نادی @break
-                                    @default حضوری
-                                @endswitch
-                            </td>
-                            <td>
-                                @if($form->satisfaction_status === 'satisfied')
-                                    <span class="badge bg-success">راضی</span>
-                                @else
-                                    <span class="badge bg-danger">ناراضی</span>
-                                @endif
-                            </td>
-                            <td>{{ optional($form->assignedToUser)->name ?? '—' }}</td>
-                            <td>{{ optional($form->createdByUser)->name ?? '—' }}</td>
-                            <td>{{ $form->result ? 'ثبت شده' : 'ثبت نشده' }}</td>
-                            <td class="d-flex gap-2">
-                                <a href="{{ route('customer-satisfaction-forms.show', $form) }}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+@forelse($groupedForms as $date => $dayForms)
 
-                                @if(auth()->id() === $form->created_by_user_id)
-                                    <form action="{{ route('customer-satisfaction-forms.destroy', $form) }}" method="POST" onsubmit="return confirm('از حذف این فرم مطمئن هستید؟');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
-                                    </form>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10" class="text-center text-muted">فرمی ثبت نشده است.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
+    {{-- ردیف جداکننده/تیتر تاریخ --}}
+    <tr class="table-secondary">
+        <td colspan="10" class="fw-bold">
+            تاریخ فرم: {{ $date }}
+        </td>
+    </tr>
+
+    @foreach($dayForms as $form)
+        <tr>
+            <td>{{ $form->id }}</td>
+            <td>{{ \Hekmatinasser\Verta\Verta::instance($form->submitted_at)->format('Y/m/d') }}</td>
+            <td>{{ $form->shipment_sent_at ? \Hekmatinasser\Verta\Verta::instance($form->shipment_sent_at)->format('Y/m/d') : '—' }}</td>
+            <td>{{ $form->customer_full_name }}</td>
+            <td>
+                @switch($form->shipping_method)
+                    @case('barbari') باربری @break
+                    @case('tipax') تیپاکس @break
+                    @case('rahmati') رحمتی @break
+                    @case('ghafari') غفاری @break
+                    @case('nadi') نادی @break
+                    @default حضوری
+                @endswitch
+            </td>
+            <td>
+                @if($form->satisfaction_status === 'satisfied')
+                    <span class="badge bg-success">راضی</span>
+                @else
+                    <span class="badge bg-danger">ناراضی</span>
+                @endif
+            </td>
+            <td>{{ optional($form->assignedToUser)->name ?? '—' }}</td>
+            <td>{{ optional($form->createdByUser)->name ?? '—' }}</td>
+            <td>{{ $form->result ? 'ثبت شده' : 'ثبت نشده' }}</td>
+            <td class="d-flex gap-2">
+                <a href="{{ route('customer-satisfaction-forms.show', $form) }}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+
+                @if(auth()->id() === $form->created_by_user_id)
+                    <form action="{{ route('customer-satisfaction-forms.destroy', $form) }}" method="POST" onsubmit="return confirm('از حذف این فرم مطمئن هستید؟');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                    </form>
+                @endif
+            </td>
+        </tr>
+    @endforeach
+
+@empty
+    <tr>
+        <td colspan="10" class="text-center text-muted">فرمی ثبت نشده است.</td>
+    </tr>
+@endforelse
+</tbody>
+
                 </table>
             </div>
 
