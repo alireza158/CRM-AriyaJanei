@@ -129,6 +129,45 @@
     .border-start,
     .border-end { border-color: var(--border) !important; }
 
+
+    /* Tailwind utilities used in pages */
+    [data-bs-theme="dark"] .bg-gray-50,
+    [data-bs-theme="dark"] .bg-gray-100,
+    [data-bs-theme="dark"] .bg-gray-200,
+    [data-bs-theme="dark"] .table-light {
+        background-color: var(--hover-bg) !important;
+        color: var(--text) !important;
+    }
+
+    [data-bs-theme="dark"] .text-gray-900,
+    [data-bs-theme="dark"] .text-gray-800,
+    [data-bs-theme="dark"] .text-gray-700,
+    [data-bs-theme="dark"] .text-gray-600,
+    [data-bs-theme="dark"] .text-gray-500 {
+        color: var(--text) !important;
+    }
+
+
+    [data-bs-theme="dark"] .text-blue-600 { color: #93c5fd !important; }
+    [data-bs-theme="dark"] .text-green-600 { color: #86efac !important; }
+    [data-bs-theme="dark"] .text-purple-600 { color: #c4b5fd !important; }
+
+    [data-bs-theme="dark"] .hover\:bg-gray-50:hover,
+    [data-bs-theme="dark"] .hover\:bg-gray-100:hover {
+        background-color: var(--hover-bg) !important;
+    }
+
+    .card,
+    .table,
+    .table thead,
+    .table tbody,
+    .table tfoot {
+        --bs-table-bg: transparent;
+        --bs-table-striped-bg: var(--table-striped);
+        --bs-table-color: var(--text);
+        --bs-table-border-color: var(--border);
+    }
+
     /* لیست‌ها */
     .list-group-item,
     .dropdown-menu,
