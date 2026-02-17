@@ -21,6 +21,9 @@ class MessageController extends Controller
 
         // آخرین پیام هر کانورسیشن (طرف مقابل) — ساده و سریع:
         $latestPerPartner = Message::where(fn($q)=>$q->where('sender_id',$authId)->orWhere('receiver_id',$authId))
+            ->where(function ($q) {
+                $q->whereNull('body')->orWhere('body', 'not like', '[گروه:%');
+            })
             ->with(['sender:id,name','receiver:id,name'])
             ->orderByDesc('created_at')
             ->get()
@@ -50,12 +53,18 @@ class MessageController extends Controller
         abort_if($user->id === $authId, 404);
 
         $conversation = Message::between($authId, $user->id)
+            ->where(function ($q) {
+                $q->whereNull('body')->orWhere('body', 'not like', '[گروه:%');
+            })
             ->with(['sender:id,name','receiver:id,name'])
             ->orderBy('created_at','asc')
             ->get();
 
         // پیام‌های دریافتیِ خوانده‌نشده را seen کن
         Message::between($authId, $user->id)
+            ->where(function ($q) {
+                $q->whereNull('body')->orWhere('body', 'not like', '[گروه:%');
+            })
             ->whereNull('seen_at')
             ->where('receiver_id',$authId)
             ->update(['seen_at' => now()]);
