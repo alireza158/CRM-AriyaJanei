@@ -38,7 +38,7 @@
 @forelse($groupedForms as $date => $dayForms)
 
     {{-- ردیف جداکننده/تیتر تاریخ --}}
-    <tr class="table-secondary satisfaction-date-row">
+    <tr style="background-color: #6d6d6d;">
         <td colspan="10" class="fw-bold">
             تاریخ فرم: {{ $date }}
         </td>
