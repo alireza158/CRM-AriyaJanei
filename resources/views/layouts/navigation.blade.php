@@ -32,6 +32,14 @@
             </div>
 
             <!-- Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center sm:me-4">
+                <label for="theme-switcher" class="me-2 text-sm text-gray-600">تم</label>
+                <select id="theme-switcher" data-theme-switcher class="form-select form-select-sm w-auto">
+                    <option value="light">لایت</option>
+                    <option value="dark">دارک</option>
+                </select>
+            </div>
+
             <div class="hidden sm:flex sm:items-center sm:me-6">
                 <x-dropdown align="left" width="48">
                     <x-slot name="trigger">
@@ -146,6 +154,14 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <div class="px-4 py-2">
+                    <label for="theme-switcher-mobile" class="block mb-1 text-sm text-gray-600">تم</label>
+                    <select id="theme-switcher-mobile" data-theme-switcher class="form-select form-select-sm w-full">
+                        <option value="light">لایت</option>
+                        <option value="dark">دارک</option>
+                    </select>
+                </div>
+
                 <x-responsive-nav-link :href="route('profile.edit')">
                     پروفایل
                 </x-responsive-nav-link>
@@ -168,4 +184,3 @@
 
 
 </nav>
-

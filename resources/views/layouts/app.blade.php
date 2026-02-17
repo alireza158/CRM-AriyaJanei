@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" data-bs-theme="dark">
+<html lang="fa" dir="rtl" data-bs-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <script>
+            (function () {
+                const storedTheme = localStorage.getItem('theme');
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                const theme = storedTheme || systemTheme;
+
+                document.documentElement.setAttribute('data-bs-theme', theme);
+            })();
+        </script>
 
         <title>{{ config('app.name', 'آریا جانبی CRM') }}</title>
 
@@ -281,5 +291,30 @@
     [data-bs-theme="dark"] .swal2-html-container { color: var(--muted) !important; }
     [data-bs-theme="dark"] .swal2-footer { color: var(--muted) !important; border-top-color: var(--border) !important; }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const switchers = document.querySelectorAll('[data-theme-switcher]');
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+
+        const syncSwitchers = (theme) => {
+            switchers.forEach((switcher) => {
+                switcher.value = theme;
+            });
+        };
+
+        syncSwitchers(currentTheme);
+
+        switchers.forEach((switcher) => {
+            switcher.addEventListener('change', function (event) {
+                const selectedTheme = event.target.value;
+
+                document.documentElement.setAttribute('data-bs-theme', selectedTheme);
+                localStorage.setItem('theme', selectedTheme);
+                syncSwitchers(selectedTheme);
+            });
+        });
+    });
+</script>
 
 </html>
