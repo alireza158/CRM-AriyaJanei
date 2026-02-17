@@ -100,13 +100,23 @@
                     <div class="row g-2">
                         @foreach($groups as $group)
                             <div class="col-12 col-md-6">
-                                <div class="border rounded p-2 h-100">
+                                <div class="border rounded p-2 h-100 d-flex flex-column">
                                     <div class="fw-bold">{{ $group->name }}</div>
                                     <small class="text-muted d-block mb-1">سازنده: {{ $group->creator?->name ?? '---' }}</small>
-                                    <small class="text-muted">
+                                    <small class="text-muted d-block mb-2">
                                         اعضا ({{ $group->users->count() }}):
                                         {{ $group->users->pluck('name')->join('، ') }}
                                     </small>
+                                    <div class="mt-auto">
+                                        <button type="button"
+                                                class="btn btn-sm btn-primary w-100"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#sendGroupMessageModal"
+                                                data-group-id="{{ $group->id }}"
+                                                data-group-name="{{ $group->name }}">
+                                            <i class="bi bi-send me-1"></i> ارسال پیام گروهی
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -199,12 +209,15 @@
                         </div>
                         <div class="mb-0">
                             <label class="form-label">اعضا:</label>
-                            <select name="members[]" class="form-select" multiple size="8" required>
+                            <div class="border rounded p-2" style="max-height: 260px; overflow: auto;">
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    <label class="form-check d-flex align-items-center gap-2 py-1 mb-0">
+                                        <input class="form-check-input" type="checkbox" name="members[]" value="{{ $user->id }}">
+                                        <span class="form-check-label">{{ $user->name }}</span>
+                                    </label>
                                 @endforeach
-                            </select>
-                            <small class="text-muted">برای انتخاب چند نفر، کلید Ctrl/Cmd را نگه دارید.</small>
+                            </div>
+                            <small class="text-muted">روی موبایل هم می‌توانید چند عضو را با تیک انتخاب کنید.</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -215,6 +228,36 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal ارسال پیام گروهی --}}
+    <div class="modal fade" id="sendGroupMessageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3 shadow">
+                <form id="sendGroupMessageForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">ارسال پیام به گروه: <span id="sendGroupName">---</span></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body pt-3">
+                        <div class="mb-3">
+                            <label class="form-label">متن پیام:</label>
+                            <textarea name="body" class="form-control" rows="4" required placeholder="متن پیام برای همه اعضای گروه..."></textarea>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label">فایل (اختیاری):</label>
+                            <input type="file" name="attachment" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">✅ ارسال به گروه</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ بستن</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     {{-- Modal پیام جدید --}}
     <div class="modal fade" id="newMessage" tabindex="-1" aria-hidden="true">
@@ -257,6 +300,21 @@
     {{-- فیلتر و جستجوی سمت کلاینت --}}
     <script>
         const list = document.getElementById('threadList');
+
+        const groupModal = document.getElementById('sendGroupMessageModal');
+        const groupForm = document.getElementById('sendGroupMessageForm');
+        const groupNameEl = document.getElementById('sendGroupName');
+
+        groupModal?.addEventListener('show.bs.modal', (event) => {
+            const btn = event.relatedTarget;
+            const groupId = btn?.getAttribute('data-group-id');
+            const groupName = btn?.getAttribute('data-group-name') || '---';
+
+            if (!groupId || !groupForm) return;
+
+            groupForm.action = `{{ url('/messages/groups') }}/${groupId}/send`;
+            if (groupNameEl) groupNameEl.textContent = groupName;
+        });
         const searchBox = document.getElementById('searchBox');
         const filterSelect = document.getElementById('filterSelect');
 

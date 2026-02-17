@@ -121,6 +121,53 @@ class MessageController extends Controller
         return back()->with("success", "گروه با موفقیت ساخته شد.");
     }
 
+
+    public function sendGroupMessage(Request $request, MessageGroup $group)
+    {
+        $authId = Auth::id();
+
+        $isMember = $group->users()->where('users.id', $authId)->exists();
+        abort_unless($isMember, 403);
+
+        $validated = $request->validate([
+            'body'       => 'required|string',
+            'attachment' => 'nullable|file|max:10240',
+        ]);
+
+        $attachmentPath = $request->file('attachment')
+            ? $request->file('attachment')->store('attachments', 'public')
+            : null;
+
+        $recipientIds = $group->users()
+            ->where('users.id', '!=', $authId)
+            ->pluck('users.id')
+            ->all();
+
+        if (empty($recipientIds)) {
+            return back()->with('error', 'این گروه عضو دیگری برای ارسال پیام ندارد.');
+        }
+
+        DB::transaction(function () use ($validated, $attachmentPath, $recipientIds, $group, $authId) {
+            foreach ($recipientIds as $recipientId) {
+                Message::create([
+                    'sender_id'   => $authId,
+                    'receiver_id' => $recipientId,
+                    'body'        => sprintf('[گروه: %s]\n%s', $group->name, $validated['body']),
+                    'attachment'  => $attachmentPath,
+                ]);
+
+                Notification::create([
+                    'user_id' => $recipientId,
+                    'title'   => 'پیام گروهی جدید از '.Auth::user()->name,
+                    'message' => mb_strimwidth($validated['body'], 0, 80, '…', 'UTF-8'),
+                    'seen'    => false,
+                ]);
+            }
+        });
+
+        return back()->with('success', 'پیام گروهی برای اعضا ارسال شد.');
+    }
+
     // پاسخ در صفحه گفتگو
     public function reply(Request $request, User $user)
     {

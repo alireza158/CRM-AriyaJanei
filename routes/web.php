@@ -416,6 +416,7 @@ Route::delete('/customers/{customer}/invoices/{invoice}',
 Route::middleware(['auth'])->group(function () {
     Route::get('/messages',            [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/groups',    [MessageController::class, 'storeGroup'])->name('messages.groups.store');
+    Route::post('/messages/groups/{group}/send', [MessageController::class, 'sendGroupMessage'])->name('messages.groups.send');
     Route::get('/messages/{user}',     [MessageController::class, 'show'])->name('messages.show'); // {user} = other user id
     Route::post('/messages',           [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/{user}/reply', [MessageController::class, 'reply'])->name('messages.reply');
