@@ -3,9 +3,14 @@
     <x-slot name="header">
         <div class="d-flex align-items-center justify-content-between">
             <h2 class="fw-bold mb-0">💬 پیام‌ها</h2>
-            <button class="btn btn-success d-none d-sm-inline-flex" data-bs-toggle="modal" data-bs-target="#newMessage">
-                <i class="bi bi-plus-lg me-1"></i> ارسال پیام جدید
-            </button>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary d-none d-sm-inline-flex" data-bs-toggle="modal" data-bs-target="#newGroup">
+                    <i class="bi bi-people me-1"></i> ساخت گروه
+                </button>
+                <button class="btn btn-success d-none d-sm-inline-flex" data-bs-toggle="modal" data-bs-target="#newMessage">
+                    <i class="bi bi-plus-lg me-1"></i> ارسال پیام جدید
+                </button>
+            </div>
         </div>
     </x-slot>
 
@@ -82,6 +87,36 @@
             </div>
         </div>
 
+        {{-- گروه‌ها --}}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-people-fill me-1 text-primary"></i> گروه‌های من</h6>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newGroup">
+                    <i class="bi bi-plus-lg"></i> گروه جدید
+                </button>
+            </div>
+            <div class="card-body">
+                @if(($groups ?? collect())->count())
+                    <div class="row g-2">
+                        @foreach($groups as $group)
+                            <div class="col-12 col-md-6">
+                                <div class="border rounded p-2 h-100">
+                                    <div class="fw-bold">{{ $group->name }}</div>
+                                    <small class="text-muted d-block mb-1">سازنده: {{ $group->creator?->name ?? '---' }}</small>
+                                    <small class="text-muted">
+                                        اعضا ({{ $group->users->count() }}):
+                                        {{ $group->users->pluck('name')->join('، ') }}
+                                    </small>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-muted mb-0">هنوز گروهی نساخته‌اید.</p>
+                @endif
+            </div>
+        </div>
+
         {{-- لیست گفتگوها --}}
         @if($threads->count())
             <div id="threadList" class="list-group shadow-sm rounded overflow-hidden">
@@ -146,6 +181,40 @@
     <button class="btn btn-success rounded-circle shadow fab d-sm-none" data-bs-toggle="modal" data-bs-target="#newMessage" aria-label="پیام جدید">
         <i class="bi bi-plus-lg"></i>
     </button>
+
+    {{-- Modal ساخت گروه --}}
+    <div class="modal fade" id="newGroup" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3 shadow">
+                <form action="{{ route('messages.groups.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">👥 ساخت گروه جدید</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body pt-3">
+                        <div class="mb-3">
+                            <label class="form-label">نام گروه:</label>
+                            <input type="text" name="name" class="form-control" required maxlength="120" placeholder="مثال: تیم فروش تهران">
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label">اعضا:</label>
+                            <select name="members[]" class="form-select" multiple size="8" required>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">برای انتخاب چند نفر، کلید Ctrl/Cmd را نگه دارید.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">✅ ساخت گروه</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ بستن</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     {{-- Modal پیام جدید --}}
     <div class="modal fade" id="newMessage" tabindex="-1" aria-hidden="true">

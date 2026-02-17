@@ -98,4 +98,9 @@ public function isRole($role)
 
 public function notes() { return $this->hasMany(CustomerNote::class, 'user_id'); }
 
+public function messageGroups()
+{
+    return $this->belongsToMany(MessageGroup::class, 'message_group_user')->withTimestamps();
+}
+
 }

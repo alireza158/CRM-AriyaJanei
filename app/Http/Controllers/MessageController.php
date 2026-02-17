@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\MessageGroup;
 use App\Models\User;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
@@ -27,9 +29,15 @@ class MessageController extends Controller
 
         $users = User::where('id','!=',$authId)->select('id','name')->orderBy('name')->get();
 
+        $groups = MessageGroup::with(['users:id,name', 'creator:id,name'])
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authId))
+            ->latest()
+            ->get();
+
         return view('messages.index', [
             'threads' => $latestPerPartner,
             'users'   => $users,
+            'groups'  => $groups,
         ]);
     }
 
@@ -88,6 +96,29 @@ class MessageController extends Controller
 
         return redirect()->route('messages.show', $message->receiver_id)
                          ->with('success', 'پیام ارسال شد.');
+    }
+
+    public function storeGroup(Request $request)
+    {
+        $validated = $request->validate([
+            "name" => "required|string|max:120",
+            "members" => "required|array|min:1",
+            "members.*" => "integer|exists:users,id|distinct",
+        ]);
+
+        $authId = Auth::id();
+        $memberIds = collect($validated["members"])->push($authId)->unique()->values()->all();
+
+        DB::transaction(function () use ($validated, $authId, $memberIds) {
+            $group = MessageGroup::create([
+                "name" => $validated["name"],
+                "creator_id" => $authId,
+            ]);
+
+            $group->users()->sync($memberIds);
+        });
+
+        return back()->with("success", "گروه با موفقیت ساخته شد.");
     }
 
     // پاسخ در صفحه گفتگو
