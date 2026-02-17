@@ -179,6 +179,8 @@ Route::middleware(['auth','role:Admin'])
 
         Route::get('marketers/{marketer}/customers', [CustomerController::class, 'customersOfMarketer'])
             ->name('marketers.customers.index');
+        Route::get('marketers/{marketer}/customers/export/excel', [CustomerController::class, 'exportExcel'])
+            ->name('marketers.customers.export.excel');
 //        Route::get('marketers/{marketer}/customers/{customer}/', [CustomerController::class, 'show'])
 //            ->name('marketers.customers.show');
         Route::get('marketers/{marketer}/customers/create', [CustomerController::class, 'create'])
@@ -294,6 +296,8 @@ Route::middleware(['auth','role:Marketer'])
     ->group(function() {
         Route::get('customers', [CustomerController::class,'index'])
             ->name('customers.index');
+        Route::get('customers/export/excel', [CustomerController::class,'exportExcel'])
+            ->name('customers.export.excel');
         Route::get('customers/create', [CustomerController::class,'create'])
             ->name('customers.create');
         Route::post('customers', [CustomerController::class,'store'])
@@ -665,4 +669,3 @@ use App\Http\Controllers\PublicProductsController;
 
 Route::get('/public/products', [PublicProductsController::class, 'index']);
 Route::get('/public/products/{ariya_id}', [PublicProductsController::class, 'show']);
-

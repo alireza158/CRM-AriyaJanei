@@ -12,6 +12,12 @@
             </h3>
             \
             <h3>
+                <a href="{{ route('admin.marketers.customers.export.excel', ['marketer' => $marketer->id]) }}" class="hover:underline text-green-700">
+                    خروجی اکسل مشتری‌ها
+                </a>
+            </h3>
+            |
+            <h3>
                 <a href="{{ route('admin.marketers.index') }}" class=" hover:underline">
                      بازگشت به لیست بازاریابان
                 </a>
