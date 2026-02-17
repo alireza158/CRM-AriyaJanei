@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight" dir="rtl">فرم‌های رضایت مشتری</h2>
     </x-slot>
 
-    <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" dir="rtl">
+    <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 dash-wrap" dir="rtl">
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -17,11 +17,11 @@
             </div>
         @endif
 
-        <div class="bg-white shadow-sm rounded-lg p-4">
+        <div class="bg-white card-soft shadow-sm rounded-lg p-4">
             <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead>
-                    <tr>
+                <table class="table table-bordered table-striped align-middle satisfaction-table">
+                    <thead class="table-light satisfaction-table-head">
+                    <tr class="text-dark">
                         <th>#</th>
                         <th>تاریخ فرم</th>
                         <th>تاریخ ارسال بار</th>
@@ -38,7 +38,7 @@
 @forelse($groupedForms as $date => $dayForms)
 
     {{-- ردیف جداکننده/تیتر تاریخ --}}
-    <tr class="table-secondary">
+    <tr class="table-secondary satisfaction-date-row">
         <td colspan="10" class="fw-bold">
             تاریخ فرم: {{ $date }}
         </td>
@@ -97,4 +97,24 @@
             {{ $forms->links() }}
         </div>
     </div>
+
+
+<style>
+    .satisfaction-table-head th {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    [data-bs-theme="dark"] .satisfaction-table-head th {
+        background-color: rgba(148,163,184,.14) !important;
+        color: var(--text) !important;
+    }
+
+    [data-bs-theme="dark"] .satisfaction-date-row > td {
+        background-color: rgba(59,130,246,.16) !important;
+        color: #dbeafe !important;
+        border-color: var(--border) !important;
+    }
+</style>
+
 </x-app-layout>

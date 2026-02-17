@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-bs-theme="dark">
 
 <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
     <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
@@ -63,10 +63,88 @@ document.addEventListener("DOMContentLoaded", function() {
 {{--    <script src="//unpkg.com/alpinejs" defer></script>--}}
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+<style>
+    :root {
+        --surface: rgba(255,255,255,.04);
+        --border: rgba(148,163,184,.18);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --hover-bg: rgba(148,163,184,.10);
+        --input-bg: rgba(15,23,42,.45);
+        --input-border: rgba(148,163,184,.28);
+        --table-striped: rgba(148,163,184,.08);
+    }
+
+    html, body, .min-h-screen, #global-loader {
+        background-color: #0b1220 !important;
+        color: var(--text);
+    }
+
+    #global-loader { transition: opacity .3s ease; }
+
+
+    .dash-wrap {
+        background: linear-gradient(180deg, #0b1220 0%, #0f172a 50%, #0b1220 100%);
+    }
+
+    .card-soft {
+        border: 1px solid var(--border) !important;
+        border-radius: 16px;
+        background: var(--surface) !important;
+        transition: .2s ease;
+    }
+
+    .card-soft:hover {
+        box-shadow: 0 12px 30px rgba(0,0,0,.35);
+        transform: translateY(-1px);
+    }
+
+    .bg-white, .bg-light, .bg-gray-50, .bg-gray-100, .bg-gray-200, .card, .modal-content, .offcanvas {
+        background-color: var(--surface) !important;
+        color: var(--text) !important;
+    }
+
+    .text-dark, .link-dark, .text-muted, .text-gray-900, .text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 {
+        color: var(--text) !important;
+    }
+
+    [data-bs-theme="dark"] .text-blue-600 { color: #93c5fd !important; }
+    [data-bs-theme="dark"] .text-green-600 { color: #86efac !important; }
+    [data-bs-theme="dark"] .text-purple-600 { color: #c4b5fd !important; }
+
+    .border, .border-top, .border-bottom, .border-start, .border-end, .table, .table > :not(caption) > * > * {
+        border-color: var(--border) !important;
+        color: var(--text);
+    }
+
+    .table-light,
+    .table thead,
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-bg: transparent;
+        --bs-table-striped-bg: var(--table-striped);
+        background-color: var(--hover-bg) !important;
+        color: var(--text) !important;
+    }
+
+    .hover\:bg-gray-50:hover, .hover\:bg-gray-100:hover, tr:hover {
+        background-color: var(--hover-bg) !important;
+    }
+
+    .form-control, .form-select, .input-group-text, textarea, input, select {
+        background-color: var(--input-bg) !important;
+        color: var(--text) !important;
+        border-color: var(--input-border) !important;
+    }
+
+    .form-control::placeholder, textarea::placeholder, input::placeholder { color: var(--muted) !important; }
+    .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
+</style>
+
 </head>
 <body class="font-sans antialiased">
 <!-- Loader -->
-<div id="global-loader" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white" style="z-index: 1050;">
+<div id="global-loader" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 1050;">
     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
         <span class="visually-hidden">در حال بارگذاری...</span>
     </div>
