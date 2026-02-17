@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\MessageGroup;
+use App\Models\GroupMessage;
 use App\Models\User;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
@@ -27,9 +29,15 @@ class MessageController extends Controller
 
         $users = User::where('id','!=',$authId)->select('id','name')->orderBy('name')->get();
 
+        $groups = MessageGroup::with(['users:id,name', 'creator:id,name'])
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authId))
+            ->latest()
+            ->get();
+
         return view('messages.index', [
             'threads' => $latestPerPartner,
             'users'   => $users,
+            'groups'  => $groups,
         ]);
     }
 
@@ -88,6 +96,108 @@ class MessageController extends Controller
 
         return redirect()->route('messages.show', $message->receiver_id)
                          ->with('success', 'پیام ارسال شد.');
+    }
+
+    public function storeGroup(Request $request)
+    {
+        $validated = $request->validate([
+            "name" => "required|string|max:120",
+            "members" => "required|array|min:1",
+            "members.*" => "integer|exists:users,id|distinct",
+        ]);
+
+        $authId = Auth::id();
+        $memberIds = collect($validated["members"])->push($authId)->unique()->values()->all();
+
+        DB::transaction(function () use ($validated, $authId, $memberIds) {
+            $group = MessageGroup::create([
+                "name" => $validated["name"],
+                "creator_id" => $authId,
+            ]);
+
+            $group->users()->sync($memberIds);
+        });
+
+        return back()->with("success", "گروه با موفقیت ساخته شد.");
+    }
+
+
+
+    public function showGroup(MessageGroup $group)
+    {
+        $authId = Auth::id();
+
+        $isMember = $group->users()->where('users.id', $authId)->exists();
+        abort_unless($isMember, 403);
+
+        $group->load(['users:id,name', 'creator:id,name']);
+
+        $messages = GroupMessage::where('message_group_id', $group->id)
+            ->with('sender:id,name')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('messages.group-show', [
+            'group' => $group,
+            'messages' => $messages,
+        ]);
+    }
+
+    public function replyGroup(Request $request, MessageGroup $group)
+    {
+        $authId = Auth::id();
+
+        $isMember = $group->users()->where('users.id', $authId)->exists();
+        abort_unless($isMember, 403);
+
+        $validated = $request->validate([
+            'body'       => 'required|string',
+            'attachment' => 'nullable|file|max:10240',
+        ]);
+
+        $attachmentPath = $request->file('attachment')
+            ? $request->file('attachment')->store('attachments', 'public')
+            : null;
+
+        GroupMessage::create([
+            'message_group_id' => $group->id,
+            'sender_id' => $authId,
+            'body' => $validated['body'],
+            'attachment' => $attachmentPath,
+        ]);
+
+        $recipientIds = $group->users()
+            ->where('users.id', '!=', $authId)
+            ->pluck('users.id')
+            ->all();
+
+        foreach ($recipientIds as $recipientId) {
+            Notification::create([
+                'user_id' => $recipientId,
+                'title'   => 'پیام جدید در گروه '.$group->name,
+                'message' => mb_strimwidth($validated['body'], 0, 80, '…', 'UTF-8'),
+                'seen'    => false,
+            ]);
+        }
+
+        return back()->with('success', 'پیام گروهی ارسال شد.');
+    }
+
+    public function downloadGroupAttachment(GroupMessage $groupMessage)
+    {
+        $authId = Auth::id();
+
+        $isMember = $groupMessage->group()
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authId))
+            ->exists();
+
+        abort_unless($isMember, 403);
+
+        if (!$groupMessage->attachment || !Storage::disk('public')->exists($groupMessage->attachment)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($groupMessage->attachment);
     }
 
     // پاسخ در صفحه گفتگو
