@@ -416,7 +416,9 @@ Route::delete('/customers/{customer}/invoices/{invoice}',
 Route::middleware(['auth'])->group(function () {
     Route::get('/messages',            [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/groups',    [MessageController::class, 'storeGroup'])->name('messages.groups.store');
-    Route::post('/messages/groups/{group}/send', [MessageController::class, 'sendGroupMessage'])->name('messages.groups.send');
+    Route::get('/messages/groups/{group}', [MessageController::class, 'showGroup'])->name('messages.groups.show');
+    Route::post('/messages/groups/{group}/reply', [MessageController::class, 'replyGroup'])->name('messages.groups.reply');
+    Route::get('/messages/groups/file/{groupMessage}', [MessageController::class, 'downloadGroupAttachment'])->name('messages.groups.download');
     Route::get('/messages/{user}',     [MessageController::class, 'show'])->name('messages.show'); // {user} = other user id
     Route::post('/messages',           [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/{user}/reply', [MessageController::class, 'reply'])->name('messages.reply');

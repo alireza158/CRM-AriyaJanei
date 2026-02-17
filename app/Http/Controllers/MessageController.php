@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\MessageGroup;
+use App\Models\GroupMessage;
 use App\Models\User;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -122,7 +122,28 @@ class MessageController extends Controller
     }
 
 
-    public function sendGroupMessage(Request $request, MessageGroup $group)
+
+    public function showGroup(MessageGroup $group)
+    {
+        $authId = Auth::id();
+
+        $isMember = $group->users()->where('users.id', $authId)->exists();
+        abort_unless($isMember, 403);
+
+        $group->load(['users:id,name', 'creator:id,name']);
+
+        $messages = GroupMessage::where('message_group_id', $group->id)
+            ->with('sender:id,name')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('messages.group-show', [
+            'group' => $group,
+            'messages' => $messages,
+        ]);
+    }
+
+    public function replyGroup(Request $request, MessageGroup $group)
     {
         $authId = Auth::id();
 
@@ -138,34 +159,45 @@ class MessageController extends Controller
             ? $request->file('attachment')->store('attachments', 'public')
             : null;
 
+        GroupMessage::create([
+            'message_group_id' => $group->id,
+            'sender_id' => $authId,
+            'body' => $validated['body'],
+            'attachment' => $attachmentPath,
+        ]);
+
         $recipientIds = $group->users()
             ->where('users.id', '!=', $authId)
             ->pluck('users.id')
             ->all();
 
-        if (empty($recipientIds)) {
-            return back()->with('error', 'این گروه عضو دیگری برای ارسال پیام ندارد.');
+        foreach ($recipientIds as $recipientId) {
+            Notification::create([
+                'user_id' => $recipientId,
+                'title'   => 'پیام جدید در گروه '.$group->name,
+                'message' => mb_strimwidth($validated['body'], 0, 80, '…', 'UTF-8'),
+                'seen'    => false,
+            ]);
         }
 
-        DB::transaction(function () use ($validated, $attachmentPath, $recipientIds, $group, $authId) {
-            foreach ($recipientIds as $recipientId) {
-                Message::create([
-                    'sender_id'   => $authId,
-                    'receiver_id' => $recipientId,
-                    'body'        => sprintf('[گروه: %s]\n%s', $group->name, $validated['body']),
-                    'attachment'  => $attachmentPath,
-                ]);
+        return back()->with('success', 'پیام گروهی ارسال شد.');
+    }
 
-                Notification::create([
-                    'user_id' => $recipientId,
-                    'title'   => 'پیام گروهی جدید از '.Auth::user()->name,
-                    'message' => mb_strimwidth($validated['body'], 0, 80, '…', 'UTF-8'),
-                    'seen'    => false,
-                ]);
-            }
-        });
+    public function downloadGroupAttachment(GroupMessage $groupMessage)
+    {
+        $authId = Auth::id();
 
-        return back()->with('success', 'پیام گروهی برای اعضا ارسال شد.');
+        $isMember = $groupMessage->group()
+            ->whereHas('users', fn ($q) => $q->where('users.id', $authId))
+            ->exists();
+
+        abort_unless($isMember, 403);
+
+        if (!$groupMessage->attachment || !Storage::disk('public')->exists($groupMessage->attachment)) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->download($groupMessage->attachment);
     }
 
     // پاسخ در صفحه گفتگو

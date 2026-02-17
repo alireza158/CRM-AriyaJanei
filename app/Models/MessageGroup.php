@@ -23,4 +23,9 @@ class MessageGroup extends Model
     {
         return $this->belongsToMany(User::class, 'message_group_user')->withTimestamps();
     }
+
+    public function groupMessages()
+    {
+        return $this->hasMany(GroupMessage::class, 'message_group_id');
+    }
 }

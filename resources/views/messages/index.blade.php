@@ -108,14 +108,9 @@
                                         {{ $group->users->pluck('name')->join('، ') }}
                                     </small>
                                     <div class="mt-auto">
-                                        <button type="button"
-                                                class="btn btn-sm btn-primary w-100"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#sendGroupMessageModal"
-                                                data-group-id="{{ $group->id }}"
-                                                data-group-name="{{ $group->name }}">
-                                            <i class="bi bi-send me-1"></i> ارسال پیام گروهی
-                                        </button>
+                                        <a href="{{ route('messages.groups.show', $group->id) }}" class="btn btn-sm btn-primary w-100">
+                                            <i class="bi bi-chat-dots me-1"></i> ورود به چت گروهی
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -229,34 +224,6 @@
         </div>
     </div>
 
-    {{-- Modal ارسال پیام گروهی --}}
-    <div class="modal fade" id="sendGroupMessageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3 shadow">
-                <form id="sendGroupMessageForm" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">ارسال پیام به گروه: <span id="sendGroupName">---</span></h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body pt-3">
-                        <div class="mb-3">
-                            <label class="form-label">متن پیام:</label>
-                            <textarea name="body" class="form-control" rows="4" required placeholder="متن پیام برای همه اعضای گروه..."></textarea>
-                        </div>
-                        <div class="mb-0">
-                            <label class="form-label">فایل (اختیاری):</label>
-                            <input type="file" name="attachment" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">✅ ارسال به گروه</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ بستن</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 
     {{-- Modal پیام جدید --}}
@@ -301,20 +268,6 @@
     <script>
         const list = document.getElementById('threadList');
 
-        const groupModal = document.getElementById('sendGroupMessageModal');
-        const groupForm = document.getElementById('sendGroupMessageForm');
-        const groupNameEl = document.getElementById('sendGroupName');
-
-        groupModal?.addEventListener('show.bs.modal', (event) => {
-            const btn = event.relatedTarget;
-            const groupId = btn?.getAttribute('data-group-id');
-            const groupName = btn?.getAttribute('data-group-name') || '---';
-
-            if (!groupId || !groupForm) return;
-
-            groupForm.action = `{{ url('/messages/groups') }}/${groupId}/send`;
-            if (groupNameEl) groupNameEl.textContent = groupName;
-        });
         const searchBox = document.getElementById('searchBox');
         const filterSelect = document.getElementById('filterSelect');
 
