@@ -25,7 +25,21 @@
                             <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="mt-1 block w-full border-gray-300 rounded-md text-right" dir="rtl"/>
                         </div>
                         <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700 text-right">آدرس</label>
+                            <label for="province" class="block text-sm font-medium text-gray-700 text-right">استان</label>
+                            <select name="province" id="province" class="mt-1 block w-full border-gray-300 rounded-md text-right" dir="rtl">
+                                <option value="">در حال بارگذاری...</option>
+                            </select>
+                            @error('province') <div class="text-danger small">{{ $message }}</div> @enderror
+                        </div>
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-700 text-right">شهر</label>
+                            <select name="city" id="city" class="mt-1 block w-full border-gray-300 rounded-md text-right" dir="rtl" disabled>
+                                <option value="">ابتدا استان را انتخاب کنید</option>
+                            </select>
+                            @error('city') <div class="text-danger small">{{ $message }}</div> @enderror
+                        </div>
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 text-right">آدرس (اختیاری)</label>
                             <textarea name="address" id="address" class="mt-1 block w-full border-gray-300 rounded-md text-right" dir="rtl">{{ old('address') }}</textarea>
                         </div>
                         <div>
@@ -59,4 +73,67 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const oldProvince = @json(old('province'));
+        const oldCity = @json(old('city'));
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const provinceSelect = document.getElementById('province');
+            const citySelect = document.getElementById('city');
+            let provinces = [];
+
+            const setCities = (provinceName) => {
+                citySelect.innerHTML = '<option value="">انتخاب شهر</option>';
+                const province = provinces.find((item) => (item.name ?? '').trim() === provinceName);
+                const cities = province?.cities ?? [];
+
+                cities.forEach((item) => {
+                    const option = document.createElement('option');
+                    const optionLabel = typeof item === 'string' ? item.trim() : ((item.city ?? item.name ?? '').trim());
+                    option.value = optionLabel;
+                    option.textContent = optionLabel;
+                    if (oldCity && option.value === oldCity) {
+                        option.selected = true;
+                    }
+                    citySelect.appendChild(option);
+                });
+
+                citySelect.disabled = cities.length === 0;
+            };
+
+            try {
+                const response = await fetch('/data/iran-provinces-cities.json', {
+                    headers: { Accept: 'application/json' }
+                });
+                const data = await response.json();
+                provinces = data?.provinces ?? [];
+
+                provinceSelect.innerHTML = '<option value="">انتخاب استان</option>';
+
+                provinces.forEach((item) => {
+                    const option = document.createElement('option');
+                    const optionLabel = (item?.name ?? '').trim();
+                    option.value = optionLabel;
+                    option.textContent = optionLabel;
+                    if (oldProvince && option.value === oldProvince) {
+                        option.selected = true;
+                    }
+                    provinceSelect.appendChild(option);
+                });
+
+                if (oldProvince) {
+                    setCities(oldProvince);
+                }
+            } catch (error) {
+                provinceSelect.innerHTML = '<option value="">خطا در دریافت لیست استان‌ها</option>';
+                citySelect.innerHTML = '<option value="">خطا در دریافت لیست شهرها</option>';
+                citySelect.disabled = true;
+            }
+
+            provinceSelect.addEventListener('change', (event) => {
+                setCities(event.target.value);
+            });
+        });
+    </script>
 </x-layouts.app>
