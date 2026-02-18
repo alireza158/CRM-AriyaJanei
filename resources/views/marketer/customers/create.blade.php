@@ -115,8 +115,9 @@
 
                 cities.forEach((item) => {
                     const option = document.createElement('option');
-                    option.value = (item.name ?? '').trim();
-                    option.textContent = (item.name ?? '').trim();
+                    const optionLabel = typeof item === 'string' ? item.trim() : ((item.city ?? item.name ?? '').trim());
+                    option.value = optionLabel;
+                    option.textContent = optionLabel;
                     if (oldCity && option.value === oldCity) {
                         option.selected = true;
                     }
@@ -137,8 +138,9 @@
 
                 provinces.forEach((item) => {
                     const option = document.createElement('option');
-                    option.value = (item.name ?? '').trim();
-                    option.textContent = (item.name ?? '').trim();
+                    const optionLabel = (item?.name ?? '').trim();
+                    option.value = optionLabel;
+                    option.textContent = optionLabel;
                     if (oldProvince && option.value === oldProvince) {
                         option.selected = true;
                     }
