@@ -109,11 +109,11 @@
         };
 
         try {
-            const response = await fetch('https://api.ariyajanebi.ir/v1/front/area?version=new2', {
+            const response = await fetch('/data/iran-provinces-cities.json', {
                 headers: { Accept: 'application/json' }
             });
             const data = await response.json();
-            provinces = data?.data?.provinces ?? [];
+            provinces = data?.provinces ?? [];
 
             provinceSelect.innerHTML = '<option value="">انتخاب استان</option>';
 
