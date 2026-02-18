@@ -13,6 +13,8 @@ class Customer extends Model
       'name',
       'DISC',
       'phone',
+      'province',
+      'city',
       'address',
       'category_id',
       'reference_type_id',
