@@ -185,6 +185,8 @@ public function create()
             'name'  => 'required|string|max:255',
             'phone' => 'required|string|unique:customers',
             'reference_type_id' => 'nullable|exists:reference_types,id',
+            'province' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'user_id'=> 'nullable|exists:users,id',
         ]);
@@ -218,6 +220,8 @@ public function create()
             'name'  => 'required|string|max:255',
             'phone' => 'required',
             'user_id' => 'nullable|exists:users,id',
+            'province' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
             'address' => 'nullable',
             'reference_type_id' => 'nullable|exists:reference_types,id',
         ]);
@@ -230,6 +234,8 @@ public function create()
             'user_id' => $request->user_id ?? $customer->user_id,
             'name' => $request->name ?? $customer->name,
             'phone' => $request->phone ?? $customer->phone,
+            'province' => $request->province ?? $customer->province,
+            'city' => $request->city ?? $customer->city,
             'reference_type_id' => $request->reference_type_id ?? $customer->reference_type_id,
             'address' => $request->address ?? $customer->address,
             'category_id' => $request->category_id ?? $customer->category_id,
