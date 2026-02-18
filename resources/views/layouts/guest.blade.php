@@ -56,7 +56,7 @@
     </head>
     <body class="font-sans text-gray-900 antialiased" dir="rtl">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="w-full max-w-md px-6 mb-3">
+            <div class="max-w-md px-6 mb-3">
                 <label for="theme-switcher-guest" class="block mb-1 text-sm text-gray-600">انتخاب تم</label>
                 <select id="theme-switcher-guest" data-theme-switcher class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
                     <option value="light">لایت</option>

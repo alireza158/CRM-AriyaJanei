@@ -115,7 +115,7 @@
     }
 
     .card-soft {
-        border: 1px solid var(--border);
+        border: 3px solid var(--border);
         border-radius: var(--radius);
         transition: .2s ease;
         background: var(--surface);

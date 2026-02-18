@@ -59,7 +59,7 @@
                                     <td>
                                         <a href="{{ route('marketer.reports.show', $report) }}" class="btn btn-sm btn-primary">مشاهده</a>
 
-                                        @if($report->created_at->gt(now()->subHours(6)))
+                                        @if($report->created_at->gt(now()->subHours(8)))
                                             <a href="{{ route('marketer.reports.edit', $report) }}" class="btn btn-sm btn-success">ویرایش</a>
                                             <form action="{{ route('marketer.reports.destroy', $report) }}"
                                                   method="POST" class="d-inline">
