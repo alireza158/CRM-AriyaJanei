@@ -57,11 +57,15 @@
     <body class="font-sans text-gray-900 antialiased" dir="rtl">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div class="max-w-md px-6 mb-3">
-                <label for="theme-switcher-guest" class="block mb-1 text-sm text-gray-600">انتخاب تم</label>
-                <select id="theme-switcher-guest" data-theme-switcher class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
-                    <option value="light">لایت</option>
-                    <option value="dark">دارک</option>
-                </select>
+                <button
+                    type="button"
+                    data-theme-toggle
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    aria-label="تغییر تم"
+                >
+                    <span data-theme-icon aria-hidden="true">🌙</span>
+                    <span data-theme-label>تم تیره</span>
+                </button>
             </div>
             <div>
                 <a href="/">
@@ -85,24 +89,38 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const switchers = document.querySelectorAll('[data-theme-switcher]');
+                const toggles = document.querySelectorAll('[data-theme-toggle]');
                 const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
 
-                const syncSwitchers = (theme) => {
-                    switchers.forEach((switcher) => {
-                        switcher.value = theme;
+                const getNextTheme = (theme) => (theme === 'dark' ? 'light' : 'dark');
+
+                const syncToggles = (theme) => {
+                    const nextTheme = getNextTheme(theme);
+
+                    toggles.forEach((toggle) => {
+                        const icon = toggle.querySelector('[data-theme-icon]');
+                        const label = toggle.querySelector('[data-theme-label]');
+
+                        if (icon) {
+                            icon.textContent = nextTheme === 'dark' ? '🌙' : '☀️';
+                        }
+
+                        if (label) {
+                            label.textContent = nextTheme === 'dark' ? 'تم تیره' : 'تم روشن';
+                        }
                     });
                 };
 
-                syncSwitchers(currentTheme);
+                syncToggles(currentTheme);
 
-                switchers.forEach((switcher) => {
-                    switcher.addEventListener('change', function (event) {
-                        const selectedTheme = event.target.value;
+                toggles.forEach((toggle) => {
+                    toggle.addEventListener('click', function () {
+                        const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                        const selectedTheme = getNextTheme(activeTheme);
 
                         document.documentElement.setAttribute('data-bs-theme', selectedTheme);
                         localStorage.setItem('theme', selectedTheme);
-                        syncSwitchers(selectedTheme);
+                        syncToggles(selectedTheme);
                     });
                 });
             });
