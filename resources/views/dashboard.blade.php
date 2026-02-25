@@ -428,6 +428,7 @@
     <script src="https://lib.arvancloud.ir/limonte-sweetalert2/9.9.0/sweetalert2.all.js"></script>
 
     <script>
+        
         document.addEventListener("DOMContentLoaded", function () {
             // مودال تسک‌ها بعد از لاگین
             @if($showTasksModalOnLogin)

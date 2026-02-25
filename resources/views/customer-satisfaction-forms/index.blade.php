@@ -63,9 +63,11 @@
             <td>
                 @if($form->satisfaction_status === 'satisfied')
                     <span class="badge bg-success">راضی</span>
-                @else
+                @elseif($form->satisfaction_status === 'ussatisfied')
                     <span class="badge bg-danger">ناراضی</span>
-                @endif
+                @else
+                 <span class="badge bg-danger">...</span>
+                 @endif
             </td>
             <td>{{ optional($form->assignedToUser)->name ?? '—' }}</td>
             <td>{{ optional($form->createdByUser)->name ?? '—' }}</td>

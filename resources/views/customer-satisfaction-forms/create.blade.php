@@ -65,7 +65,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">وضعیت رضایت</label>
-                                    <select name="customers[{{ $index }}][satisfaction_status]" class="form-select" required>
+                                    <select name="customers[{{ $index }}][satisfaction_status]" class="form-select" >
                                         <option value="">انتخاب کنید</option>
                                         <option value="satisfied" @selected(($customer['satisfaction_status'] ?? '') === 'satisfied')>راضی</option>
                                         <option value="unsatisfied" @selected(($customer['satisfaction_status'] ?? '') === 'unsatisfied')>ناراضی</option>
@@ -74,7 +74,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">ارجاع به کاربر </label>
-                                    <select name="customers[{{ $index }}][assigned_to_user_id]" class="form-select" required>
+                                    <select name="customers[{{ $index }}][assigned_to_user_id]" class="form-select" >
                                         <option value="">انتخاب کنید</option>
                                         @foreach($reviewUsers as $reviewUser)
                                             <option value="{{ $reviewUser->id }}" @selected((int) ($customer['assigned_to_user_id'] ?? 0) === $reviewUser->id)>
@@ -148,7 +148,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">وضعیت رضایت</label>
-                    <select name="customers[__INDEX__][satisfaction_status]" class="form-select" required>
+                    <select name="customers[__INDEX__][satisfaction_status]" class="form-select" >
                         <option value="">انتخاب کنید</option>
                         <option value="satisfied">راضی</option>
                         <option value="unsatisfied">ناراضی</option>
@@ -157,7 +157,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">ارجاع به کاربر </label>
-                    <select name="customers[__INDEX__][assigned_to_user_id]" class="form-select" required>
+                    <select name="customers[__INDEX__][assigned_to_user_id]" class="form-select" >
                         <option value="">انتخاب کنید</option>
                         @foreach($reviewUsers as $reviewUser)
                             <option value="{{ $reviewUser->id }}">{{ $reviewUser->name }}</option>
