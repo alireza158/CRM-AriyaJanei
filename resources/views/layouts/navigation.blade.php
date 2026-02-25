@@ -33,11 +33,10 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:me-4">
-                <label for="theme-switcher" class="me-2 text-sm text-gray-600">تم</label>
-                <select id="theme-switcher" data-theme-switcher class="form-select form-select-sm w-auto">
-                    <option value="light">لایت</option>
-                    <option value="dark">دارک</option>
-                </select>
+                <button type="button" data-theme-toggle class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" aria-label="تغییر تم">
+                    <span data-theme-icon aria-hidden="true">🌙</span>
+                    <span data-theme-label>تم تیره</span>
+                </button>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:me-6">
@@ -155,11 +154,10 @@
 
             <div class="mt-3 space-y-1">
                 <div class="px-4 py-2">
-                    <label for="theme-switcher-mobile" class="block mb-1 text-sm text-gray-600">تم</label>
-                    <select id="theme-switcher-mobile" data-theme-switcher class="form-select form-select-sm w-full">
-                        <option value="light">لایت</option>
-                        <option value="dark">دارک</option>
-                    </select>
+                    <button type="button" data-theme-toggle class="btn btn-outline-secondary btn-sm w-full d-inline-flex align-items-center justify-content-center gap-2" aria-label="تغییر تم">
+                        <span data-theme-icon aria-hidden="true">🌙</span>
+                        <span data-theme-label>تم تیره</span>
+                    </button>
                 </div>
 
                 <x-responsive-nav-link :href="route('profile.edit')">

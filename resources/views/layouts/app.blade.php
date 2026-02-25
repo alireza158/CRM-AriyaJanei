@@ -294,24 +294,38 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const switchers = document.querySelectorAll('[data-theme-switcher]');
+        const toggles = document.querySelectorAll('[data-theme-toggle]');
         const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
 
-        const syncSwitchers = (theme) => {
-            switchers.forEach((switcher) => {
-                switcher.value = theme;
+        const getNextTheme = (theme) => (theme === 'dark' ? 'light' : 'dark');
+
+        const syncToggles = (theme) => {
+            const nextTheme = getNextTheme(theme);
+
+            toggles.forEach((toggle) => {
+                const icon = toggle.querySelector('[data-theme-icon]');
+                const label = toggle.querySelector('[data-theme-label]');
+
+                if (icon) {
+                    icon.textContent = nextTheme === 'dark' ? '🌙' : '☀️';
+                }
+
+                if (label) {
+                    label.textContent = nextTheme === 'dark' ? 'تم تیره' : 'تم روشن';
+                }
             });
         };
 
-        syncSwitchers(currentTheme);
+        syncToggles(currentTheme);
 
-        switchers.forEach((switcher) => {
-            switcher.addEventListener('change', function (event) {
-                const selectedTheme = event.target.value;
+        toggles.forEach((toggle) => {
+            toggle.addEventListener('click', function () {
+                const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                const selectedTheme = getNextTheme(activeTheme);
 
                 document.documentElement.setAttribute('data-bs-theme', selectedTheme);
                 localStorage.setItem('theme', selectedTheme);
-                syncSwitchers(selectedTheme);
+                syncToggles(selectedTheme);
             });
         });
     });
