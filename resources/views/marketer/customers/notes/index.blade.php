@@ -48,14 +48,7 @@
 
                                                                 <a href="{{ route('marketer.customer.notes.show', [ 'customer' => $customer->id, 'note' => $note->id]) }}" style="color: white" class="btn btn-warning">مشاهده</a>
 
-                                @php
-                                // بررسی اینکه از زمان ایجاد کمتر از 2 ساعت گذشته
-                                $canEdit = $note->created_at->gt(now()->subHours(2));
-                            @endphp
-
-                            @if($canEdit)
                                 <a href="{{ route('marketer.customer.notes.edit', [ 'customer' => $customer->id, 'note' => $note->id]) }}" class="btn btn-primary">ویرایش</a>
-                            @endif
 
                             </td>
 
