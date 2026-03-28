@@ -308,9 +308,6 @@ Route::middleware(['auth','role:Marketer'])
             ->name('customers.edit');
         Route::put('customers/{customer}', [CustomerController::class,'update'])
             ->name('customers.update');
-        Route::delete('customers/{customer}', [CustomerController::class,'destroy'])
-            ->name('customers.destroy');
-
         Route::get('customers/{customer}/invoices', [InvoiceController::class,'index'])
             ->name('invoices.index');
         Route::get('customers/{customer}/invoices/create', [InvoiceController::class,'create'])

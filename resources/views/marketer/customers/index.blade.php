@@ -138,17 +138,6 @@
                                             <!-- دکمه ارتباط با منو -->
 
 
-                                            <!-- دکمه حذف -->
-                                            <form action="{{ route('marketer.customers.destroy', $customer) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                        onclick="return confirm('آیا از حذف {{ $customer->name }} مطمئن هستید؟')"
-                                                        class="btn btn-danger">
-                                                    حذف
-                                                </button>
-                                            </form>
-
                                         </td>
 
                                     </tr>

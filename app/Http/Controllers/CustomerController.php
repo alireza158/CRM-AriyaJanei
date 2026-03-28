@@ -212,6 +212,18 @@ class CustomerController extends Controller
             abort(403);
         }
 
+        $before = $customer->only([
+            'user_id',
+            'name',
+            'DISC',
+            'phone',
+            'province',
+            'city',
+            'address',
+            'category_id',
+            'reference_type_id',
+        ]);
+
         $data = $request->validate([
             'name'              => 'required|string|max:255',
             'DISC'              => 'nullable|string|max:255',
@@ -231,11 +243,34 @@ class CustomerController extends Controller
 
         $customer->update($data);
 
+        $customer->refresh();
+        $after = $customer->only([
+            'user_id',
+            'name',
+            'DISC',
+            'phone',
+            'province',
+            'city',
+            'address',
+            'category_id',
+            'reference_type_id',
+        ]);
+
+        $changedFields = collect($before)
+            ->keys()
+            ->filter(fn ($field) => ($before[$field] ?? null) != ($after[$field] ?? null))
+            ->values()
+            ->all();
+
         // 📌 لاگ ویرایش مشتری
         activity()
             ->performedOn($customer)
             ->causedBy(auth()->user())
-            ->withProperties(['data' => $data])
+            ->withProperties([
+                'before' => $before,
+                'after' => $after,
+                'changed_fields' => $changedFields,
+            ])
             ->log('ویرایش اطلاعات مشتری');
 
         if (Auth::user()->hasRole('Admin')) {
@@ -250,7 +285,7 @@ class CustomerController extends Controller
 
     public function destroy(User $marketer, Customer $customer)
     {
-        if (Auth::user()->hasRole('Marketer') && $customer->user_id !== Auth::id()) {
+        if (Auth::user()->hasRole('Marketer')) {
             abort(403);
         }
 
