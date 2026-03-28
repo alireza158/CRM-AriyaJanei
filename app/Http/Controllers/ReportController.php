@@ -52,18 +52,35 @@ $reports = Report::whereIn('user_id', $allowedIds)
         return view($view, compact('reports'));
     }
 
-   public function reportsManagment(User $user)
+   public function reportsManagment(Request $request)
 {
     $auth = Auth::user();
     $yesterday = Carbon::yesterday();
 
     // این IDها کلاً در هیچ لیستی نمایش داده نشوند
-    $excludedUserIds = [17, 43, 42, 32, 1,30,36,26];
+    $excludedUserIds = [17, 43, 42, 32, 1, 30, 36, 26];
+
+    $validated = $request->validate([
+        'user_id'    => 'nullable|integer|exists:users,id',
+        'date_from'  => 'nullable|date',
+        'date_to'    => 'nullable|date|after_or_equal:date_from',
+    ]);
+
+    $selectedUserId = isset($validated['user_id']) ? (int) $validated['user_id'] : null;
+    $dateFrom = $validated['date_from'] ?? null;
+    $dateTo = $validated['date_to'] ?? null;
 
     // =======================
     // Admin
     // =======================
     if ($auth->hasRole('Admin')) {
+        $availableUsers = User::query()
+            ->whereNotIn('id', $excludedUserIds)
+            ->whereHas('roles', function ($q) {
+                $q->whereIn('name', ['User', 'Marketer', 'Manager']);
+            })
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
         // کاربرانی که دیروز گزارش submitted/read ثبت نکرده‌اند (به جز excluded ها)
         $usersWithoutYesterdayReport = User::query()
@@ -73,50 +90,73 @@ $reports = Report::whereIn('user_id', $allowedIds)
             })
             ->whereDoesntHave('reports', function ($q) use ($yesterday) {
                 $q->whereDate('submitted_at', $yesterday->toDateString())
-                  ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
+                    ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
             })
             ->orderBy('name')
             ->get();
 
         // جدول گزارش‌ها (به جز excluded ها)
-        $reports = Report::query()
+        $reportsQuery = Report::query()
             ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
             ->whereHas('user', function ($q) use ($excludedUserIds) {
                 $q->whereNotIn('id', $excludedUserIds);
-            })
-            ->with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            });
+    } else {
+        // =======================
+        // Manager: فقط کارمندهای خودش
+        // =======================
+        $manager = $auth;
 
-        return view('user.reports.reportsManagment', compact('reports', 'usersWithoutYesterdayReport'));
+        $availableUsers = User::query()
+            ->where('manager_id', $manager->id)
+            ->whereNotIn('id', $excludedUserIds)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $usersWithoutYesterdayReport = User::query()
+            ->where('manager_id', $manager->id)
+            ->whereNotIn('id', $excludedUserIds)
+            ->whereDoesntHave('reports', function ($q) use ($yesterday) {
+                $q->whereDate('submitted_at', $yesterday->toDateString())
+                    ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
+            })
+            ->orderBy('name')
+            ->get();
+
+        $reportsQuery = Report::query()
+            ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
+            ->whereHas('user', function ($q) use ($manager, $excludedUserIds) {
+                $q->where('manager_id', $manager->id)
+                    ->whereNotIn('id', $excludedUserIds);
+            });
     }
 
-    // =======================
-    // Manager: فقط کارمندهای خودش
-    // =======================
-    $manager = $auth;
+    if ($selectedUserId) {
+        $reportsQuery->where('user_id', $selectedUserId);
+    }
 
-    $usersWithoutYesterdayReport = User::query()
-        ->where('manager_id', $manager->id)
-        ->whereNotIn('id', $excludedUserIds)
-        ->whereDoesntHave('reports', function ($q) use ($yesterday) {
-            $q->whereDate('submitted_at', $yesterday->toDateString())
-              ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ]);
-        })
-        ->orderBy('name')
-        ->get();
+    if ($dateFrom) {
+        $reportsQuery->whereDate('created_at', '>=', $dateFrom);
+    }
 
-    $reports = Report::query()
-        ->whereIn('status', [Report::STATUS_SUBMITTED, Report::STATUS_READ])
-        ->whereHas('user', function ($q) use ($manager, $excludedUserIds) {
-            $q->where('manager_id', $manager->id)
-              ->whereNotIn('id', $excludedUserIds);
-        })
+    if ($dateTo) {
+        $reportsQuery->whereDate('created_at', '<=', $dateTo);
+    }
+
+    $reports = $reportsQuery
         ->with('user')
-        ->latest()
-        ->paginate(15);
+        ->orderBy('created_at', 'desc')
+        ->paginate(15)
+        ->withQueryString();
 
-    return view('user.reports.reportsManagment', compact('reports', 'usersWithoutYesterdayReport'));
+    return view('user.reports.reportsManagment', compact(
+        'reports',
+        'usersWithoutYesterdayReport',
+        'availableUsers',
+        'selectedUserId',
+        'dateFrom',
+        'dateTo'
+    ));
 }
 
 

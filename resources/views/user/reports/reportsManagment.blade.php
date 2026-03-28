@@ -38,6 +38,33 @@
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
+                    {{-- فیلترها --}}
+                    <form action="{{ route('user.reports.reportsManagment') }}" method="GET" class="row g-3 mb-4 align-items-end">
+                        <div class="col-md-4">
+                            <label for="user_id" class="form-label">شخص کاربر</label>
+                            <select name="user_id" id="user_id" class="form-select">
+                                <option value="">همه کاربران</option>
+                                @foreach($availableUsers ?? [] as $userOption)
+                                    <option value="{{ $userOption->id }}" @selected((int) request('user_id') === $userOption->id)>
+                                        {{ $userOption->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date_from" class="form-label">از تاریخ</label>
+                            <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from', $dateFrom ?? '') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date_to" class="form-label">تا تاریخ</label>
+                            <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to', $dateTo ?? '') }}">
+                        </div>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">اعمال</button>
+                            <a href="{{ route('user.reports.reportsManagment') }}" class="btn btn-outline-secondary w-100">حذف</a>
+                        </div>
+                    </form>
+
                     {{-- جدول --}}
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped align-middle text-center bg-white">
