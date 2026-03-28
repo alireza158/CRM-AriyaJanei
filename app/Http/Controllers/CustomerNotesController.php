@@ -292,6 +292,38 @@ class CustomerNotesController extends Controller
         abort(403);
     }
 
+    public function updateInline(Request $request, CustomerNote $note)
+    {
+        $data = $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        $customer = $note->customer;
+        $user = Auth::user();
+
+        if ($user->hasRole('Marketer') && $customer->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $oldData = $note->getOriginal();
+
+        $note->update([
+            'user_id' => $user->id,
+            'content' => $data['content'],
+        ]);
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($note)
+            ->withProperties(['old' => $oldData, 'new' => $data, 'customer_id' => $customer?->id])
+            ->log('ویرایش یادداشت');
+
+        return response()->json([
+            'success' => true,
+            'content' => $note->content
+        ]);
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -334,6 +366,33 @@ class CustomerNotesController extends Controller
 
     abort(403);
 }
+
+    public function destroyInline(CustomerNote $note)
+    {
+        $user = Auth::user();
+        $customer = $note->customer;
+
+        if ($user->hasRole('Marketer')) {
+            if ($customer && $customer->user_id !== $user->id) {
+                abort(403);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'بازاریاب اجازه حذف یادداشت را ندارد و فقط می‌تواند آن را ویرایش کند.'
+            ], 403);
+        }
+
+        activity()
+            ->causedBy($user)
+            ->performedOn($note)
+            ->withProperties(['customer_id' => $customer?->id])
+            ->log('حذف یادداشت توسط ادمین');
+
+        $note->delete();
+
+        return response()->json(['success' => true]);
+    }
 
 
 }

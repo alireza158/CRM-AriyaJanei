@@ -106,8 +106,8 @@ Route::prefix('admin')->name('admin.')->middleware('role:Admin')->group(function
 });
 Route::prefix('admin/customers')->name('admin.customers.')->group(function() {
     Route::post('{customer}/notes', [CustomerNotesController::class, 'store'])->name('notes.store');
-    Route::patch('notes/{note}', [CustomerNotesController::class, 'update'])->name('notes.update');
-    Route::delete('notes/{note}', [CustomerNotesController::class, 'destroy'])->name('notes.destroy');
+    Route::patch('notes/{note}', [CustomerNotesController::class, 'updateInline'])->name('notes.update');
+    Route::delete('notes/{note}', [CustomerNotesController::class, 'destroyInline'])->name('notes.destroy');
 });
 Route::prefix('admin/customers')->name('admin.customers.')->group(function() {
     Route::post('{customer}/notes2', [CustomerNotesController::class, 'store2'])->name('notes.store2');
