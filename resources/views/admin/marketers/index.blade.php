@@ -65,7 +65,7 @@
                                         </td>
 
                                         <td>
-                                            <a href="{{ route('admin.reports.index', $item->id) }}" class="btn btn-sm btn-outline-dark">
+                                            <a href="{{ route('user.reports.reportsManagment', ['user_id' => $item->id]) }}" class="btn btn-sm btn-outline-dark">
                                                 مشاهده گزارش
                                             </a>
                                         </td>
@@ -160,4 +160,3 @@
         </div>
     @endforeach
 </x-layouts.app>
-
