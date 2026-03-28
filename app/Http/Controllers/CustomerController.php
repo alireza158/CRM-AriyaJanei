@@ -91,7 +91,7 @@ class CustomerController extends Controller
                 ->implode("\n");
 
             return [
-                'id' => $customer->id,
+                'id' => $customer->customer_number ?? (100000 + $customer->id),
                 'name' => $customer->name,
                 'phone' => $customer->phone,
                 'disc' => $customer->DISC,

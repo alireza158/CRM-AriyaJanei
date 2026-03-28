@@ -129,7 +129,7 @@ public function exportExcelAllCustomers()
             ->implode("\n");
 
         return [
-            $customer->id,
+            $customer->customer_number ?? (100000 + $customer->id),
             $customer->name,
             $customer->phone,
             $customer->address,
