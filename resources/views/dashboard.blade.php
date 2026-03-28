@@ -18,56 +18,56 @@
         // کارت‌ها بر اساس نقش
         // -----------------------------
         $cardsAdmin = [
-            ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','tone'=>'primary','icon'=>'users'],
-            ['title'=>'کاربران مهمان','route'=>'admin.guests.index','tone'=>'purple','icon'=>'user'],
-            ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','tone'=>'success','icon'=>'archive'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','tone'=>'pink','icon'=>'user-group'],
-            ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','tone'=>'info','icon'=>'clipboard'],
-            ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','tone'=>'warning','icon'=>'tag'],
-            ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','tone'=>'danger','icon'=>'question'],
-            ['title'=>'مدیریت کاربران','route'=>'admin.users.index','tone'=>'danger','icon'=>'users'],
-            ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','tone'=>'indigo','icon'=>'doc'],
-            ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','tone'=>'indigo','icon'=>'doc'],
-            ['title'=>'محصولات سایت','route'=>'products.index','tone'=>'primary','icon'=>'box'],
-            ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','tone'=>'orange','icon'=>'chart'],
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
+            ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','tone'=>'primary','icon'=>'users','group'=>'کاربران و نقش‌ها'],
+            ['title'=>'کاربران مهمان','route'=>'admin.guests.index','tone'=>'purple','icon'=>'user','group'=>'کاربران و نقش‌ها'],
+            ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','tone'=>'success','icon'=>'archive','group'=>'محصولات و فروش'],
+            ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','tone'=>'pink','icon'=>'user-group','group'=>'مشتریان'],
+            ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','tone'=>'info','icon'=>'clipboard','group'=>'گزارش و تحلیل'],
+            ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','tone'=>'warning','icon'=>'tag','group'=>'تنظیمات'],
+            ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','tone'=>'danger','icon'=>'question','group'=>'تنظیمات'],
+            ['title'=>'مدیریت کاربران','route'=>'admin.users.index','tone'=>'danger','icon'=>'users','group'=>'کاربران و نقش‌ها'],
+            ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','tone'=>'indigo','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'],
+            ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','tone'=>'indigo','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'],
+            ['title'=>'محصولات سایت','route'=>'products.index','tone'=>'primary','icon'=>'box','group'=>'محصولات و فروش'],
+            ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','tone'=>'orange','icon'=>'chart','group'=>'گزارش و تحلیل'],
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'],
         ];
 
         $cardsMarketer = [
-            ['title'=>'مشتریان من','route'=>'marketer.customers.index','tone'=>'teal','icon'=>'users'],
-            ['title'=>'فروش (درحال توسعه)','route'=>'dashboard','tone'=>'indigo','icon'=>'chart'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','tone'=>'pink','icon'=>'user-group'],
+            ['title'=>'مشتریان من','route'=>'marketer.customers.index','tone'=>'teal','icon'=>'users','group'=>'مشتریان'],
+            ['title'=>'فروش (درحال توسعه)','route'=>'dashboard','tone'=>'indigo','icon'=>'chart','group'=>'محصولات و فروش'],
+            ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','tone'=>'pink','icon'=>'user-group','group'=>'مشتریان'],
         ];
 
         $cardsSales = [
-            ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','tone'=>'teal','icon'=>'users'],
+            ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','tone'=>'teal','icon'=>'users','group'=>'مشتریان'],
         ];
 
         $jDay = \Hekmatinasser\Verta\Verta::now()->day;
         $showEvalCard = ($jDay >= 28 || $jDay <= 3);
 
         $cardsUser = [
-            ['title'=>'گزارش‌های من','route'=>'user.reports.index','tone'=>'orange','icon'=>'doc'],
-            ['title'=>'ثبت مرخصی','route'=>'leaves','tone'=>'indigo','icon'=>'calendar'],
-            ['title'=>'یادآورها','route'=>'reminders.index','tone'=>'indigo','icon'=>'bell'],
-            ['title'=>'مدیریت پیام‌ها','route'=>'messages.index','tone'=>'indigo','icon'=>'chat'],
-            ['title'=>'مدیریت درخواست‌ها','route'=>'requests.index','tone'=>'indigo','icon'=>'bolt'],
-            ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','tone'=>'orange','icon'=>'doc'],
+            ['title'=>'گزارش‌های من','route'=>'user.reports.index','tone'=>'orange','icon'=>'doc','group'=>'گزارش و تحلیل'],
+            ['title'=>'ثبت مرخصی','route'=>'leaves','tone'=>'indigo','icon'=>'calendar','group'=>'درخواست‌ها و پیگیری'],
+            ['title'=>'یادآورها','route'=>'reminders.index','tone'=>'indigo','icon'=>'bell','group'=>'درخواست‌ها و پیگیری'],
+            ['title'=>'مدیریت پیام‌ها','route'=>'messages.index','tone'=>'indigo','icon'=>'chat','group'=>'درخواست‌ها و پیگیری'],
+            ['title'=>'مدیریت درخواست‌ها','route'=>'requests.index','tone'=>'indigo','icon'=>'bolt','group'=>'درخواست‌ها و پیگیری'],
+            ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','tone'=>'orange','icon'=>'doc','group'=>'محصولات و فروش'],
         ];
-        if ($showEvalCard) $cardsUser[] = ['title'=>'فرم‌های ارزیابی','route'=>'evaluations.index','tone'=>'indigo','icon'=>'doc'];
+        if ($showEvalCard) $cardsUser[] = ['title'=>'فرم‌های ارزیابی','route'=>'evaluations.index','tone'=>'indigo','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'];
 
         $cardsManager = [
-            ['title'=>'مدیریت گزارش کارها','route'=>'user.reports.reportsManagment','tone'=>'orange','icon'=>'doc'],
-            ['title'=>'مدیریت مرخصی‌ها','route'=>'leaves','tone'=>'indigo','icon'=>'calendar'],
-            ['title'=>'مدیریت تسک‌ها','route'=>'admin.tasks.index','tone'=>'warning','icon'=>'checklist'],
+            ['title'=>'مدیریت گزارش کارها','route'=>'user.reports.reportsManagment','tone'=>'orange','icon'=>'doc','group'=>'گزارش و تحلیل'],
+            ['title'=>'مدیریت مرخصی‌ها','route'=>'leaves','tone'=>'indigo','icon'=>'calendar','group'=>'درخواست‌ها و پیگیری'],
+            ['title'=>'مدیریت تسک‌ها','route'=>'admin.tasks.index','tone'=>'warning','icon'=>'checklist','group'=>'درخواست‌ها و پیگیری'],
         ];
 
         $cardsCustomerReview = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'],
         ];
 
         $cardsInternalManager = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc','group'=>'ارزیابی و فرم‌ها'],
         ];
 
         $roleCards = [
@@ -89,6 +89,12 @@
             }
         }
         $cardsToShow = array_values($cardsToShow);
+
+        $cardsSections = [];
+        foreach ($cardsToShow as $card) {
+            $group = $card['group'] ?? 'سایر بخش‌ها';
+            $cardsSections[$group][] = $card;
+        }
 
         // -----------------------------
         // آمار بالا
@@ -218,7 +224,7 @@
                             </div>
                         </div>
 
-                        <div class="p-4">
+                        <div class="p-4 d-none d-md-block">
                             <div class="row g-3">
                                 @foreach($cardsToShow as $card)
                                     @php
@@ -250,6 +256,55 @@
                                                 </div>
                                             </div>
                                         </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="p-3 d-md-none">
+                            <div class="accordion" id="quickAccessAccordion">
+                                @foreach($cardsSections as $sectionTitle => $sectionCards)
+                                    <div class="accordion-item card-soft mb-2 overflow-hidden">
+                                        <h2 class="accordion-header" id="heading-{{ $loop->index }}">
+                                            <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $loop->index }}" aria-expanded="{{ $loop->first ? 'true' : 'false' }}" aria-controls="collapse-{{ $loop->index }}">
+                                                <span class="fw-semibold">{{ $sectionTitle }}</span>
+                                                <span class="text-muted small ms-2">({{ count($sectionCards) }})</span>
+                                            </button>
+                                        </h2>
+                                        <div id="collapse-{{ $loop->index }}" class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" aria-labelledby="heading-{{ $loop->index }}" data-bs-parent="#quickAccessAccordion">
+                                            <div class="accordion-body py-2 px-2">
+                                                @foreach($sectionCards as $card)
+                                                    @php
+                                                        $badgeClass = match($card['tone']) {
+                                                            'purple' => 'badge-purple',
+                                                            'pink'   => 'badge-pink',
+                                                            'indigo' => 'badge-indigo',
+                                                            'teal'   => 'badge-teal',
+                                                            'orange' => 'badge-orange',
+                                                            default  => 'bg-'.$card['tone'].'-subtle text-'.$card['tone']
+                                                        };
+                                                        $iconBg = 'bg-'.$card['tone'].'-subtle';
+                                                        $iconTx = 'text-'.$card['tone'];
+                                                    @endphp
+                                                    <a href="{{ route($card['route']) }}" class="text-decoration-none d-block mb-2">
+                                                        <div class="card-soft bg-white p-3">
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <div class="icon-wrap {{ $iconBg }} {{ $iconTx }} border border-{{ $card['tone'] }}-subtle" style="width:40px;height:40px;">
+                                                                        {!! dash_icon2($card['icon']) !!}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="fw-semibold text-dark">{{ $card['title'] }}</div>
+                                                                        <span class="badge {{ $badgeClass }}">ورود</span>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="text-muted small">◀</span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
