@@ -320,19 +320,16 @@ class CustomerNotesController extends Controller
     if (Auth::user()->hasRole('Marketer')) {
         if ($customer->user_id !== Auth::id()) abort(403);
 
-        activity()
-            ->causedBy(Auth::user())
-            ->performedOn($note)
-            ->withProperties(['customer_id' => $customer->id])
-            ->log('حذف یادداشت توسط بازاریاب');
-
-        $note->delete();
-
         if (request()->expectsJson()) {
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => false,
+                'message' => 'بازاریاب اجازه حذف یادداشت را ندارد و فقط می‌تواند آن را ویرایش کند.'
+            ], 403);
         }
 
-        return redirect()->route('marketer.customer.notes.index', ['customer' => $customer]);
+        return redirect()
+            ->route('marketer.customer.notes.index', ['customer' => $customer])
+            ->with('error', 'شما اجازه حذف یادداشت را ندارید. فقط امکان ویرایش وجود دارد.');
     }
 
     abort(403);

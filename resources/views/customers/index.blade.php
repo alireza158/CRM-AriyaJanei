@@ -126,6 +126,8 @@
                                                                     @endif
                                                                <small>{{ \Morilog\Jalali\Jalalian::fromDateTime($note->created_at)->format('Y/m/d H:i') }}</small>
 
+                                                                        <button class="btn btn-sm btn-warning edit-note">
+                                                                            <i class="bi bi-pencil"></i> ویرایش</button>
 
                                                                         <button class="btn btn-sm btn-danger delete-note">
                                                                             <i class="bi bi-trash"></i> حذف</button>
@@ -224,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="badge bg-primary ms-1">ادمین</span>
                            ${data.note.created_at}</small>
 
+                            <button class="btn btn-sm btn-warning edit-note">ویرایش</button>
                             <button class="btn btn-sm btn-danger delete-note">حذف</button>
                         </div>
                     `;
@@ -267,6 +270,37 @@ if (e.target.classList.contains('delete-note')) {
     });
 }
 
+        // ویرایش یادداشت
+        if (e.target.classList.contains('edit-note')) {
+            const li = e.target.closest('li[data-id]');
+            if (!li) return;
+
+            const noteId = li.dataset.id;
+            const contentNode = li.querySelector('.note-content');
+            const oldContent = contentNode ? contentNode.textContent.trim() : '';
+            const newContent = prompt('ویرایش یادداشت:', oldContent);
+            if (newContent === null) return;
+            if (!newContent.trim()) return alert('محتوا نمی‌تواند خالی باشد');
+
+            fetch(`/admin/customers/notes/${noteId}`, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({content: newContent.trim()})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && contentNode) {
+                    contentNode.textContent = data.content;
+                } else {
+                    alert('ویرایش یادداشت موفقیت‌آمیز نبود.');
+                }
+            })
+            .catch(err => console.error(err));
+        }
 
 
     });
