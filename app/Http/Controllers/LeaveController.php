@@ -10,7 +10,6 @@ use Hekmatinasser\Verta\Verta;
 use App\Models\Notification;
   use Kavenegar\KavenegarApi;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 
 use Illuminate\Auth\Access\AuthorizationException;
@@ -160,55 +159,28 @@ $phones = User::role('InternalManager')   // همه کاربران با نقش I
 $token = "."; // تبدیل متن به فرمت مناسب URL
 
  
-    foreach ($phones as $phone) {
-        try {
-            $response = Http::timeout(10)->retry(2, 200)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-                'receptor' => $phone,
-                'token'    => $token,
-                'template' => $template,
-            ]);
+foreach ($phones as $phone) {
+   
 
-            if (! $response->successful()) {
-                Log::warning('Leave SMS send failed for internal manager list', [
-                    'phone' => $phone,
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Leave SMS send failed for internal manager list', [
-                'phone' => $phone,
-                'error' => $e->getMessage(),
-            ]);
-        }
-    }
+    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+        'receptor' => $phone,
+        'token'    =>$token ,
+        'template' => $template,
+    ]);
+  
 
-    if ($managerPhone) {
-        try {
-            $response = Http::timeout(10)->retry(2, 200)->get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-                'receptor' => $managerPhone,
-                'token'    => $token,
-                'template' => $template,
-            ]);
-
-            if (! $response->successful()) {
-                Log::warning('Leave SMS send failed for manager', [
-                    'manager_id' => $managerId,
-                    'phone' => $managerPhone,
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                ]);
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Leave SMS send failed for manager', [
-                'manager_id' => $managerId,
-                'phone' => $managerPhone,
-                'error' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد.');
+    $results[] = [
+        'phone'    => $phone,
+        'token'    => $token ,
+        'response' => $response->json(),
+    ];
+}
+    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
+        'receptor' => $managerPhone,
+        'token'    => $token ,
+        'template' => $template,
+    ]);
+    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و پیامک ارسال گردید.');
 }
 public function approve(Leave $leave)
 {
