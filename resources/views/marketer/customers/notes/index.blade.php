@@ -50,17 +50,11 @@
 
                                 @php
                                 // بررسی اینکه از زمان ایجاد کمتر از 2 ساعت گذشته
-                                $canEditOrDelete = $note->created_at->gt(now()->subHours(2));
+                                $canEdit = $note->created_at->gt(now()->subHours(2));
                             @endphp
 
-                            @if($canEditOrDelete)
+                            @if($canEdit)
                                 <a href="{{ route('marketer.customer.notes.edit', [ 'customer' => $customer->id, 'note' => $note->id]) }}" class="btn btn-primary">ویرایش</a>
-                                |
-                                <form action="{{ route('marketer.customer.notes.destroy', [ 'customer' => $customer->id, 'note' => $note->id]) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return confirm('آیا مطمئن هستید؟')" class="btn btn-danger">حذف</button>
-                                </form>
                             @endif
 
                             </td>
