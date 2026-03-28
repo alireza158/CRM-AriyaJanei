@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex gap-3 items-center" dir="rtl">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                فاکتور مشتری {{ $invoice->customer->name }}
+                فاکتور مشتری {{ $invoice->customer->name }} (شناسه: {{ $invoice->customer->display_customer_id }})
             </h2>
             <h3>
                 |

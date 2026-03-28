@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">ویرایش مشتری: {{ $customer->name }}</h2>
+        <h2 class="h4 font-weight-bold">ویرایش مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})</h2>
     </x-slot>
 
     <div class="container mt-4">

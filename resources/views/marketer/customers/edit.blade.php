@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex gap-4" dir="rtl">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                ویرایش مشتری: {{ $customer->name }}
+                ویرایش مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
             </h2>
             |
             <a href="{{ route('marketer.customers.index') }}">

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex align-items-center gap-3">
             <h2 class="fw-semibold fs-4 mb-0">
-                لیست یادداشت‌های مشتری: {{ $customer->name }}
+                لیست یادداشت‌های مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
             </h2>
             |
             <h3>

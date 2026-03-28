@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex gap-4 items-center" dir="rtl">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                ایجاد یادداشت جدید برای: {{ $customer->name }}
+                ایجاد یادداشت جدید برای: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
             </h2>
             |
             <h3>
@@ -53,4 +53,3 @@
         </div>
     </div>
 </x-layouts.app>
-

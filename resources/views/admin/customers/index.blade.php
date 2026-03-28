@@ -128,6 +128,7 @@
                     <table class="table table-hover align-middle text-center">
                         <thead class="table-dark">
                         <tr>
+                            <th>شناسه مشتری</th>
                             <th>نام</th>
                             <th>شماره</th>
                             <th>بازاریاب</th>
@@ -142,6 +143,7 @@
                         <tbody>
                         @forelse($customers as $customer)
                             <tr>
+                                <td>{{ $customer->display_customer_id }}</td>
                                 <td>{{ $customer->name }}</td>
                                 <td>{{ $customer->phone }}</td>
                                 <td>{{ $customer->marketer?->name ?? '-' }}</td>
@@ -221,7 +223,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-muted">هیچ مشتری یافت نشد.</td>
+                                <td colspan="9" class="text-muted">هیچ مشتری یافت نشد.</td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -236,7 +238,7 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header bg-info text-white">
-                                    <h5 class="modal-title">فاکتورهای {{ $customer->name }}</h5>
+                                    <h5 class="modal-title">فاکتورهای {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                 </div>
 
@@ -322,7 +324,7 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title">یادداشت‌های {{ $customer->name }}</h5>
+                                    <h5 class="modal-title">یادداشت‌های {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                 </div>
 
@@ -489,4 +491,3 @@
     </script>
 
 </x-app-layout>
-

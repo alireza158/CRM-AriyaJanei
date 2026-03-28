@@ -36,6 +36,13 @@ class Customer extends Model
         'marketer_changed_at' => 'datetime',
     ];
 
+
+
+    public function getDisplayCustomerIdAttribute(): int
+    {
+        return (int) ($this->customer_number ?? (100000 + (int) $this->id));
+    }
+
     public function category(){
         return $this->belongsTo(Category::class);
     }
