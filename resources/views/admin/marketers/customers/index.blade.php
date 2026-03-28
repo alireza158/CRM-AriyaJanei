@@ -1,108 +1,125 @@
-<x-layouts.app>
+<x-app-layout>
     <x-slot name="header">
-        <div class="flex gap-4 items-center" dir="rtl">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                مدیریت مشتریان
-            </h2>
-            |
-            <h3>
-                <a href="{{ route('admin.marketers.customers.create', ['marketer' => $marketer->id]) }}" class="hover:underline">
-                    ایجاد مشتری جدید
-                </a>
-            </h3>
-            \
-            <h3>
-                <a href="{{ route('admin.marketers.customers.export.excel', ['marketer' => $marketer->id]) }}" class="hover:underline text-green-700">
-                    خروجی اکسل مشتری‌ها
-                </a>
-            </h3>
-            |
-            <h3>
-                <a href="{{ route('admin.marketers.index') }}" class=" hover:underline">
-                     بازگشت به لیست بازاریابان
-                </a>
-            </h3>
-        </div>
+        <h2 class="h4 font-weight-bold">مدیریت مشتریان</h2>
     </x-slot>
 
-    <div class="py-12" dir="rtl">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <table class="min-w-full table-auto border-collapse border border-gray-200 text-right">
-                    <thead>
-                    <tr>
-                        <th class="border border-gray-300 px-4 py-2 text-right">#</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">نام</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">ایمیل</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">تلفن</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">دسته‌بندی</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">منبع</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">بازاریاب</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">فاکتورها</th>
-                        <th class="border px-4 py-2 text-right">یادداشت‌ها</th>
-                        <th class="border border-gray-300 px-4 py-2 text-right">عملیات</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($customers as $customer)
+    <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <div class="container mt-4" dir="rtl">
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="row g-2">
+
+                    <div class="col-md-3">
+                        <a href="{{ route('admin.marketers.customers.create', ['marketer' => $marketer->id]) }}"
+                           class="btn btn-success w-100">
+                            مشتری جدید
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="{{ route('admin.marketers.customers.export.excel', ['marketer' => $marketer->id]) }}"
+                           class="btn btn-outline-success w-100">
+                            خروجی اکسل مشتری‌ها
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="{{ route('admin.marketers.index') }}"
+                           class="btn btn-outline-secondary w-100">
+                            بازگشت به لیست بازاریابان
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
+                        <thead class="table-dark">
                         <tr>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $loop->iteration }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $customer->name }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $customer->email ?? '-' }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $customer->phone ?? '-' }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $customer->category->name }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $customer->referenceType->name }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $marketer->name }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">
-                                <a href="{{ route('admin.marketers.invoices.index', [$marketer->id, $customer->id]) }}"  class="text-blue-600 hover:font-bold">
-                                    فاکتور
-                                </a>
-                            </td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">
-                                <a href="{{ route('admin.marketers.customers.notes.index', [$marketer->id, $customer->id])
-                                    }}" class="text-blue-600 hover:font-bold">
-                                    مشاهده یادداشت‌ها
-                                </a>
-                            </td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">
-{{--                                <a href="{{ route('admin.marketers.customers.show', $customer) }}" class="text-blue-600 hover:underline">مشاهده</a>--}}
-{{--                                |--}}
-                                <a href="{{ route('admin.marketers.customers.edit', [
-                                    'marketer' => $marketer->id,
-                                    'customer'  => $customer->id,
-                                    ]) }}" class="text-blue-600 hover:underline">
-                                    ویرایش
-                                </a>
-
-
-                                |
-                                <form action="{{ route('admin.marketers.customers.destroy', [
-                                      'marketer' => $marketer->id,
-                                      'customer'  => $customer->id
-                                    ]) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            onclick="return confirm('آیا مطمئن هستید؟')"
-                                            class="text-red-600 hover:underline bg-transparent border-none p-0 m-0">
-                                        حذف
-                                    </button>
-                                </form>
-
-                            </td>
+                            <th>#</th>
+                            <th>نام</th>
+                            <th>ایمیل</th>
+                            <th>تلفن</th>
+                            <th>دسته‌بندی</th>
+                            <th>منبع</th>
+                            <th>فاکتورها</th>
+                            <th>یادداشت‌ها</th>
+                            <th>عملیات</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10" class="text-center py-4 text-gray-500">مشتری‌ای یافت نشد.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+                        </thead>
 
-                <div class="mt-4">
-                    {{ $customers->links() }}
+                        <tbody>
+                        @forelse($customers as $customer)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $customer->name }}</td>
+                                <td>{{ $customer->email ?? '-' }}</td>
+                                <td>{{ $customer->phone ?? '-' }}</td>
+                                <td>{{ $customer->category->name ?? '-' }}</td>
+                                <td>{{ $customer->referenceType->name ?? '-' }}</td>
+
+                                <td>
+                                    <a href="{{ route('admin.marketers.invoices.index', [$marketer->id, $customer->id]) }}"
+                                       class="btn btn-sm btn-info">
+                                        فاکتور
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a href="{{ route('admin.marketers.customers.notes.index', [$marketer->id, $customer->id]) }}"
+                                       class="btn btn-sm btn-primary">
+                                        مشاهده یادداشت‌ها
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('admin.marketers.customers.edit', [
+                                            'marketer' => $marketer->id,
+                                            'customer' => $customer->id,
+                                        ]) }}"
+                                           class="btn btn-sm btn-primary">
+                                            ویرایش
+                                        </a>
+
+                                        <form action="{{ route('admin.marketers.customers.destroy', [
+                                            'marketer' => $marketer->id,
+                                            'customer' => $customer->id
+                                        ]) }}"
+                                              method="POST"
+                                              class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    onclick="return confirm('آیا مطمئن هستید؟')"
+                                                    class="btn btn-sm btn-danger">
+                                                حذف
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-muted py-4">
+                                    مشتری‌ای یافت نشد.
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $customers->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
     </div>
-</x-layouts.app>
+</x-app-layout>
