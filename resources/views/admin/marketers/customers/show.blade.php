@@ -1,7 +1,7 @@
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            جزئیات مشتری: {{ $customer->name }}
+            جزئیات مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
         </h2>
     </x-slot>
 
@@ -9,6 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <div class="grid grid-cols-1 gap-4">
+                    <div><strong>شناسه مشتری:</strong> {{ $customer->display_customer_id }}</div>
                     <div><strong>نام:</strong> {{ $customer->name }}</div>
                     <div><strong>ایمیل:</strong> {{ $customer->email ?? '-' }}</div>
                     <div><strong>تلفن:</strong> {{ $customer->phone ?? '-' }}</div>

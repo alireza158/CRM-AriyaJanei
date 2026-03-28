@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex gap-3 items-center" dir="rtl">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                فاکتورهای {{ ucfirst(__('admin.marketers')) }} / {{ $customer->name }}
+                فاکتورهای {{ ucfirst(__('admin.marketers')) }} / {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
             </h2>
             |
             <h3>
@@ -37,7 +37,7 @@
                     @forelse($invoices as $invoice)
                         <tr>
                             <td class="border border-gray-300 px-4 py-2 text-right">{{ $loop->iteration + ($invoices->currentPage()-1)*$invoices->perPage() }}</td>
-                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $invoice->customer->name }}</td>
+                            <td class="border border-gray-300 px-4 py-2 text-right">{{ $invoice->customer->name }} ({{ $invoice->customer->display_customer_id }})</td>
                             <td class="border border-gray-300 px-4 py-2 text-right">{{ \Morilog\Jalali\Jalalian::fromDateTime($invoice->invoice_date)->format('Y-m-d') }}</td>
                             <td class="border border-gray-300 px-4 py-2 text-right">{{ number_format($invoice->total_amount) }}</td>
                             <td class="border border-gray-300 px-4 py-2 text-right">{{ Str::limit($invoice->description, 30) }}</td>

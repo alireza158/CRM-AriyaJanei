@@ -30,6 +30,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col" style="width:60px">#</th>
+                                    <th scope="col">شناسه مشتری</th>
                                     <th scope="col">نام</th>
 
                                     <th scope="col">تلفن</th>
@@ -45,6 +46,7 @@
                                 @forelse($customers as $customer)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $customer->display_customer_id }}</td>
                                         <td>
                                             {{ $customer->name }}
                                             @if($customer->marketer_changed_at && \Carbon\Carbon::parse($customer->marketer_changed_at)->gt(now()->subDay()))
@@ -143,7 +145,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
+                                        <td colspan="10" class="text-center text-muted py-4">
                                             مشتری‌ای یافت نشد.
                                         </td>
                                     </tr>

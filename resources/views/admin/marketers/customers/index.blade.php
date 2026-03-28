@@ -43,6 +43,7 @@
                         <thead class="table-dark">
                         <tr>
                             <th>#</th>
+                            <th>شناسه مشتری</th>
                             <th>نام</th>
                             <th>ایمیل</th>
                             <th>تلفن</th>
@@ -58,6 +59,7 @@
                         @forelse($customers as $customer)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $customer->display_customer_id }}</td>
                                 <td>{{ $customer->name }}</td>
                                 <td>{{ $customer->email ?? '-' }}</td>
                                 <td>{{ $customer->phone ?? '-' }}</td>
@@ -107,7 +109,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-muted py-4">
+                                <td colspan="10" class="text-muted py-4">
                                     مشتری‌ای یافت نشد.
                                 </td>
                             </tr>

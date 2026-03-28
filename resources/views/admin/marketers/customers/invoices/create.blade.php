@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex gap-5 items-center" dir="rtl">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $marketer->name ?? '' }} / {{ $customer->name ?? '' }}
+                {{ $marketer->name ?? '' }} / {{ $customer->name ?? '' }} (شناسه: {{ $customer->display_customer_id ?? '-' }})
             </h2>
             <a href="{{ url()->previous() }}" class="text-blue-600 hover:underline">بازگشت</a>
         </div>

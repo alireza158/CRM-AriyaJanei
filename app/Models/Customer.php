@@ -4,12 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Prompts\Note;
 
 class Customer extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::created(function (Customer $customer): void {
+            if (! $customer->customer_number) {
+                $customer->forceFill([
+                    'customer_number' => 100000 + (int) $customer->id,
+                ])->saveQuietly();
+            }
+        });
+    }
     protected $fillable = [
+      'customer_number',
       'name',
       'DISC',
       'phone',
@@ -24,6 +35,13 @@ class Customer extends Model
     protected $casts = [
         'marketer_changed_at' => 'datetime',
     ];
+
+
+
+    public function getDisplayCustomerIdAttribute(): int
+    {
+        return (int) ($this->customer_number ?? (100000 + (int) $this->id));
+    }
 
     public function category(){
         return $this->belongsTo(Category::class);

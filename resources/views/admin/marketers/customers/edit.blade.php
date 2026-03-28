@@ -1,7 +1,7 @@
 <x-layouts.app>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight text-right">
-            ویرایش مشتری: {{ $customer->name }}
+            ویرایش مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})
         </h2>
     </x-slot>
 

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">لیست یادداشت‌های مشتری: {{ $customer->name }}</h2>
+        <h2 class="h4 font-weight-bold">لیست یادداشت‌های مشتری: {{ $customer->name }} (شناسه: {{ $customer->display_customer_id }})</h2>
     </x-slot>
 
     <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
