@@ -22,7 +22,7 @@
 {{--        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />--}}
 <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('css/instrument-sans.css') }}">
-
+<script src="{{ asset('lib/bootstrap.bundle.min.js') }}"></script>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -46,7 +46,6 @@
             </main>
         </div>
     </body>
-    <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
 <style>
     :root {
         --radius: 16px;

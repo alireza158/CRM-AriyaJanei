@@ -1,350 +1,880 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-2" dir="rtl">
-            <div>
-                <h2 class="fw-bold fs-3 text-dark mb-1">داشبورد</h2>
-                <div class="text-muted small">
-                    خوش آمدی <span class="fw-semibold text-dark">{{ Auth::user()->name }}</span>
-                </div>
-            </div>
-            <div class="text-muted small">
-                {{ \Hekmatinasser\Verta\Verta::now()->format('l، j F Y') }}
-            </div>
-        </div>
-    </x-slot>
-
     @php
-        // -----------------------------
-        // کارت‌ها بر اساس نقش
-        // -----------------------------
-        $cardsAdmin = [
-            ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','tone'=>'primary','icon'=>'users'],
-            ['title'=>'کاربران مهمان','route'=>'admin.guests.index','tone'=>'purple','icon'=>'user'],
-            ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','tone'=>'success','icon'=>'archive'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','tone'=>'pink','icon'=>'user-group'],
-            ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','tone'=>'info','icon'=>'clipboard'],
-            ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','tone'=>'warning','icon'=>'tag'],
-            ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','tone'=>'danger','icon'=>'question'],
-            ['title'=>'مدیریت کاربران','route'=>'admin.users.index','tone'=>'danger','icon'=>'users'],
-            ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','tone'=>'indigo','icon'=>'doc'],
-            ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','tone'=>'indigo','icon'=>'doc'],
-            ['title'=>'محصولات سایت','route'=>'products.index','tone'=>'primary','icon'=>'box'],
-            ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','tone'=>'orange','icon'=>'chart'],
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
-        ];
-
-        $cardsMarketer = [
-            ['title'=>'مشتریان من','route'=>'marketer.customers.index','tone'=>'teal','icon'=>'users'],
-            ['title'=>'فروش (درحال توسعه)','route'=>'dashboard','tone'=>'indigo','icon'=>'chart'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','tone'=>'pink','icon'=>'user-group'],
-        ];
-
-        $cardsSales = [
-            ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','tone'=>'teal','icon'=>'users'],
-        ];
-
-        $jDay = \Hekmatinasser\Verta\Verta::now()->day;
+        $user = auth()->user();
+        $now = \Hekmatinasser\Verta\Verta::now();
+        $jDay = $now->day;
         $showEvalCard = ($jDay >= 28 || $jDay <= 3);
 
-        $cardsUser = [
-            ['title'=>'گزارش‌های من','route'=>'user.reports.index','tone'=>'orange','icon'=>'doc'],
-            ['title'=>'ثبت مرخصی','route'=>'leaves','tone'=>'indigo','icon'=>'calendar'],
-            ['title'=>'یادآورها','route'=>'reminders.index','tone'=>'indigo','icon'=>'bell'],
-            ['title'=>'مدیریت پیام‌ها','route'=>'messages.index','tone'=>'indigo','icon'=>'chat'],
-            ['title'=>'مدیریت درخواست‌ها','route'=>'requests.index','tone'=>'indigo','icon'=>'bolt'],
-            ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','tone'=>'orange','icon'=>'doc'],
-        ];
-        if ($showEvalCard) $cardsUser[] = ['title'=>'فرم‌های ارزیابی','route'=>'evaluations.index','tone'=>'indigo','icon'=>'doc'];
-
-        $cardsManager = [
-            ['title'=>'مدیریت گزارش کارها','route'=>'user.reports.reportsManagment','tone'=>'orange','icon'=>'doc'],
-            ['title'=>'مدیریت مرخصی‌ها','route'=>'leaves','tone'=>'indigo','icon'=>'calendar'],
-            ['title'=>'مدیریت تسک‌ها','route'=>'admin.tasks.index','tone'=>'warning','icon'=>'checklist'],
-        ];
-
-        $cardsCustomerReview = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
+        $linksAdmin = [
+            ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','icon'=>'users'],
+            ['title'=>'کاربران مهمان','route'=>'admin.guests.index','icon'=>'user'],
+            ['title'=>'مدیریت کاربران','route'=>'admin.users.index','icon'=>'users'],
+            ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','icon'=>'archive'],
+            ['title'=>'محصولات سایت','route'=>'products.index','icon'=>'box'],
+            ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','icon'=>'user-group'],
+            ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','icon'=>'clipboard'],
+            ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','icon'=>'tag'],
+            ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','icon'=>'question'],
+            ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','icon'=>'doc'],
+            ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','icon'=>'doc'],
+            ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','icon'=>'chart'],
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
         ];
 
-        $cardsInternalManager = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','tone'=>'success','icon'=>'doc'],
+        $linksMarketer = [
+            ['title'=>'مشتریان من','route'=>'marketer.customers.index','icon'=>'users'],
+            ['title'=>'فروش (درحال توسعه)','route'=>'dashboard','icon'=>'chart'],
+            ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','icon'=>'user-group'],
+            ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','icon'=>'doc'],
         ];
 
-        $roleCards = [
-            'Admin'           => $cardsAdmin,
-            'Manager'         => $cardsManager,
-            'Marketer'        => $cardsMarketer,
-            'Sales'           => $cardsSales,
-            'User'            => $cardsUser,
-            'customer_review' => $cardsCustomerReview,
-            'internalManager' => $cardsInternalManager,
-            'InternalManager' => $cardsInternalManager,
+        $linksSales = [
+            ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','icon'=>'users'],
         ];
 
-        // کارت‌های قابل نمایش (تجمیع نقش‌ها + حذف تکراری با route)
-        $cardsToShow = [];
-        foreach ($roleCards as $role => $cards) {
-            if (auth()->user()->hasRole($role)) {
-                foreach ($cards as $c) $cardsToShow[$c['route']] = $c;
+        $linksUser = [
+            ['title'=>'گزارش‌های من','route'=>'user.reports.index','icon'=>'doc'],
+            ['title'=>'ثبت مرخصی','route'=>'leaves','icon'=>'calendar'],
+            ['title'=>'یادآورها','route'=>'reminders.index','icon'=>'bell'],
+            ['title'=>'مدیریت پیام‌ها','route'=>'messages.index','icon'=>'chat'],
+            ['title'=>'مدیریت درخواست‌ها','route'=>'requests.index','icon'=>'bolt'],
+        ];
+
+        if ($showEvalCard) {
+            $linksUser[] = ['title'=>'فرم‌های ارزیابی','route'=>'evaluations.index','icon'=>'doc'];
+        }
+
+        $linksManager = [
+            ['title'=>'مدیریت گزارش کارها','route'=>'user.reports.reportsManagment','icon'=>'doc'],
+            ['title'=>'مدیریت مرخصی‌ها','route'=>'leaves','icon'=>'calendar'],
+            ['title'=>'مدیریت تسک‌ها','route'=>'admin.tasks.index','icon'=>'checklist'],
+        ];
+
+        $linksCustomerReview = [
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
+        ];
+
+        $linksInternalManager = [
+            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
+        ];
+
+        $roleLinks = [
+            'Admin'           => $linksAdmin,
+            'Manager'         => $linksManager,
+            'Marketer'        => $linksMarketer,
+            'Sales'           => $linksSales,
+            'User'            => $linksUser,
+            'customer_review' => $linksCustomerReview,
+            'internalManager' => $linksInternalManager,
+            'InternalManager' => $linksInternalManager,
+        ];
+
+        $allLinks = [];
+        foreach ($roleLinks as $role => $links) {
+            if ($user->hasRole($role)) {
+                foreach ($links as $item) {
+                    $allLinks[$item['route']] = $item;
+                }
             }
         }
-        $cardsToShow = array_values($cardsToShow);
+        $allLinks = array_values($allLinks);
 
-        // -----------------------------
-        // آمار بالا
-        // -----------------------------
+        $groups = [
+            'customers' => [
+                'title' => 'مشتریان و فروش',
+                'desc'  => 'مشتریان، سفارش، اطلاعات فرم و پیگیری فروش',
+                'tone'  => 'primary',
+                'icon'  => 'users',
+                'items' => [],
+            ],
+            'reports' => [
+                'title' => 'گزارش‌ها و ارزیابی',
+                'desc'  => 'گزارش‌های کاری، فرم‌های ارزیابی و نتایج',
+                'tone'  => 'success',
+                'icon'  => 'chart',
+                'items' => [],
+            ],
+            'requests' => [
+                'title' => 'درخواست‌ها و ارتباطات',
+                'desc'  => 'مرخصی، پیام‌ها، یادآورها و درخواست‌ها',
+                'tone'  => 'indigo',
+                'icon'  => 'chat',
+                'items' => [],
+            ],
+            'management' => [
+                'title' => 'مدیریت سیستم',
+                'desc'  => 'کاربران، محصولات، دسته‌بندی‌ها و لاگ‌ها',
+                'tone'  => 'warning',
+                'icon'  => 'archive',
+                'items' => [],
+            ],
+            'forms' => [
+                'title' => 'فرم‌ها و رضایت مشتری',
+                'desc'  => 'فرم رضایت مشتری و فرم‌های مرتبط',
+                'tone'  => 'teal',
+                'icon'  => 'doc',
+                'items' => [],
+            ],
+        ];
+
+        foreach ($allLinks as $link) {
+            $route = $link['route'];
+
+            if (in_array($route, [
+                'marketer.customers.index',
+                'admin.customersAdmin.index',
+                'customersAdmin2.index',
+                'marketer.orders.create',
+                'admin.contacts',
+                'dashboard',
+            ])) {
+                $groups['customers']['items'][$route] = $link;
+            } elseif (in_array($route, [
+                'user.reports.index',
+                'user.reports.reportsManagment',
+                'admin.evaluations.forms.index',
+                'admin.evaluations.monthly',
+                'evaluations.index',
+                'admin.reports',
+            ])) {
+                $groups['reports']['items'][$route] = $link;
+            } elseif (in_array($route, [
+                'leaves',
+                'reminders.index',
+                'messages.index',
+                'requests.index',
+                'admin.tasks.index',
+            ])) {
+                $groups['requests']['items'][$route] = $link;
+            } elseif (in_array($route, [
+                'admin.marketers.index',
+                'admin.guests.index',
+                'admin.users.index',
+                'admin.products.index',
+                'products.index',
+                'admin.activity_logs.index',
+                'admin.categories.index',
+                'admin.referenceType.index',
+            ])) {
+                $groups['management']['items'][$route] = $link;
+            } elseif (in_array($route, [
+                'customer-satisfaction-forms.index',
+            ])) {
+                $groups['forms']['items'][$route] = $link;
+            } else {
+                $groups['management']['items'][$route] = $link;
+            }
+        }
+
+        $groups = array_filter($groups, fn($g) => count($g['items']) > 0);
+
         $statCards = [];
-        if (auth()->user()->hasRole('Marketer')) {
-            $statCards[] = ['tone'=>'primary','title'=>'مشتری جدید (۲۴ ساعت)','value'=>$newCustomersCount,'desc'=>'ثبت شده در ۲۴ ساعت گذشته','emoji'=>'📌'];
+        if ($user->hasRole('Marketer')) {
+            $statCards[] = ['tone'=>'primary','title'=>'مشتری جدید','value'=>$newCustomersCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📌'];
         }
-        if (auth()->user()->hasRole('User') && !auth()->user()->hasAnyRole(['Admin','Manager'])) {
-            $statCards[] = ['tone'=>'success','title'=>'تسک‌های امروز','value'=>$todayTasksCount,'desc'=>'تسک جدید برایت اضافه شده','emoji'=>'✅'];
+        if ($user->hasRole('User') && !$user->hasAnyRole(['Admin','Manager'])) {
+            $statCards[] = ['tone'=>'success','title'=>'تسک‌های امروز','value'=>$todayTasksCount,'desc'=>'امروز','emoji'=>'✅'];
         }
-        if (auth()->user()->hasAnyRole(['Admin','Manager'])) {
-            $statCards[] = ['tone'=>'primary','title'=>'مشتری‌ها (۲۴ ساعت)','value'=>$newCustomersCount,'desc'=>'تعداد مشتری ثبت شده','emoji'=>'📌'];
-            $statCards[] = ['tone'=>'success','title'=>'یادداشت‌ها (۲۴ ساعت)','value'=>$newNotesCount,'desc'=>'تعداد یادداشت ثبت شده','emoji'=>'📝'];
-            $statCards[] = ['tone'=>'purple','title'=>'گزارش‌ها (۲۴ ساعت)','value'=>$newReportsCount,'desc'=>'تعداد گزارش ارسال شده','emoji'=>'📑'];
+        if ($user->hasAnyRole(['Admin','Manager'])) {
+            $statCards[] = ['tone'=>'primary','title'=>'مشتری جدید','value'=>$newCustomersCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📌'];
+            $statCards[] = ['tone'=>'success','title'=>'یادداشت جدید','value'=>$newNotesCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📝'];
+            $statCards[] = ['tone'=>'purple','title'=>'گزارش جدید','value'=>$newReportsCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📑'];
         }
 
-        // -----------------------------
-        // تسک‌ها
-        // -----------------------------
-        $showTasksWidget = auth()->user()->hasAnyRole(['Marketer','User','Manager']);
+        $showTasksWidget = $user->hasAnyRole(['Marketer','User','Manager']);
         $taskTotal = $tasks->count();
         $taskDone  = $tasks->where('completed', true)->count();
         $taskPct   = $taskTotal > 0 ? (int) round(($taskDone / $taskTotal) * 100) : 0;
+        $showTasksModalOnLogin = session('just_logged_in') && $taskTotal > 0;
 
-        // مودال تسک بعد از لاگین
-        $showTasksModalOnLogin = (session('just_logged_in') && $taskTotal > 0);
-
-        // آیکن‌ها (SVG ساده و تمیز)
-        if (!function_exists('dash_icon2')) {
-            function dash_icon2($name){
+        if (!function_exists('dash_icon_final_v2')) {
+            function dash_icon_final_v2($name){
                 $icons = [
-                    'users' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
-                    'user' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
-                    'archive' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7M4 13h16M5 20h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z"/></svg>',
-                    'user-group' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8zM7 8a4 4 0 110-8 4 4 0 010 8z"/></svg>',
-                    'clipboard' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v14h14V7a2 2 0 00-2-2h-2M9 5V3h6v2M9 12h6M9 16h6"/></svg>',
-                    'tag' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 7a2 2 0 114 0 2 2 0 01-4 0zM5 7h.01M7 7v10m0 0l-3 3m3-3h10"/></svg>',
-                    'question' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h.01M12 10h.01M16 10h.01M12 14v.01"/></svg>',
-                    'doc' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5l5 5v9a2 2 0 01-2 2z"/></svg>',
-                    'chart' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M9 17V9m4 8V5m4 12v-6"/></svg>',
-                    'calendar' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
-                    'bell' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14V11a6 6 0 10-12 0v3a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>',
-                    'chat' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h8M8 14h5"/></svg>',
-                    'bolt' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
-                    'box' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 12l-8 5-8-5m16 0l-8-5-8 5m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/></svg>',
-                    'checklist' => '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 5h12M9 12h12M9 19h12M5 5h.01M5 12h.01M5 19h.01"/></svg>',
+                    'users' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
+                    'user' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
+                    'archive' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7M4 13h16M5 20h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z"/></svg>',
+                    'user-group' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8zM7 8a4 4 0 110-8 4 4 0 010 8z"/></svg>',
+                    'clipboard' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v14h14V7a2 2 0 00-2-2h-2M9 5V3h6v2M9 12h6M9 16h6"/></svg>',
+                    'tag' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 7a2 2 0 114 0 2 2 0 01-4 0zM5 7h.01M7 7v10m0 0l-3 3m3-3h10"/></svg>',
+                    'question' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h.01M12 10h.01M16 10h.01M12 14v.01"/></svg>',
+                    'doc' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5l5 5v9a2 2 0 01-2 2z"/></svg>',
+                    'chart' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M9 17V9m4 8V5m4 12v-6"/></svg>',
+                    'calendar' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+                    'bell' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14V11a6 6 0 10-12 0v3a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>',
+                    'chat' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h8M8 14h5"/></svg>',
+                    'bolt' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+                    'box' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 12l-8 5-8-5m16 0l-8-5-8 5m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/></svg>',
+                    'checklist' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5h12M9 12h12M9 19h12M5 5h.01M5 12h.01M5 19h.01"/></svg>',
                 ];
                 return $icons[$name] ?? '';
             }
         }
     @endphp
 
-    {{-- حتماً Bootstrap CSS تو پروژه لود شده باشه. (Jetstream فقط Tailwindه) --}}
+    <x-slot name="header">
+        <div class="smart-dashboard dashboard-rtl">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-2">
+                <div class="text-end">
+                    <h2 class="sd-title fw-bold fs-3 mb-1">داشبورد</h2>
+                    <div class="sd-muted small">
+                        خوش آمدی <span class="fw-semibold sd-text">{{ Auth::user()->name }}</span>
+                    </div>
+                </div>
+
+                <div class="sd-muted small text-end">
+                    {{ \Hekmatinasser\Verta\Verta::now()->format('l، j F Y') }}
+                </div>
+            </div>
+        </div>
+    </x-slot>
+
     <style>
-        :root { --radius: 16px; }
-        .dash-wrap { background: linear-gradient(180deg, #f6f7fb 0%, #ffffff 50%, #ffffff 100%); }
-        .card-soft { border: 1px solid rgba(15,23,42,.08); border-radius: var(--radius); }
-        .card-soft:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
-        .card-soft { transition: .2s ease; }
-        .icon { width: 22px; height: 22px; }
-        .icon-wrap { width: 44px; height: 44px; border-radius: 14px; display:flex; align-items:center; justify-content:center; }
-        .soft-scroll::-webkit-scrollbar{ width: 8px; }
-        .soft-scroll::-webkit-scrollbar-thumb{ background: rgba(0,0,0,.15); border-radius: 999px; }
-        .soft-scroll::-webkit-scrollbar-track{ background: transparent; }
-        .badge-purple{ background:#ede9fe; color:#5b21b6; }
-        .badge-pink{ background:#fce7f3; color:#9d174d; }
-        .badge-indigo{ background:#e0e7ff; color:#3730a3; }
-        .badge-teal{ background:#ccfbf1; color:#115e59; }
-        .badge-orange{ background:#ffedd5; color:#9a3412; }
+        .smart-dashboard {
+            --sd-bg: #f6f8fc;
+            --sd-bg-soft: #eef2f7;
+            --sd-surface: #ffffff;
+            --sd-surface-2: #f8fafc;
+            --sd-border: #e2e8f0;
+            --sd-text: #0f172a;
+            --sd-muted: #64748b;
+            --sd-shadow: 0 6px 24px rgba(15, 23, 42, .05);
+            --sd-shadow-hover: 0 16px 34px rgba(15, 23, 42, .10);
+            --sd-progress-bg: rgba(148, 163, 184, .18);
+
+            --tone-primary-bg: rgba(59,130,246,.14);
+            --tone-primary-text: #2563eb;
+            --tone-success-bg: rgba(16,185,129,.14);
+            --tone-success-text: #059669;
+            --tone-purple-bg: rgba(139,92,246,.14);
+            --tone-purple-text: #7c3aed;
+            --tone-indigo-bg: rgba(99,102,241,.14);
+            --tone-indigo-text: #4f46e5;
+            --tone-warning-bg: rgba(245,158,11,.14);
+            --tone-warning-text: #d97706;
+            --tone-teal-bg: rgba(20,184,166,.14);
+            --tone-teal-text: #0f766e;
+        }
+
+        html.dark .smart-dashboard,
+        body.dark .smart-dashboard,
+        .dark .smart-dashboard,
+        html[data-bs-theme="dark"] .smart-dashboard,
+        body[data-bs-theme="dark"] .smart-dashboard,
+        [data-bs-theme="dark"] .smart-dashboard {
+            --sd-bg: #0b1220;
+            --sd-bg-soft: #111827;
+            --sd-surface: #0f172a;
+            --sd-surface-2: #162033;
+            --sd-border: rgba(148,163,184,.18);
+            --sd-text: #e5edf8;
+            --sd-muted: #94a3b8;
+            --sd-shadow: 0 12px 32px rgba(0,0,0,.28);
+            --sd-shadow-hover: 0 18px 40px rgba(0,0,0,.36);
+            --sd-progress-bg: rgba(148, 163, 184, .16);
+
+            --tone-primary-bg: rgba(96,165,250,.18);
+            --tone-primary-text: #93c5fd;
+            --tone-success-bg: rgba(52,211,153,.18);
+            --tone-success-text: #6ee7b7;
+            --tone-purple-bg: rgba(167,139,250,.18);
+            --tone-purple-text: #c4b5fd;
+            --tone-indigo-bg: rgba(129,140,248,.18);
+            --tone-indigo-text: #a5b4fc;
+            --tone-warning-bg: rgba(251,191,36,.18);
+            --tone-warning-text: #fcd34d;
+            --tone-teal-bg: rgba(45,212,191,.18);
+            --tone-teal-text: #5eead4;
+        }
+
+        .dashboard-rtl,
+        .dashboard-rtl * {
+            direction: rtl;
+        }
+
+        .sd-wrap {
+            min-height: 100%;
+            background: linear-gradient(180deg, var(--sd-bg) 0%, var(--sd-bg-soft) 50%, var(--sd-bg) 100%);
+            color: var(--sd-text);
+        }
+
+        .sd-title,
+        .sd-text,
+        .sd-section-title,
+        .sd-modal-title,
+        .sd-stat-number,
+        .sd-link-title,
+        .smart-dashboard .form-label,
+        .smart-dashboard .btn,
+        .smart-dashboard .modal-title {
+            color: var(--sd-text) !important;
+        }
+
+        .sd-muted,
+        .sd-link-subtitle,
+        .sd-group-desc,
+        .sd-stat-label,
+        .smart-dashboard small,
+        .smart-dashboard .text-muted {
+            color: var(--sd-muted) !important;
+        }
+
+        .sd-card,
+        .smart-dashboard .card,
+        .smart-dashboard .modal-content,
+        .smart-dashboard .list-group-item,
+        .smart-dashboard .dropdown-menu {
+            background: var(--sd-surface) !important;
+            border: 1px solid var(--sd-border) !important;
+            color: var(--sd-text) !important;
+            border-radius: 18px;
+            box-shadow: var(--sd-shadow);
+            transition: .2s ease;
+        }
+
+        .sd-card:hover {
+            box-shadow: var(--sd-shadow-hover);
+        }
+
+        .sd-surface-soft {
+            background: var(--sd-surface-2) !important;
+            color: var(--sd-text) !important;
+            border: 1px solid var(--sd-border) !important;
+        }
+
+        .sd-border {
+            border-color: var(--sd-border) !important;
+        }
+
+        .smart-dashboard .modal-header,
+        .smart-dashboard .modal-body,
+        .smart-dashboard .modal-footer {
+            background: var(--sd-surface) !important;
+            color: var(--sd-text) !important;
+            border-color: var(--sd-border) !important;
+        }
+
+        .smart-dashboard .list-group-item {
+            border-radius: 14px !important;
+            margin-bottom: .5rem;
+        }
+
+        .smart-dashboard .form-control,
+        .smart-dashboard .form-select,
+        .smart-dashboard .dash-input {
+            background: var(--sd-surface-2) !important;
+            color: var(--sd-text) !important;
+            border: 1px solid var(--sd-border) !important;
+        }
+
+        .smart-dashboard .form-control::placeholder,
+        .smart-dashboard .form-select::placeholder,
+        .smart-dashboard .dash-input::placeholder {
+            color: var(--sd-muted) !important;
+        }
+
+        .smart-dashboard .form-control:focus,
+        .smart-dashboard .form-select:focus,
+        .smart-dashboard .dash-input:focus {
+            background: var(--sd-surface-2) !important;
+            color: var(--sd-text) !important;
+            border-color: rgba(59,130,246,.45) !important;
+            box-shadow: 0 0 0 .2rem rgba(59,130,246,.12) !important;
+        }
+
+        .smart-dashboard .btn-outline-primary {
+            border-color: rgba(59,130,246,.45);
+        }
+
+        .smart-dashboard .btn-close {
+            opacity: 1;
+        }
+
+        html.dark .smart-dashboard .btn-close,
+        body.dark .smart-dashboard .btn-close,
+        .dark .smart-dashboard .btn-close,
+        html[data-bs-theme="dark"] .smart-dashboard .btn-close,
+        body[data-bs-theme="dark"] .smart-dashboard .btn-close,
+        [data-bs-theme="dark"] .smart-dashboard .btn-close {
+            filter: invert(1) grayscale(100%);
+        }
+
+        .sd-icon-svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .dash-icon-svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .sd-icon-wrap {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+
+        .tone-primary { background: var(--tone-primary-bg) !important; color: var(--tone-primary-text) !important; border-color: var(--tone-primary-bg) !important; }
+        .tone-success { background: var(--tone-success-bg) !important; color: var(--tone-success-text) !important; border-color: var(--tone-success-bg) !important; }
+        .tone-purple  { background: var(--tone-purple-bg) !important; color: var(--tone-purple-text) !important; border-color: var(--tone-purple-bg) !important; }
+        .tone-indigo  { background: var(--tone-indigo-bg) !important; color: var(--tone-indigo-text) !important; border-color: var(--tone-indigo-bg) !important; }
+        .tone-warning { background: var(--tone-warning-bg) !important; color: var(--tone-warning-text) !important; border-color: var(--tone-warning-bg) !important; }
+        .tone-teal    { background: var(--tone-teal-bg) !important; color: var(--tone-teal-text) !important; border-color: var(--tone-teal-bg) !important; }
+
+        .sd-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            padding: .38rem .78rem;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .sd-section-title {
+            font-weight: 800;
+        }
+
+        .sd-progress {
+            background: var(--sd-progress-bg);
+            height: 8px;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .sd-progress .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #6366f1) !important;
+        }
+
+        .sd-task-item,
+        .sd-stat-box,
+        .sd-link-item,
+        .sd-list-item {
+            background: var(--sd-surface) !important;
+            border: 1px solid var(--sd-border) !important;
+            border-radius: 14px;
+            color: var(--sd-text) !important;
+        }
+
+        .sd-task-item {
+            padding: .9rem 1rem;
+        }
+
+        .sd-stat-box {
+            padding: 14px 16px;
+            height: 100%;
+        }
+
+        .sd-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: .9rem;
+        }
+
+        .sd-stat-label {
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .sd-summary-board {
+            background: linear-gradient(135deg, var(--sd-surface) 0%, var(--sd-surface-2) 100%) !important;
+        }
+
+        .sd-group-card {
+            cursor: pointer;
+            min-height: 165px;
+            text-align: right;
+        }
+
+        .sd-link-item {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
+            gap: .9rem;
+            text-decoration: none;
+            padding: 14px 16px;
+            transition: .2s ease;
+        }
+
+        .sd-link-item:hover {
+            background: var(--sd-surface-2) !important;
+            color: var(--sd-text) !important;
+            transform: translateY(-1px);
+        }
+
+        .sd-badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .45rem;
+            justify-content: flex-start;
+        }
+
+        .sd-tag {
+            background: var(--sd-surface-2);
+            color: var(--sd-text);
+            border: 1px solid var(--sd-border);
+            border-radius: 999px;
+            padding: .32rem .68rem;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .sd-alert {
+            background: var(--sd-surface) !important;
+            color: var(--sd-text) !important;
+            border: 1px solid rgba(239,68,68,.25) !important;
+        }
+
+        .sd-soft-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sd-soft-scroll::-webkit-scrollbar-thumb {
+            background: rgba(100,116,139,.35);
+            border-radius: 999px;
+        }
+
+        .sd-soft-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sd-row-reverse {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+        }
+
+        .sd-row-reverse-start {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: flex-start;
+        }
+
+        .sd-between-rtl {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+        }
+
+        .sd-between-rtl-start {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .75rem;
+        }
+
+        .sd-text-end {
+            text-align: right !important;
+        }
+
+        @media (max-width: 991.98px) {
+            .top-stack-order-1 { order: 1; }
+            .top-stack-order-2 { order: 2; }
+            .top-stack-order-3 { order: 3; }
+        }
+
+        @media (max-width: 767.98px) {
+            .sd-group-card {
+                min-height: auto;
+            }
+
+            .sd-icon-wrap {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                border-radius: 14px;
+            }
+
+            .sd-stat-number {
+                font-size: 1.25rem;
+            }
+        }
     </style>
 
-    <div class="py-4 dash-wrap" dir="rtl">
+    <div class="smart-dashboard sd-wrap py-4 dashboard-rtl">
         <div class="container-fluid px-3 px-sm-4">
 
-            {{-- پیام مسدود بودن --}}
-            @if(Auth::user()->isBlocked())
-                <form id="logoutBlockedForm" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-                <div class="alert alert-danger card-soft mb-4">
+            @if($user->isBlocked())
+                <form id="logoutBlockedForm" action="{{ route('logout') }}" method="POST" style="display:none;">
+                    @csrf
+                </form>
+
+                <div class="alert alert-danger sd-alert sd-card mb-4">
                     <div class="fw-bold mb-1">⛔ حساب شما مسدود است</div>
                     <div class="small">
                         تا
                         <span class="fw-semibold">
-                            {{ \Hekmatinasser\Verta\Verta::instance(Auth::user()->blocked_until)->format('j F Y H:i') }}
+                            {{ \Hekmatinasser\Verta\Verta::instance($user->blocked_until)->format('j F Y H:i') }}
                         </span>
                         مسدود است و برای ادامه باید خارج شوید.
                     </div>
                 </div>
+
                 <script>
                     setTimeout(() => document.getElementById('logoutBlockedForm')?.submit(), 1000);
                 </script>
             @endif
 
-            {{-- آمار بالا --}}
-            @if(count($statCards) > 0)
-                <div class="row g-3 mb-4">
-                    @foreach($statCards as $s)
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <div class="bg-white card-soft p-4 h-100">
-                                <div class="d-flex align-items-start justify-content-between">
-                                    <div>
-                                        <div class="text-muted small mb-1">{{ $s['emoji'] }} {{ $s['title'] }}</div>
-                                        <div class="fw-bold fs-3 text-dark">{{ $s['value'] }}</div>
+            <div class="row g-3 mb-4 align-items-stretch">
+                <div class="col-12 col-lg-5 top-stack-order-1">
+                    @if($showTasksWidget)
+                        <div class="sd-card overflow-hidden h-100">
+                            <div class="p-4 border-bottom sd-border">
+                                <div class="sd-between-rtl">
+                                    <span class="sd-pill tone-primary">{{ $taskPct }}%</span>
+
+                                    <div class="sd-text-end">
+                                        <div class="sd-muted small">📋 وضعیت تسک‌ها</div>
+                                        <div class="fw-bold mt-1 sd-text">
+                                            {{ $taskDone }} / {{ $taskTotal }}
+                                            <span class="sd-muted small">({{ $taskPct }}%)</span>
+                                        </div>
                                     </div>
-                                    <span class="badge bg-{{ $s['tone'] }}-subtle text-{{ $s['tone'] }} border border-{{ $s['tone'] }}-subtle">
-                                        ۲۴ ساعت
-                                    </span>
                                 </div>
-                                <div class="text-muted small mt-2">{{ $s['desc'] }}</div>
+
+                                <div class="sd-progress mt-3">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ $taskPct }}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="p-4">
+                                @if($taskTotal > 0)
+                                    <div class="d-grid gap-2">
+                                        @foreach($tasks->take(3) as $task)
+                                            <div class="sd-task-item">
+                                                <div class="sd-row-reverse-start gap-2">
+                                                    <div class="flex-grow-1 sd-text-end">
+                                                        <label for="task-{{ $task->id }}"
+                                                            class="fw-semibold d-block {{ $task->completed ? 'text-decoration-line-through sd-muted' : 'sd-text' }}">
+                                                            {{ $task->title }}
+                                                        </label>
+
+                                                        @if($task->description)
+                                                            <div class="sd-muted small mt-1">
+                                                                {{ \Illuminate\Support\Str::limit($task->description, 55) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <input class="form-check-input mt-1 task-checkbox"
+                                                        type="checkbox"
+                                                        id="task-{{ $task->id }}"
+                                                        data-id="{{ $task->id }}"
+                                                        {{ $task->completed ? 'checked' : '' }}>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <div class="mt-3 d-grid">
+                                        <button class="btn btn-outline-primary"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#tasksModal">
+                                            مشاهده همه تسک‌ها
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="text-center py-4">
+                                        <div class="fs-2">🎉</div>
+                                        <div class="fw-bold sd-text mt-2">امروز تسکی نداری</div>
+                                        <div class="sd-muted small mt-1">همه‌چیز مرتبه.</div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    @endforeach
+                    @endif
                 </div>
-            @endif
+
+                <div class="col-12 col-lg-7 top-stack-order-2">
+                    @if(count($statCards) > 0)
+                        <div class="sd-card sd-summary-board p-4 h-100">
+                            <div class="sd-between-rtl mb-3 flex-wrap">
+                                <span class="sd-pill sd-surface-soft">
+                                    ۲۴ ساعت گذشته
+                                </span>
+
+                                <div class="sd-text-end">
+                                    <div class="sd-section-title">خلاصه عملکرد</div>
+                                    <div class="sd-muted small mt-1">نمای کلی از وضعیت اخیر</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                @foreach($statCards as $s)
+                                    <div class="col-12 col-sm-6 col-xl-4">
+                                        <div class="sd-stat-box">
+                                            <div class="sd-between-rtl-start">
+                                                <span class="sd-pill tone-{{ $s['tone'] }}">{{ $s['desc'] }}</span>
+                                                <div class="sd-muted small">{{ $s['emoji'] }}</div>
+                                            </div>
+
+                                            <div class="sd-stat-number">{{ $s['value'] }}</div>
+                                            <div class="sd-stat-label">{{ $s['title'] }}</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
 
             <div class="row g-3">
-                {{-- دسترسی سریع --}}
-                <div class="col-12 col-lg-8">
-                    <div class="bg-white card-soft">
-                        <div class="p-4 border-bottom">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div class="fw-bold text-dark">دسترسی سریع</div>
-                                    <div class="text-muted small mt-1">روی کارت‌ها بزن تا وارد هر بخش بشی.</div>
+                <div class="col-12 top-stack-order-3">
+                    <div class="sd-card">
+                        <div class="p-4 border-bottom sd-border">
+                            <div class="sd-between-rtl flex-wrap">
+                                <span class="sd-muted small">{{ count($groups) }} دسته</span>
+
+                                <div class="sd-text-end">
+                                    <div class="sd-section-title">دسترسی سریع</div>
+                                    <div class="sd-muted small mt-1">
+                                        بخش‌های مشابه با هم ادغام شده‌اند. برای دیدن زیرمجموعه هر بخش روی آن کلیک کن.
+                                    </div>
                                 </div>
-                                <span class="text-muted small">{{ count($cardsToShow) }} بخش</span>
                             </div>
                         </div>
 
                         <div class="p-4">
                             <div class="row g-3">
-                                @foreach($cardsToShow as $card)
-                                    @php
-                                        $badgeClass = match($card['tone']) {
-                                            'purple' => 'badge-purple',
-                                            'pink'   => 'badge-pink',
-                                            'indigo' => 'badge-indigo',
-                                            'teal'   => 'badge-teal',
-                                            'orange' => 'badge-orange',
-                                            default  => 'bg-'.$card['tone'].'-subtle text-'.$card['tone']
-                                        };
-                                        $iconBg = 'bg-'.$card['tone'].'-subtle';
-                                        $iconTx = 'text-'.$card['tone'];
-                                    @endphp
-
+                                @foreach($groups as $groupKey => $group)
                                     <div class="col-12 col-md-6 col-xl-4">
-                                        <a href="{{ route($card['route']) }}" class="text-decoration-none">
-                                            <div class="card-soft bg-white p-4 h-100">
-                                                <div class="d-flex align-items-start justify-content-between gap-3">
-                                                    <div class="flex-grow-1">
-                                                        <span class="badge {{ $badgeClass }}">ورود</span>
-                                                        <div class="fw-bold text-dark mt-2">{{ $card['title'] }}</div>
-                                                        <div class="text-muted small mt-1">مشاهده و مدیریت</div>
+                                        <button type="button"
+                                                class="w-100 border-0 bg-transparent p-0"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#groupModal-{{ $groupKey }}">
+                                            <div class="sd-card sd-group-card p-4 h-100">
+                                                <div class="sd-between-rtl-start">
+                                                    <div class="sd-icon-wrap tone-{{ $group['tone'] }}">
+                                                        {!! dash_icon_final_v2($group['icon']) !!}
                                                     </div>
 
-                                                    <div class="icon-wrap {{ $iconBg }} {{ $iconTx }} border border-{{ $card['tone'] }}-subtle">
-                                                        {!! dash_icon2($card['icon']) !!}
+                                                    <div class="flex-grow-1 sd-text-end">
+                                                        <span class="sd-pill tone-{{ $group['tone'] }}">
+                                                            {{ count($group['items']) }} بخش
+                                                        </span>
+
+                                                        <div class="fw-bold fs-5 mt-3 sd-text">{{ $group['title'] }}</div>
+                                                        <div class="sd-group-desc mt-2">{{ $group['desc'] }}</div>
+
+                                                        <div class="sd-badge-list mt-3">
+                                                            @foreach(array_slice(array_values($group['items']), 0, 3) as $item)
+                                                                <span class="sd-tag">{{ $item['title'] }}</span>
+                                                            @endforeach
+
+                                                            @if(count($group['items']) > 3)
+                                                                <span class="sd-tag">+{{ count($group['items']) - 3 }} مورد دیگر</span>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {{-- تسک‌ها --}}
-                <div class="col-12 col-lg-4">
-                    @if($showTasksWidget)
-                        <div class="bg-white card-soft overflow-hidden">
-                            <div class="p-4 border-bottom">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div>
-                                        <div class="text-muted small">📋 تسک‌های امروز</div>
-                                        <div class="fw-bold text-dark mt-1">
-                                            {{ $taskDone }} / {{ $taskTotal }}
-                                            <span class="text-muted small">({{ $taskPct }}%)</span>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
-                                        {{ $taskPct }}%
-                                    </span>
-                                </div>
+            @foreach($groups as $groupKey => $group)
+                <div class="modal fade" id="groupModal-{{ $groupKey }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg smart-dashboard dashboard-rtl">
+                        <div class="modal-content border-0">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal"></button>
 
-                                <div class="progress mt-3" style="height:8px;">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ $taskPct }}%"></div>
+                                <div class="sd-text-end">
+                                    <h5 class="sd-modal-title fw-bold mb-1">{{ $group['title'] }}</h5>
+                                    <div class="sd-muted small">{{ $group['desc'] }}</div>
                                 </div>
                             </div>
 
-                            @if($taskTotal > 0)
-                                <div class="soft-scroll" style="max-height: 520px; overflow-y:auto;">
-                                    <ul class="list-group list-group-flush">
-                                        @foreach($tasks as $task)
-                                            <li class="list-group-item py-3">
-                                                <div class="d-flex align-items-start gap-2">
-                                                    <input class="form-check-input mt-1 task-checkbox"
-                                                           type="checkbox"
-                                                           id="task-{{ $task->id }}"
-                                                           data-id="{{ $task->id }}"
-                                                           {{ $task->completed ? 'checked' : '' }}>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    @foreach($group['items'] as $item)
+                                        <div class="col-12 col-md-6">
+                                            <a href="{{ route($item['route']) }}" class="sd-link-item">
+                                                <span class="sd-muted">‹</span>
 
-                                                    <div class="flex-grow-1">
-                                                        <label for="task-{{ $task->id }}"
-                                                               class="fw-semibold d-block {{ $task->completed ? 'text-decoration-line-through text-muted' : 'text-dark' }}">
-                                                            {{ $task->title }}
-                                                        </label>
+                                                <div class="sd-row-reverse gap-3">
+                                                    <div class="sd-icon-wrap sd-surface-soft">
+                                                        {!! dash_icon_final_v2($item['icon']) !!}
+                                                    </div>
 
-                                                        @if($task->description)
-                                                            <div class="text-muted small mt-1">{{ $task->description }}</div>
-                                                        @endif
+                                                    <div class="sd-text-end">
+                                                        <div class="sd-link-title fw-semibold">{{ $item['title'] }}</div>
+                                                        <div class="sd-link-subtitle small">ورود به بخش</div>
                                                     </div>
                                                 </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                            </a>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            @else
-                                <div class="p-5 text-center">
-                                    <div class="fs-2">🎉</div>
-                                    <div class="fw-bold text-dark mt-2">امروز تسکی نداری</div>
-                                    <div class="text-muted small mt-1">وقتشه روی کارهای مهم‌تر تمرکز کنی.</div>
-                                </div>
-                            @endif
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                            </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
-            </div>
+            @endforeach
 
-            {{-- ------------------ مودال‌ها (Bootstrap) ------------------ --}}
-
-            {{-- Modal تسک‌های امروز (بعد از لاگین) --}}
             <div class="modal fade" id="tasksModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content card-soft">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title">📋 تسک‌های امروز</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-dialog modal-dialog-centered modal-lg smart-dashboard dashboard-rtl">
+                    <div class="modal-content border-0">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal"></button>
+                            <h5 class="sd-modal-title mb-0">📋 تسک‌های امروز</h5>
                         </div>
-                        <div class="modal-body" dir="rtl">
+
+                        <div class="modal-body">
                             @if($taskTotal > 0)
                                 <ul class="list-group">
                                     @foreach($tasks as $task)
-                                        <li class="list-group-item">
-                                            <div class="fw-bold">{{ $task->title }}</div>
-                                            @if($task->description)
-                                                <small class="text-muted">{{ $task->description }}</small>
-                                            @endif
+                                        <li class="list-group-item py-3 sd-list-item">
+                                            <div class="sd-row-reverse-start gap-2">
+                                                <div class="flex-grow-1 sd-text-end">
+                                                    <label for="task-modal-{{ $task->id }}"
+                                                           class="fw-bold d-block {{ $task->completed ? 'text-decoration-line-through sd-muted' : 'sd-text' }}">
+                                                        {{ $task->title }}
+                                                    </label>
+
+                                                    @if($task->description)
+                                                        <small class="sd-muted">{{ $task->description }}</small>
+                                                    @endif
+                                                </div>
+
+                                                <input class="form-check-input mt-1 task-checkbox"
+                                                       type="checkbox"
+                                                       id="task-modal-{{ $task->id }}"
+                                                       data-id="{{ $task->id }}"
+                                                       {{ $task->completed ? 'checked' : '' }}>
+                                            </div>
                                         </li>
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="text-center text-muted mb-0">امروز تسکی نداری 🎉</p>
+                                <p class="text-center sd-muted mb-0">امروز تسکی نداری 🎉</p>
                             @endif
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-bs-dismiss="modal">باشه</button>
                         </div>
@@ -352,25 +882,26 @@
                 </div>
             </div>
 
-            {{-- Force password reset --}}
-            @if(auth()->user()->force_password_reset)
+            @if($user->force_password_reset)
                 <div class="modal fade" id="passwordResetModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content card-soft">
-                            <div class="modal-header bg-warning">
-                                <h5 class="modal-title fw-bold">تغییر پسورد الزامی</h5>
+                    <div class="modal-dialog modal-dialog-centered smart-dashboard dashboard-rtl">
+                        <div class="modal-content border-0">
+                            <div class="modal-header">
+                                <h5 class="sd-modal-title fw-bold mb-0">تغییر پسورد الزامی</h5>
                             </div>
-                            <div class="modal-body" dir="rtl">
-                                <p class="text-muted">برای ادامه کار باید پسورد خود را تغییر دهید.</p>
+
+                            <div class="modal-body">
+                                <p class="sd-muted">برای ادامه کار باید پسورد خود را تغییر دهید.</p>
 
                                 <form action="{{ route('password.change') }}" method="POST" id="forcePasswordForm">
                                     @csrf
-                                    <div class="mb-3">
+
+                                    <div class="mb-3 sd-text-end">
                                         <label class="form-label fw-semibold">پسورد جدید</label>
                                         <input type="password" name="password" class="form-control" required>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-3 sd-text-end">
                                         <label class="form-label fw-semibold">تکرار پسورد</label>
                                         <input type="password" name="password_confirmation" class="form-control" required>
                                     </div>
@@ -383,34 +914,36 @@
                 </div>
             @endif
 
-            {{-- Modal یادآورها --}}
             @if($todayReminders->count() > 0)
                 <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content card-soft">
+                    <div class="modal-dialog modal-dialog-centered smart-dashboard dashboard-rtl">
+                        <div class="modal-content border-0">
                             <div class="modal-header">
-                                <h5 class="modal-title fw-bold">یادآورهای امروز</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal"></button>
+                                <h5 class="sd-modal-title fw-bold mb-0">یادآورهای امروز</h5>
                             </div>
-                            <div class="modal-body" dir="rtl">
+
+                            <div class="modal-body">
                                 <ul class="list-group">
                                     @foreach($todayReminders as $reminder)
-                                        <li class="list-group-item d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <strong>{{ $reminder->title }}</strong><br>
-                                                @if($reminder->description)
-                                                    <small class="text-muted">{{ $reminder->description }}</small><br>
-                                                @endif
-                                                <small class="text-muted">
-                                                    {{ \Hekmatinasser\Verta\Verta::instance($reminder->remind_at)->format('Y/m/d H:i') }}
-                                                </small>
-                                            </div>
+                                        <li class="list-group-item sd-list-item">
+                                            <div class="sd-between-rtl-start">
+                                                <form action="{{ route('reminders.markAsSeen', $reminder->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-success btn-sm">خواندم</button>
+                                                </form>
 
-                                            <form action="{{ route('reminders.markAsSeen', $reminder->id) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">خواندم</button>
-                                            </form>
+                                                <div class="flex-grow-1 sd-text-end">
+                                                    <strong class="sd-text">{{ $reminder->title }}</strong><br>
+                                                    @if($reminder->description)
+                                                        <small class="sd-muted">{{ $reminder->description }}</small><br>
+                                                    @endif
+                                                    <small class="sd-muted">
+                                                        {{ \Hekmatinasser\Verta\Verta::instance($reminder->remind_at)->format('Y/m/d H:i') }}
+                                                    </small>
+                                                </div>
+                                            </div>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -423,60 +956,82 @@
         </div>
     </div>
 
-    {{-- Scripts --}}
     <script src="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
     <script src="https://lib.arvancloud.ir/limonte-sweetalert2/9.9.0/sweetalert2.all.js"></script>
 
     <script>
-        
         document.addEventListener("DOMContentLoaded", function () {
-            // مودال تسک‌ها بعد از لاگین
+            const csrf = '{{ csrf_token() }}';
+
             @if($showTasksModalOnLogin)
-                new bootstrap.Modal(document.getElementById('tasksModal'), { backdrop:true, keyboard:false }).show();
+                new bootstrap.Modal(document.getElementById('tasksModal'), {
+                    backdrop: true,
+                    keyboard: false
+                }).show();
             @endif
 
-            // مودال تغییر پسورد
-            @if(auth()->user()->force_password_reset)
-                new bootstrap.Modal(document.getElementById('passwordResetModal'), { backdrop:'static', keyboard:false }).show();
+            @if($user->force_password_reset)
+                new bootstrap.Modal(document.getElementById('passwordResetModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                }).show();
             @endif
 
-            // مودال یادآورها
             @if($todayReminders->count() > 0)
                 new bootstrap.Modal(document.getElementById('reminderModal')).show();
             @endif
 
-            // تیک تسک‌ها
-            const csrf = '{{ csrf_token() }}';
-            document.querySelectorAll('.task-checkbox').forEach(el => {
-                el.addEventListener('change', async function(){
-                    const checkbox = this;
-                    const taskId = checkbox.dataset.id;
-                    const label = document.querySelector(`label[for="${checkbox.id}"]`);
-                    const prev = !checkbox.checked;
+            async function toggleTask(checkbox) {
+                const taskId = checkbox.dataset.id;
+                const prev = !checkbox.checked;
 
-                    try {
-                        const res = await fetch(`/tasks/${taskId}/complete`, {
-                            method: 'PATCH',
-                            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
-                        });
-                        const data = await res.json();
-                        if(!data?.success) throw new Error('failed');
+                const labels = document.querySelectorAll(
+                    `label[for="${checkbox.id}"], label[for="task-${taskId}"], label[for="task-modal-${taskId}"]`
+                );
 
-                        if(data.completed){
-                            label?.classList.add('text-decoration-line-through','text-muted');
-                            checkbox.checked = true;
-                        } else {
-                            label?.classList.remove('text-decoration-line-through','text-muted');
-                            checkbox.checked = false;
+                const relatedCheckboxes = document.querySelectorAll(`.task-checkbox[data-id="${taskId}"]`);
+
+                try {
+                    const res = await fetch(`/tasks/${taskId}/complete`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': csrf,
+                            'Accept': 'application/json'
                         }
-                    } catch (e) {
-                        checkbox.checked = prev;
-                        Swal.fire({ title:'خطا', text:'مشکلی در ذخیره وضعیت تسک پیش آمد.', icon:'error', confirmButtonText:'باشه' });
-                    }
+                    });
+
+                    const data = await res.json();
+                    if (!data?.success) throw new Error('failed');
+
+                    relatedCheckboxes.forEach(cb => cb.checked = !!data.completed);
+
+                    labels.forEach(label => {
+                        if (data.completed) {
+                            label.classList.add('text-decoration-line-through', 'sd-muted');
+                            label.classList.remove('sd-text');
+                        } else {
+                            label.classList.remove('text-decoration-line-through', 'sd-muted');
+                            label.classList.add('sd-text');
+                        }
+                    });
+                } catch (e) {
+                    relatedCheckboxes.forEach(cb => cb.checked = prev);
+
+                    Swal.fire({
+                        title: 'خطا',
+                        text: 'مشکلی در ذخیره وضعیت تسک پیش آمد.',
+                        icon: 'error',
+                        confirmButtonText: 'باشه'
+                    });
+                }
+            }
+
+            document.querySelectorAll('.task-checkbox').forEach(el => {
+                el.addEventListener('change', function () {
+                    toggleTask(this);
                 });
             });
 
-            // ارجاع جدید فرم رضایت مشتری
             @if(($newAssignedCustomerSatisfactionFormsCount ?? 0) > 0)
                 Swal.fire({
                     title: 'ارجاع جدید فرم رضایت مشتری',
@@ -490,23 +1045,29 @@
                     if (result.isConfirmed) {
                         fetch("{{ route('customer-satisfaction-forms.mark-assigned-seen') }}", {
                             method: 'POST',
-                            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                            headers: {
+                                'X-CSRF-TOKEN': csrf,
+                                'Accept': 'application/json'
+                            }
                         });
                     }
                 });
             @endif
 
-            // اعلان‌ها (گروه بندی)
             @if($notifications->count() > 0)
                 (function () {
                     let notifications = @json($notifications);
                     let grouped = {};
+
                     notifications.forEach(n => {
                         if (grouped[n.title]) {
                             grouped[n.title].count++;
                             grouped[n.title].latestCreatedAt = n.created_at_human;
                         } else {
-                            grouped[n.title] = { count: 1, latestCreatedAt: n.created_at_human };
+                            grouped[n.title] = {
+                                count: 1,
+                                latestCreatedAt: n.created_at_human
+                            };
                         }
                     });
 
@@ -517,6 +1078,7 @@
                     }));
 
                     let i = 0;
+
                     function showNext() {
                         if (i >= items.length) {
                             fetch("{{ route('notifications.markAllSeen') }}", {
@@ -538,8 +1100,12 @@
                             showConfirmButton: true,
                             confirmButtonText: "باشه",
                             footer: note.latestCreatedAt
-                        }).then(() => { i++; showNext(); });
+                        }).then(() => {
+                            i++;
+                            showNext();
+                        });
                     }
+
                     showNext();
                 })();
             @endif

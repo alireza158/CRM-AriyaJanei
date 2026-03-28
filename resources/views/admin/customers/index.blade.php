@@ -3,7 +3,22 @@
         <h2 class="h4 font-weight-bold">مدیریت مشتریان</h2>
     </x-slot>
 
+<link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
 
+    {{-- اگر داخل layout لود نکردی، اینو هم اضافه کن --}}
+    
+<script src="https://lib.arvancloud.ir/jquery/3.6.3/jquery.js"></script>
+
+    {{-- Datepicker (Persian) --}}
+  <link rel="stylesheet" href="{{ asset('lib/persian-datepicker.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/flatpickr.min.css') }}">
+<link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
+
+<script src="{{ asset('lib/jquery.min.js') }}"></script>
+<script src="{{ asset('lib/persian-date.min.js') }}"></script>
+<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
+<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
+<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
     <div class="container mt-4">
 
         {{-- پیام موفقیت --}}
@@ -116,7 +131,7 @@
                             <th>نام</th>
                             <th>شماره</th>
                             <th>بازاریاب</th>
-                            <th>آدرس</th>
+                            <th>شهر</th>
                             <th>نحوه آشنایی</th>
                             <th>یادداشت‌ها</th>
                             <th>ارتباط</th>
@@ -130,7 +145,12 @@
                                 <td>{{ $customer->name }}</td>
                                 <td>{{ $customer->phone }}</td>
                                 <td>{{ $customer->marketer?->name ?? '-' }}</td>
-                                <td>{{ $customer->address }}</td>
+                                @if ( $customer->city == null)
+                                       <td>{{ $customer->address }}</td>
+                                @else
+<td>{{ $customer->city }}</td>
+                                @endif
+                             
                                 <td>{{ $customer->referenceType?->name ?? '-' }}</td>
 
                                 <td>
@@ -184,7 +204,7 @@
 
                                 {{-- عملیات --}}
                                 <td>
-                                    @if($user->hasRole('Admin') || $user->hasRole('internalManager'))
+                                    @if($user->hasRole('Admin') || $user->hasRole('internalManager')|| $user->hasRole('SaleManager'))
                                         <a href="{{ route('admin.customersedit.edit', $customer->id) }}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil-square"></i> ویرایش
                                         </a>
@@ -366,20 +386,6 @@
         </div>
     </div>
 
-    {{-- اگر داخل layout لود نکردی، اینو هم اضافه کن --}}
-    
-<script src="https://lib.arvancloud.ir/jquery/3.6.3/jquery.js"></script>
-
-    {{-- Datepicker (Persian) --}}
-  <link rel="stylesheet" href="{{ asset('lib/persian-datepicker.min.css') }}">
-<link rel="stylesheet" href="{{ asset('lib/flatpickr.min.css') }}">
-<link rel="stylesheet" href="{{ asset('lib/jalalidatepicker.min.css') }}">
-
-<script src="{{ asset('lib/jquery.min.js') }}"></script>
-<script src="{{ asset('lib/persian-date.min.js') }}"></script>
-<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
-<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
-<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
 <script>
     $(document).ready(function() {
 
