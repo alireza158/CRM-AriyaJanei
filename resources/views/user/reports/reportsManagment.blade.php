@@ -53,11 +53,11 @@
                         </div>
                         <div class="col-md-3">
                             <label for="date_from" class="form-label">از تاریخ</label>
-                            <input type="text" name="date_from" id="date_from" class="form-control jalali-datepicker" value="{{ request('date_from') }}" placeholder="1404/01/01 یا 2026-03-20">
+                            <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from', $dateFrom ?? '') }}">
                         </div>
                         <div class="col-md-3">
                             <label for="date_to" class="form-label">تا تاریخ</label>
-                            <input type="text" name="date_to" id="date_to" class="form-control jalali-datepicker" value="{{ request('date_to') }}" placeholder="1404/01/30 یا 2026-04-18">
+                            <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to', $dateTo ?? '') }}">
                         </div>
                         <div class="col-md-2 d-flex gap-2">
                             <button type="submit" class="btn btn-primary w-100">اعمال</button>
@@ -137,17 +137,3 @@
         </div>
     </div>
 </x-layouts.app>
-<script src="{{ asset('lib/jquery.min.js') }}"></script>
-<script src="{{ asset('lib/persian-date.min.js') }}"></script>
-<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
-<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
-<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        jalaliDatepicker.startWatch({
-            selector: '.jalali-datepicker',
-            time: false,
-            format: 'YYYY/MM/DD'
-        });
-    });
-</script>

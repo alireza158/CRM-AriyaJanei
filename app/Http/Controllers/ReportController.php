@@ -11,7 +11,6 @@ use Spatie\Activitylog\Models\Activity;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
-use Morilog\Jalali\Jalalian;
 
 class ReportController extends Controller
 {
@@ -63,27 +62,13 @@ $reports = Report::whereIn('user_id', $allowedIds)
 
     $validated = $request->validate([
         'user_id'    => 'nullable|integer|exists:users,id',
-        'date_from'  => 'nullable|string',
-        'date_to'    => 'nullable|string',
+        'date_from'  => 'nullable|date',
+        'date_to'    => 'nullable|date|after_or_equal:date_from',
     ]);
 
     $selectedUserId = isset($validated['user_id']) ? (int) $validated['user_id'] : null;
-    $dateFromInput = $validated['date_from'] ?? null;
-    $dateToInput = $validated['date_to'] ?? null;
-    $dateFrom = $this->normalizeFilterDate($dateFromInput);
-    $dateTo = $this->normalizeFilterDate($dateToInput);
-
-    if ($dateFromInput && !$dateFrom) {
-        return back()->withInput()->with('error', 'فرمت تاریخ شروع معتبر نیست.');
-    }
-
-    if ($dateToInput && !$dateTo) {
-        return back()->withInput()->with('error', 'فرمت تاریخ پایان معتبر نیست.');
-    }
-
-    if ($dateFrom && $dateTo && $dateTo->lt($dateFrom)) {
-        return back()->withInput()->with('error', 'تاریخ پایان باید بزرگ‌تر یا مساوی تاریخ شروع باشد.');
-    }
+    $dateFrom = $validated['date_from'] ?? null;
+    $dateTo = $validated['date_to'] ?? null;
 
     // =======================
     // Admin
@@ -151,11 +136,11 @@ $reports = Report::whereIn('user_id', $allowedIds)
     }
 
     if ($dateFrom) {
-        $reportsQuery->whereDate('created_at', '>=', $dateFrom->toDateString());
+        $reportsQuery->whereDate('created_at', '>=', $dateFrom);
     }
 
     if ($dateTo) {
-        $reportsQuery->whereDate('created_at', '<=', $dateTo->toDateString());
+        $reportsQuery->whereDate('created_at', '<=', $dateTo);
     }
 
     $reports = $reportsQuery
@@ -172,40 +157,6 @@ $reports = Report::whereIn('user_id', $allowedIds)
         'dateFrom',
         'dateTo'
     ));
-}
-
-private function normalizeFilterDate(?string $value): ?Carbon
-{
-    if (!$value) {
-        return null;
-    }
-
-    $value = trim($value);
-    if ($value === '') {
-        return null;
-    }
-
-    // اعداد فارسی/عربی => انگلیسی
-    $value = str_replace(
-        ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
-        ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        $value
-    );
-
-    // 1404/01/10 -> 1404-01-10
-    $normalized = str_replace('/', '-', $value);
-
-    try {
-        // تاریخ میلادی
-        return Carbon::parse($normalized)->startOfDay();
-    } catch (\Throwable $e) {
-        try {
-            // تاریخ شمسی
-            return Jalalian::fromFormat('Y-m-d', $normalized)->toCarbon()->startOfDay();
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
 }
 
 
