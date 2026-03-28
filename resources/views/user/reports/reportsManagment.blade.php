@@ -38,6 +38,33 @@
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
+                    {{-- فیلترها --}}
+                    <form action="{{ route('user.reports.reportsManagment') }}" method="GET" class="row g-3 mb-4 align-items-end">
+                        <div class="col-md-4">
+                            <label for="user_id" class="form-label">شخص کاربر</label>
+                            <select name="user_id" id="user_id" class="form-select">
+                                <option value="">همه کاربران</option>
+                                @foreach($availableUsers ?? [] as $userOption)
+                                    <option value="{{ $userOption->id }}" @selected((int) request('user_id') === $userOption->id)>
+                                        {{ $userOption->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date_from" class="form-label">از تاریخ</label>
+                            <input type="text" name="date_from" id="date_from" class="form-control jalali-datepicker" value="{{ request('date_from') }}" placeholder="1404/01/01 یا 2026-03-20">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date_to" class="form-label">تا تاریخ</label>
+                            <input type="text" name="date_to" id="date_to" class="form-control jalali-datepicker" value="{{ request('date_to') }}" placeholder="1404/01/30 یا 2026-04-18">
+                        </div>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">اعمال</button>
+                            <a href="{{ route('user.reports.reportsManagment') }}" class="btn btn-outline-secondary w-100">حذف</a>
+                        </div>
+                    </form>
+
                     {{-- جدول --}}
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped align-middle text-center bg-white">
@@ -110,3 +137,17 @@
         </div>
     </div>
 </x-layouts.app>
+<script src="{{ asset('lib/jquery.min.js') }}"></script>
+<script src="{{ asset('lib/persian-date.min.js') }}"></script>
+<script src="{{ asset('lib/persian-datepicker.min.js') }}"></script>
+<script src="{{ asset('lib/flatpickr.min.js') }}"></script>
+<script src="{{ asset('lib/jalalidatepicker.min.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        jalaliDatepicker.startWatch({
+            selector: '.jalali-datepicker',
+            time: false,
+            format: 'YYYY/MM/DD'
+        });
+    });
+</script>
