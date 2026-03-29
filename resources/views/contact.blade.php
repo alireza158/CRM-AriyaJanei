@@ -9,7 +9,7 @@
   <script src="https://static.neshan.org/sdk/leaflet/1.4.0/leaflet.js"></script>
   <script src="https://static.neshan.org/sdk/leaflet/1.4.0/neshan-leaflet.js"></script>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
 
   <style>
     body{background:#f7f7fb}
