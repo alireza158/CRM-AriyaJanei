@@ -1,4 +1,44 @@
 <x-layouts.app>
+    @php
+        $sortedManagers = $managers->sortBy(function ($manager) {
+            $roleNames = $manager->roles->pluck('name');
+
+            if ($roleNames->contains('Owner')) {
+                return 0;
+            }
+
+            if ($roleNames->contains('InternalManager')) {
+                return 1;
+            }
+
+            return 2;
+        })->values();
+
+        function managerBadgeMeta($manager)
+        {
+            $roleNames = $manager->roles->pluck('name');
+
+            if ($roleNames->contains('Owner')) {
+                return [
+                    'label' => 'مدیر کل',
+                    'class' => 'owner',
+                ];
+            }
+
+            if ($roleNames->contains('InternalManager')) {
+                return [
+                    'label' => 'مدیر داخلی',
+                    'class' => 'internal',
+                ];
+            }
+
+            return [
+                'label' => 'مدیر',
+                'class' => 'default',
+            ];
+        }
+    @endphp
+
     <x-slot name="header">
         <div class="users-header">
             <div>
@@ -33,7 +73,7 @@
             </div>
         </div>
 
-        @if($managers->isEmpty())
+        @if($sortedManagers->isEmpty())
             <div class="users-empty">
                 <div class="users-empty__icon">👥</div>
                 <h4 class="fw-bold mb-2">هنوز مدیری ثبت نشده</h4>
@@ -44,17 +84,20 @@
                 </a>
             </div>
         @else
-            {{-- حالت پیش‌فرض صفحه --}}
             <div id="defaultManagersSection">
                 <div class="section-head mb-3">
                     <div>
                         <h5 class="fw-bold mb-1">لیست مدیران</h5>
-                        <div class="text-muted small">برای مشاهده جزئیات هر مدیر روی دکمه زیر کلیک کنید.</div>
+                        <div class="text-muted small">مدیر کل و مدیر داخلی در بالاترین اولویت نمایش داده می‌شوند.</div>
                     </div>
                 </div>
 
                 <div class="row g-4" id="managerGrid">
-                    @foreach($managers as $manager)
+                    @foreach($sortedManagers as $manager)
+                        @php
+                            $badgeMeta = managerBadgeMeta($manager);
+                        @endphp
+
                         <div class="col-12 col-md-6 col-xl-4">
                             <div class="manager-card h-100">
                                 <div class="manager-card__top">
@@ -78,7 +121,9 @@
                                     </div>
 
                                     <div class="manager-card__badges">
-                                        <span class="soft-badge">مدیر</span>
+                                        <span class="soft-badge role-state {{ $badgeMeta['class'] }}">
+                                            {{ $badgeMeta['label'] }}
+                                        </span>
                                         <span class="soft-badge primary">{{ $manager->employees->count() }} کارمند</span>
                                     </div>
                                 </div>
@@ -99,20 +144,20 @@
                 </div>
             </div>
 
-            {{-- نتایج واقعی سرچ --}}
             <div id="searchResultsSection" class="d-none">
                 <div class="section-head mb-3">
                     <div>
                         <h5 class="fw-bold mb-1">نتایج جستجو</h5>
-                        <div class="text-muted small">مدیر و کارمندها به‌صورت جداگانه نمایش داده می‌شوند.</div>
+                        <div class="text-muted small">مدیرها و کارمندها جداگانه نمایش داده می‌شوند.</div>
                     </div>
                     <div class="search-result-counter" id="searchResultCounter">0 نتیجه</div>
                 </div>
 
                 <div class="row g-3" id="searchResultsGrid">
-                    {{-- مدیرها به صورت مستقل --}}
-                    @foreach($managers as $manager)
+                    @foreach($sortedManagers as $manager)
                         @php
+                            $badgeMeta = managerBadgeMeta($manager);
+
                             $managerSearch = $manager->name . ' ' . $manager->phone;
                             foreach ($manager->roles as $role) {
                                 $managerSearch .= ' ' . $role->name;
@@ -146,7 +191,9 @@
                                     </div>
 
                                     <div class="search-user-badges">
-                                        <span class="soft-badge">مدیر</span>
+                                        <span class="soft-badge role-state {{ $badgeMeta['class'] }}">
+                                            {{ $badgeMeta['label'] }}
+                                        </span>
                                         <span class="soft-badge primary">{{ $manager->employees->count() }} کارمند</span>
                                     </div>
                                 </div>
@@ -164,7 +211,6 @@
                             </div>
                         </div>
 
-                        {{-- کارمندها به صورت مستقل --}}
                         @foreach($manager->employees as $employee)
                             @php
                                 $employeeSearch = $employee->name . ' ' . $employee->phone . ' ' . $manager->name . ' ' . $manager->phone;
@@ -272,9 +318,11 @@
                 </div>
             </div>
 
-            {{-- مودال‌های مدیر و کارمند --}}
-            @foreach($managers as $manager)
-                {{-- Modal مدیر --}}
+            @foreach($sortedManagers as $manager)
+                @php
+                    $badgeMeta = managerBadgeMeta($manager);
+                @endphp
+
                 <div class="modal fade" id="managerModal{{ $manager->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -285,7 +333,13 @@
                                     </div>
 
                                     <div>
-                                        <h5 class="modal-title mb-1">{{ $manager->name }}</h5>
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                            <h5 class="modal-title mb-0">{{ $manager->name }}</h5>
+                                            <span class="soft-badge role-state {{ $badgeMeta['class'] }}">
+                                                {{ $badgeMeta['label'] }}
+                                            </span>
+                                        </div>
+
                                         <div class="manager-phone">{{ $manager->phone }}</div>
 
                                         @if($manager->roles->count())
@@ -453,11 +507,16 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">
+                                    بستن
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Modal نقش‌های مدیر --}}
                 <div class="modal fade" id="rolesModalManager{{ $manager->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -501,7 +560,6 @@
                     </div>
                 </div>
 
-                {{-- Modal حذف مدیر --}}
                 <div class="modal fade" id="deleteManagerModal{{ $manager->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -531,7 +589,6 @@
                     </div>
                 </div>
 
-                {{-- Modal ریست مدیر --}}
                 <div class="modal fade" id="resetManagerModal{{ $manager->id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -561,7 +618,6 @@
                 </div>
 
                 @foreach($manager->employees as $employee)
-                    {{-- Modal نقش‌های کارمند --}}
                     <div class="modal fade" id="rolesModal{{ $employee->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -605,7 +661,6 @@
                         </div>
                     </div>
 
-                    {{-- Modal حذف کارمند --}}
                     <div class="modal fade" id="deleteEmployeeModal{{ $employee->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -635,7 +690,6 @@
                         </div>
                     </div>
 
-                    {{-- Modal ریست کارمند --}}
                     <div class="modal fade" id="resetEmployeeModal{{ $employee->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content border-0 shadow rounded-4 users-modal">
@@ -680,6 +734,8 @@
                 --u-soft: #f3f6fb;
                 --u-primary-soft: rgba(13, 110, 253, 0.10);
                 --u-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+                --u-owner-soft: rgba(220, 53, 69, 0.12);
+                --u-internal-soft: rgba(245, 158, 11, 0.16);
             }
 
             html.dark .users-page,
@@ -693,12 +749,16 @@
                 --u-muted: #94a3b8;
                 --u-soft: #1b2433;
                 --u-primary-soft: rgba(59, 130, 246, 0.16);
-                --u-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
+                --u-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+                --u-owner-soft: rgba(239, 68, 68, 0.15);
+                --u-internal-soft: rgba(245, 158, 11, 0.18);
             }
 
             .users-page {
                 background: transparent;
                 color: var(--u-text);
+                position: relative;
+                z-index: 1;
             }
 
             .users-header {
@@ -943,6 +1003,29 @@
                 border-color: transparent;
             }
 
+            .soft-badge.role-state.default {
+                background: var(--u-soft);
+                color: var(--u-text);
+            }
+
+            .soft-badge.role-state.owner {
+                background: var(--u-owner-soft);
+                color: #dc3545;
+                border-color: transparent;
+            }
+
+            .soft-badge.role-state.internal {
+                background: var(--u-internal-soft);
+                color: #b45309;
+                border-color: transparent;
+            }
+
+            html.dark .soft-badge.role-state.internal,
+            body.dark .soft-badge.role-state.internal,
+            [data-bs-theme="dark"] .soft-badge.role-state.internal {
+                color: #fbbf24;
+            }
+
             .role-badges {
                 display: flex;
                 flex-wrap: wrap;
@@ -962,18 +1045,25 @@
             }
 
             .users-modal {
-                background: var(--u-card);
+                background: var(--u-card) !important;
                 color: var(--u-text);
+                overflow: hidden;
+                position: relative;
+                z-index: 2102;
+                
             }
 
             .users-modal .modal-header,
             .users-modal .modal-footer {
                 border-color: var(--u-border);
+                background: var(--u-card) !important;
             }
 
             .users-modal .modal-body {
-                background: var(--u-card);
+                background: var(--u-card) !important;
                 color: var(--u-text);
+                position: relative;
+                z-index: 1;
             }
 
             .users-modal .text-muted {
@@ -982,12 +1072,25 @@
 
             .users-modal-header {
                 align-items: flex-start;
+                background: var(--u-card) !important;
+                position: sticky;
+                top: 0;
+                z-index: 5;
+            }
+
+            .users-modal .modal-footer {
+                background: var(--u-card) !important;
+                position: sticky;
+                bottom: 0;
+                z-index: 5;
             }
 
             .manager-modal-head {
                 display: flex;
                 gap: 14px;
                 align-items: center;
+                position: relative;
+                z-index: 2;
             }
 
             .manager-toolbar {
@@ -999,6 +1102,8 @@
                 margin-bottom: 24px;
                 padding-bottom: 16px;
                 border-bottom: 1px solid var(--u-border);
+                position: relative;
+                z-index: 1;
             }
 
             .manager-toolbar__left,
@@ -1007,6 +1112,11 @@
                 align-items: center;
                 gap: 8px;
                 flex-wrap: wrap;
+            }
+
+            .employee-section {
+                position: relative;
+                z-index: 1;
             }
 
             .employee-section__head {
@@ -1026,6 +1136,8 @@
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
+                position: relative;
+                z-index: 1;
             }
 
             .employee-card {
@@ -1038,6 +1150,8 @@
                 justify-content: space-between;
                 align-items: center;
                 gap: 14px;
+                position: relative;
+                z-index: 1;
             }
 
             html.dark .employee-card,
@@ -1106,8 +1220,9 @@
             }
 
             .dropdown-menu {
-                background: var(--u-card);
+             
                 border: 1px solid var(--u-border) !important;
+                z-index: 2200;
             }
 
             .dropdown-item {
@@ -1124,12 +1239,48 @@
                 border-color: var(--u-border);
             }
 
+            .modal-backdrop {
+                z-index: 2090 !important;
+            }
+
             .modal-backdrop.show {
-                z-index: 1055;
+                z-index: -1 !important;
+                opacity: .72 !important;
             }
 
             .modal {
-                z-index: 1060;
+                z-index: 2100 !important;
+            }
+
+            .modal-dialog {
+                position: relative;
+                z-index: 2101 !important;
+            }
+
+            .modal-content {
+                background: var(--u-card) !important;
+                border: 1px solid var(--u-border) !important;
+                overflow: hidden;
+                position: relative;
+                z-index: 2102 !important;
+            }
+
+            .modal-dialog-scrollable .modal-content {
+                overflow: hidden;
+                max-height: calc(100vh - 2rem);
+            }
+
+            .modal-dialog-scrollable .modal-body {
+                overflow-y: auto;
+                overscroll-behavior: contain;
+            }
+
+            header,
+            .navbar,
+            .topbar,
+            .app-header,
+            .main-header {
+                z-index: 1030 !important;
             }
 
             @media (max-width: 992px) {
@@ -1205,6 +1356,67 @@
                 .manager-modal-head {
                     align-items: flex-start;
                 }
+
+                /* کارت‌ها نباید منوی دراپ‌دان را قطع کنند */
+.manager-card,
+.search-user-card,
+.employee-card,
+.users-modal,
+.modal-content,
+.modal-body,
+.employee-list,
+.employee-section {
+    overflow: visible !important;
+}
+
+/* اگر قبلاً isolation گذاشتی، برای والدهایی که استک جدید می‌سازند حذفش کن */
+.users-modal,
+.modal-content,
+.employee-card,
+.search-user-card,
+.manager-card {
+    isolation: auto !important;
+}
+
+/* والد دکمه عملیات باید مرجع درست برای منو باشد */
+.dropdown {
+    position: relative;
+    z-index: 3000;
+}
+
+/* خود منو همیشه بالاتر از کارت‌ها و محتوا باشد */
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 4000 !important;
+    background: var(--u-card) !important;
+    border: 1px solid var(--u-border) !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* وقتی داخل مودال هستیم، باز هم بالاتر بماند */
+.modal .dropdown-menu {
+    z-index: 5000 !important;
+}
+
+/* این بخش‌ها لازم نیست z-index بگیرند؛ برداشتن‌شان جلوی تداخل را می‌گیرد */
+.manager-toolbar,
+.employee-section,
+.employee-list,
+.employee-card,
+.manager-modal-head {
+    z-index: auto !important;
+}
+
+/* اگر روی کارت‌ها transform داری، استک جدید می‌سازد؛ hover را سبک نگه دار */
+.manager-card:hover,
+.search-user-card:hover {
+    transform: translateY(-3px);
+    z-index: 1;
+}
+
+.employee-card:hover {
+    z-index: 1;
+}
             }
         </style>
     @endpush
@@ -1274,6 +1486,18 @@
                         runSearch(query);
                     });
                 }
+
+                document.querySelectorAll('.modal').forEach(modalEl => {
+                    modalEl.addEventListener('show.bs.modal', function () {
+                        document.body.classList.add('modal-open-fix');
+                    });
+
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        if (!document.querySelector('.modal.show')) {
+                            document.body.classList.remove('modal-open-fix');
+                        }
+                    });
+                });
             });
         </script>
     @endpush
@@ -1281,3 +1505,35 @@
     @stack('styles')
     @stack('scripts')
 </x-layouts.app>
+
+<script>
+document.addEventListener('shown.bs.dropdown', function (event) {
+    const toggle = event.target;
+    const dropdown = toggle.closest('.dropdown');
+    const menu = dropdown ? dropdown.querySelector('.dropdown-menu') : null;
+
+    if (!menu) return;
+
+    document.body.appendChild(menu);
+
+    const rect = toggle.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.top = (rect.bottom + 6) + 'px';
+    menu.style.left = (rect.left + rect.width - menu.offsetWidth) + 'px';
+    menu.style.zIndex = '99999';
+});
+
+document.addEventListener('hide.bs.dropdown', function (event) {
+    const toggle = event.target;
+    const dropdown = toggle.closest('.dropdown');
+    const menu = document.body.querySelector('.dropdown-menu.show');
+
+    if (!dropdown || !menu) return;
+
+    dropdown.appendChild(menu);
+    menu.style.position = '';
+    menu.style.top = '';
+    menu.style.left = '';
+    menu.style.zIndex = '';
+});
+</script>

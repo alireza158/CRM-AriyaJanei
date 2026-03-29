@@ -6,64 +6,64 @@
         $showEvalCard = ($jDay >= 28 || $jDay <= 3);
 
         $linksAdmin = [
-            ['title'=>'کاربران بازاریاب','route'=>'admin.marketers.index','icon'=>'users'],
-            ['title'=>'کاربران مهمان','route'=>'admin.guests.index','icon'=>'user'],
-            ['title'=>'مدیریت کاربران','route'=>'admin.users.index','icon'=>'users'],
-            ['title'=>'مدیریت محصولات و پورسانت','route'=>'admin.products.index','icon'=>'archive'],
-            ['title'=>'محصولات سایت','route'=>'products.index','icon'=>'box'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'admin.customersAdmin.index','icon'=>'user-group'],
-            ['title'=>'لاگ فعالیت‌ها','route'=>'admin.activity_logs.index','icon'=>'clipboard'],
-            ['title'=>'دسته‌بندی‌ها','route'=>'admin.categories.index','icon'=>'tag'],
-            ['title'=>'نحوه آشنایی','route'=>'admin.referenceType.index','icon'=>'question'],
-            ['title'=>'مدیریت فرم‌های ارزیابی','route'=>'admin.evaluations.forms.index','icon'=>'doc'],
-            ['title'=>'نتایج ارزیابی','route'=>'admin.evaluations.monthly','icon'=>'doc'],
-            ['title'=>'گزارش‌های مدیریتی','route'=>'admin.reports','icon'=>'chart'],
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
+            ['title' => 'کاربران بازاریاب', 'route' => 'admin.marketers.index', 'icon' => 'users'],
+            ['title' => 'کاربران مهمان', 'route' => 'admin.guests.index', 'icon' => 'user'],
+            ['title' => 'مدیریت کاربران', 'route' => 'admin.users.index', 'icon' => 'users'],
+            ['title' => 'مدیریت محصولات و پورسانت', 'route' => 'admin.products.index', 'icon' => 'archive'],
+            ['title' => 'محصولات سایت', 'route' => 'products.index', 'icon' => 'box'],
+            ['title' => 'مشتریان و شماره‌ها', 'route' => 'admin.customersAdmin.index', 'icon' => 'user-group'],
+            ['title' => 'لاگ فعالیت‌ها', 'route' => 'admin.activity_logs.index', 'icon' => 'clipboard'],
+            ['title' => 'دسته‌بندی‌ها', 'route' => 'admin.categories.index', 'icon' => 'tag'],
+            ['title' => 'نحوه آشنایی', 'route' => 'admin.referenceType.index', 'icon' => 'question'],
+            ['title' => 'مدیریت فرم‌های ارزیابی', 'route' => 'admin.evaluations.forms.index', 'icon' => 'doc'],
+            ['title' => 'نتایج ارزیابی', 'route' => 'admin.evaluations.monthly', 'icon' => 'doc'],
+            ['title' => 'گزارش‌های مدیریتی', 'route' => 'admin.reports', 'icon' => 'chart'],
+            ['title' => 'فرم رضایت مشتری', 'route' => 'customer-satisfaction-forms.index', 'icon' => 'doc'],
         ];
 
         $linksMarketer = [
-            ['title'=>'مشتریان من','route'=>'marketer.customers.index','icon'=>'users'],
-            ['title'=>'فروش (درحال توسعه)','route'=>'dashboard','icon'=>'chart'],
-            ['title'=>'مشتریان و شماره‌ها','route'=>'customersAdmin2.index','icon'=>'user-group'],
-            ['title'=>'ثبت سفارش','route'=>'marketer.orders.create','icon'=>'doc'],
+            ['title' => 'مشتریان من', 'route' => 'marketer.customers.index', 'icon' => 'users'],
+            ['title' => 'فروش (درحال توسعه)', 'route' => 'dashboard', 'icon' => 'chart'],
+            ['title' => 'مشتریان و شماره‌ها', 'route' => 'customersAdmin2.index', 'icon' => 'user-group'],
+            ['title' => 'ثبت سفارش', 'route' => 'marketer.orders.create', 'icon' => 'doc'],
         ];
 
         $linksSales = [
-            ['title'=>'اطلاعات ثبت شده در فرم','route'=>'admin.contacts','icon'=>'users'],
+            ['title' => 'اطلاعات ثبت شده در فرم', 'route' => 'admin.contacts', 'icon' => 'users'],
         ];
 
         $linksUser = [
-            ['title'=>'گزارش‌های من','route'=>'user.reports.index','icon'=>'doc'],
-            ['title'=>'ثبت مرخصی','route'=>'leaves','icon'=>'calendar'],
-            ['title'=>'یادآورها','route'=>'reminders.index','icon'=>'bell'],
-            ['title'=>'مدیریت پیام‌ها','route'=>'messages.index','icon'=>'chat'],
-            ['title'=>'مدیریت درخواست‌ها','route'=>'requests.index','icon'=>'bolt'],
+            ['title' => 'گزارش‌های من', 'route' => 'user.reports.index', 'icon' => 'doc'],
+            ['title' => 'ثبت مرخصی', 'route' => 'leaves', 'icon' => 'calendar'],
+            ['title' => 'یادآورها', 'route' => 'reminders.index', 'icon' => 'bell'],
+            ['title' => 'مدیریت پیام‌ها', 'route' => 'messages.index', 'icon' => 'chat'],
+            ['title' => 'مدیریت درخواست‌ها', 'route' => 'requests.index', 'icon' => 'bolt'],
         ];
 
         if ($showEvalCard) {
-            $linksUser[] = ['title'=>'فرم‌های ارزیابی','route'=>'evaluations.index','icon'=>'doc'];
+            $linksUser[] = ['title' => 'فرم‌های ارزیابی', 'route' => 'evaluations.index', 'icon' => 'doc'];
         }
 
         $linksManager = [
-            ['title'=>'مدیریت گزارش کارها','route'=>'user.reports.reportsManagment','icon'=>'doc'],
-            ['title'=>'مدیریت مرخصی‌ها','route'=>'leaves','icon'=>'calendar'],
-            ['title'=>'مدیریت تسک‌ها','route'=>'admin.tasks.index','icon'=>'checklist'],
+            ['title' => 'مدیریت گزارش کارها', 'route' => 'user.reports.reportsManagment', 'icon' => 'doc'],
+            ['title' => 'مدیریت مرخصی‌ها', 'route' => 'leaves', 'icon' => 'calendar'],
+            ['title' => 'مدیریت تسک‌ها', 'route' => 'admin.tasks.index', 'icon' => 'checklist'],
         ];
 
         $linksCustomerReview = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
+            ['title' => 'فرم رضایت مشتری', 'route' => 'customer-satisfaction-forms.index', 'icon' => 'doc'],
         ];
 
         $linksInternalManager = [
-            ['title'=>'فرم رضایت مشتری','route'=>'customer-satisfaction-forms.index','icon'=>'doc'],
+            ['title' => 'فرم رضایت مشتری', 'route' => 'customer-satisfaction-forms.index', 'icon' => 'doc'],
         ];
 
         $roleLinks = [
-            'Admin'           => $linksAdmin,
-            'Manager'         => $linksManager,
-            'Marketer'        => $linksMarketer,
-            'Sales'           => $linksSales,
-            'User'            => $linksUser,
+            'Admin' => $linksAdmin,
+            'Manager' => $linksManager,
+            'Marketer' => $linksMarketer,
+            'Sales' => $linksSales,
+            'User' => $linksUser,
             'customer_review' => $linksCustomerReview,
             'internalManager' => $linksInternalManager,
             'InternalManager' => $linksInternalManager,
@@ -170,41 +170,45 @@
 
         $statCards = [];
         if ($user->hasRole('Marketer')) {
-            $statCards[] = ['tone'=>'primary','title'=>'مشتری جدید','value'=>$newCustomersCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📌'];
+            $statCards[] = ['tone' => 'primary', 'title' => 'مشتری جدید', 'value' => $newCustomersCount, 'desc' => '۲۴ ساعت گذشته', 'emoji' => '📌'];
         }
         if ($user->hasRole('User') && !$user->hasAnyRole(['Admin','Manager'])) {
-            $statCards[] = ['tone'=>'success','title'=>'تسک‌های امروز','value'=>$todayTasksCount,'desc'=>'امروز','emoji'=>'✅'];
+            $statCards[] = ['tone' => 'success', 'title' => 'تسک‌های امروز', 'value' => $todayTasksCount, 'desc' => 'امروز', 'emoji' => '✅'];
         }
         if ($user->hasAnyRole(['Admin','Manager'])) {
-            $statCards[] = ['tone'=>'primary','title'=>'مشتری جدید','value'=>$newCustomersCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📌'];
-            $statCards[] = ['tone'=>'success','title'=>'یادداشت جدید','value'=>$newNotesCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📝'];
-            $statCards[] = ['tone'=>'purple','title'=>'گزارش جدید','value'=>$newReportsCount,'desc'=>'۲۴ ساعت گذشته','emoji'=>'📑'];
+            $statCards[] = ['tone' => 'primary', 'title' => 'مشتری جدید', 'value' => $newCustomersCount, 'desc' => '۲۴ ساعت گذشته', 'emoji' => '📌'];
+            $statCards[] = ['tone' => 'success', 'title' => 'یادداشت جدید', 'value' => $newNotesCount, 'desc' => '۲۴ ساعت گذشته', 'emoji' => '📝'];
+            $statCards[] = ['tone' => 'purple', 'title' => 'گزارش جدید', 'value' => $newReportsCount, 'desc' => '۲۴ ساعت گذشته', 'emoji' => '📑'];
         }
 
         $showTasksWidget = $user->hasAnyRole(['Marketer','User','Manager']);
         $taskTotal = $tasks->count();
         $taskDone  = $tasks->where('completed', true)->count();
         $taskPct   = $taskTotal > 0 ? (int) round(($taskDone / $taskTotal) * 100) : 0;
-        $showTasksModalOnLogin = session('just_logged_in') && $taskTotal > 0;
 
-        if (!function_exists('dash_icon_final_v2')) {
-            function dash_icon_final_v2($name){
+        if (!function_exists('dash_icon_pro')) {
+            function dash_icon_pro($name){
                 $icons = [
-                    'users' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
-                    'user' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>',
-                    'archive' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7M4 13h16M5 20h14a2 2 0 002-2v-5H3v5a2 2 0 002 2z"/></svg>',
-                    'user-group' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M12 12a4 4 0 100-8 4 4 0 000 8zM7 8a4 4 0 110-8 4 4 0 010 8z"/></svg>',
-                    'clipboard' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v14h14V7a2 2 0 00-2-2h-2M9 5V3h6v2M9 12h6M9 16h6"/></svg>',
-                    'tag' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 7a2 2 0 114 0 2 2 0 01-4 0zM5 7h.01M7 7v10m0 0l-3 3m3-3h10"/></svg>',
-                    'question' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h.01M12 10h.01M16 10h.01M12 14v.01"/></svg>',
-                    'doc' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5l5 5v9a2 2 0 01-2 2z"/></svg>',
+                    'users' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20h6M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>',
+                    'user' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4 4 0 0 1 8 16h8a4 4 0 0 1 2.879 1.804M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>',
+                    'archive' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7M4 13h16M5 20h14a2 2 0 0 0 2-2v-5H3v5a2 2 0 0 0 2 2z"/></svg>',
+                    'user-group' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20h6M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM7 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg>',
+                    'clipboard' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 0 0-2 2v14h14V7a2 2 0 0 0-2-2h-2M9 5V3h6v2M9 12h6M9 16h6"/></svg>',
+                    'tag' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 7a2 2 0 1 1 4 0 2 2 0 0 1-4 0zM5 7h.01M7 7v10m0 0-3 3m3-3h10"/></svg>',
+                    'question' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 10h.01M12 10h.01M16 10h.01M12 14v.01"/></svg>',
+                    'doc' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 4H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l5 5v9a2 2 0 0 1-2 2z"/></svg>',
                     'chart' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M9 17V9m4 8V5m4 12v-6"/></svg>',
-                    'calendar' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
-                    'bell' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14V11a6 6 0 10-12 0v3a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>',
-                    'chat' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM8 10h8M8 14h5"/></svg>',
+                    'calendar' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg>',
+                    'bell' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14V11a6 6 0 1 0-12 0v3a2 2 0 0 1-.6 1.4L4 17h5m6 0a3 3 0 1 1-6 0"/></svg>',
+                    'chat' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM8 10h8M8 14h5"/></svg>',
                     'bolt' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
-                    'box' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 12l-8 5-8-5m16 0l-8-5-8 5m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/></svg>',
+                    'box' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M20 12l-8 5-8-5m16 0-8-5-8 5m16 0v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"/></svg>',
                     'checklist' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5h12M9 12h12M9 19h12M5 5h.01M5 12h.01M5 19h.01"/></svg>',
+                    'megaphone' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 11v2a2 2 0 0 0 2 2h2l3 5h2l-1.5-5H15l4 3V6l-4 3H5a2 2 0 0 0-2 2z"/></svg>',
+                    'spark' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7L12 3zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16zM5 14l.8 2.2L8 17l-2.2.8L5 20l-.8-2.2L2 17l2.2-.8L5 14z"/></svg>',
+                    'arrow-left' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>',
+                    'check' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+                    'close' => '<svg xmlns="http://www.w3.org/2000/svg" class="dash-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>',
                 ];
                 return $icons[$name] ?? '';
             }
@@ -230,15 +234,16 @@
 
     <style>
         .smart-dashboard {
-            --sd-bg: #f6f8fc;
-            --sd-bg-soft: #eef2f7;
+            --sd-bg: #f4f7fb;
+            --sd-bg-soft: #eef3f9;
             --sd-surface: #ffffff;
-            --sd-surface-2: #f8fafc;
+            --sd-surface-2: #f8fbff;
+            --sd-surface-3: #f1f6fc;
             --sd-border: #e2e8f0;
             --sd-text: #0f172a;
             --sd-muted: #64748b;
-            --sd-shadow: 0 6px 24px rgba(15, 23, 42, .05);
-            --sd-shadow-hover: 0 16px 34px rgba(15, 23, 42, .10);
+            --sd-shadow: 0 10px 28px rgba(15, 23, 42, .06);
+            --sd-shadow-hover: 0 16px 42px rgba(15, 23, 42, .12);
             --sd-progress-bg: rgba(148, 163, 184, .18);
 
             --tone-primary-bg: rgba(59,130,246,.14);
@@ -253,6 +258,8 @@
             --tone-warning-text: #d97706;
             --tone-teal-bg: rgba(20,184,166,.14);
             --tone-teal-text: #0f766e;
+            --tone-danger-bg: rgba(239,68,68,.12);
+            --tone-danger-text: #dc2626;
         }
 
         html.dark .smart-dashboard,
@@ -261,16 +268,17 @@
         html[data-bs-theme="dark"] .smart-dashboard,
         body[data-bs-theme="dark"] .smart-dashboard,
         [data-bs-theme="dark"] .smart-dashboard {
-            --sd-bg: #0b1220;
-            --sd-bg-soft: #111827;
+            --sd-bg: #08101c;
+            --sd-bg-soft: #0d1727;
             --sd-surface: #0f172a;
-            --sd-surface-2: #162033;
+            --sd-surface-2: #152034;
+            --sd-surface-3: #1a263d;
             --sd-border: rgba(148,163,184,.18);
             --sd-text: #e5edf8;
             --sd-muted: #94a3b8;
-            --sd-shadow: 0 12px 32px rgba(0,0,0,.28);
-            --sd-shadow-hover: 0 18px 40px rgba(0,0,0,.36);
-            --sd-progress-bg: rgba(148, 163, 184, .16);
+            --sd-shadow: 0 12px 30px rgba(0,0,0,.28);
+            --sd-shadow-hover: 0 18px 40px rgba(0,0,0,.38);
+            --sd-progress-bg: rgba(148,163,184,.16);
 
             --tone-primary-bg: rgba(96,165,250,.18);
             --tone-primary-text: #93c5fd;
@@ -284,6 +292,8 @@
             --tone-warning-text: #fcd34d;
             --tone-teal-bg: rgba(45,212,191,.18);
             --tone-teal-text: #5eead4;
+            --tone-danger-bg: rgba(248,113,113,.14);
+            --tone-danger-text: #fda4af;
         }
 
         .dashboard-rtl,
@@ -293,7 +303,10 @@
 
         .sd-wrap {
             min-height: 100%;
-            background: linear-gradient(180deg, var(--sd-bg) 0%, var(--sd-bg-soft) 50%, var(--sd-bg) 100%);
+            background:
+                radial-gradient(circle at top right, rgba(59,130,246,.05), transparent 22%),
+                radial-gradient(circle at top left, rgba(139,92,246,.05), transparent 18%),
+                linear-gradient(180deg, var(--sd-bg) 0%, var(--sd-bg-soft) 50%, var(--sd-bg) 100%);
             color: var(--sd-text);
         }
 
@@ -326,9 +339,9 @@
             background: var(--sd-surface) !important;
             border: 1px solid var(--sd-border) !important;
             color: var(--sd-text) !important;
-            border-radius: 18px;
+            border-radius: 22px;
             box-shadow: var(--sd-shadow);
-            transition: .2s ease;
+            transition: .25s ease;
         }
 
         .sd-card:hover {
@@ -354,8 +367,8 @@
         }
 
         .smart-dashboard .list-group-item {
-            border-radius: 14px !important;
-            margin-bottom: .5rem;
+            border-radius: 16px !important;
+            margin-bottom: .6rem;
         }
 
         .smart-dashboard .form-control,
@@ -364,6 +377,7 @@
             background: var(--sd-surface-2) !important;
             color: var(--sd-text) !important;
             border: 1px solid var(--sd-border) !important;
+            border-radius: 14px !important;
         }
 
         .smart-dashboard .form-control::placeholder,
@@ -382,7 +396,7 @@
         }
 
         .smart-dashboard .btn-outline-primary {
-            border-color: rgba(59,130,246,.45);
+            border-color: rgba(59,130,246,.35);
         }
 
         .smart-dashboard .btn-close {
@@ -398,25 +412,46 @@
             filter: invert(1) grayscale(100%);
         }
 
-        .sd-icon-svg {
-            width: 22px;
-            height: 22px;
-        }
-
         .dash-icon-svg {
             width: 22px;
             height: 22px;
         }
 
         .sd-icon-wrap {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
             border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 1px solid transparent;
+        }
+
+        .sd-icon-wrap.sm {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 14px;
+        }
+
+        .sd-mini-btn {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--sd-border);
+            background: var(--sd-surface-2);
+            color: var(--sd-text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: .2s ease;
+        }
+
+        .sd-mini-btn:hover {
+            background: var(--sd-surface-3);
+            transform: translateY(-1px);
         }
 
         .tone-primary { background: var(--tone-primary-bg) !important; color: var(--tone-primary-text) !important; border-color: var(--tone-primary-bg) !important; }
@@ -425,6 +460,7 @@
         .tone-indigo  { background: var(--tone-indigo-bg) !important; color: var(--tone-indigo-text) !important; border-color: var(--tone-indigo-bg) !important; }
         .tone-warning { background: var(--tone-warning-bg) !important; color: var(--tone-warning-text) !important; border-color: var(--tone-warning-bg) !important; }
         .tone-teal    { background: var(--tone-teal-bg) !important; color: var(--tone-teal-text) !important; border-color: var(--tone-teal-bg) !important; }
+        .tone-danger  { background: var(--tone-danger-bg) !important; color: var(--tone-danger-text) !important; border-color: var(--tone-danger-bg) !important; }
 
         .sd-pill {
             display: inline-flex;
@@ -432,15 +468,15 @@
             justify-content: center;
             border: 1px solid transparent;
             border-radius: 999px;
-            padding: .38rem .78rem;
+            padding: .42rem .82rem;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             line-height: 1;
             white-space: nowrap;
         }
 
         .sd-section-title {
-            font-weight: 800;
+            font-weight: 900;
         }
 
         .sd-progress {
@@ -457,25 +493,26 @@
         .sd-task-item,
         .sd-stat-box,
         .sd-link-item,
-        .sd-list-item {
+        .sd-list-item,
+        .sd-notice-item {
             background: var(--sd-surface) !important;
             border: 1px solid var(--sd-border) !important;
-            border-radius: 14px;
+            border-radius: 16px;
             color: var(--sd-text) !important;
         }
 
         .sd-task-item {
-            padding: .9rem 1rem;
+            padding: .95rem 1rem;
         }
 
         .sd-stat-box {
-            padding: 14px 16px;
+            padding: 16px;
             height: 100%;
         }
 
         .sd-stat-number {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.55rem;
+            font-weight: 900;
             line-height: 1;
             margin-top: .9rem;
         }
@@ -491,8 +528,21 @@
 
         .sd-group-card {
             cursor: pointer;
-            min-height: 165px;
+            min-height: 175px;
             text-align: right;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sd-group-card::after {
+            content: "";
+            position: absolute;
+            left: -30px;
+            bottom: -30px;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle, rgba(59,130,246,.10), transparent 65%);
+            pointer-events: none;
         }
 
         .sd-link-item {
@@ -524,9 +574,9 @@
             color: var(--sd-text);
             border: 1px solid var(--sd-border);
             border-radius: 999px;
-            padding: .32rem .68rem;
+            padding: .34rem .72rem;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .sd-alert {
@@ -580,10 +630,147 @@
             text-align: right !important;
         }
 
+        .sd-notice-launcher {
+            background:
+                radial-gradient(circle at top left, rgba(99,102,241,.08), transparent 24%),
+                radial-gradient(circle at bottom right, rgba(20,184,166,.08), transparent 22%),
+                var(--sd-surface) !important;
+        }
+
+        .sd-notice-open-btn {
+            width: 62px;
+            height: 62px;
+            min-width: 62px;
+            border: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 18px 40px rgba(59,130,246,.22);
+            transition: .2s ease;
+        }
+
+        .sd-notice-open-btn:hover {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .sd-notice-open-btn .dash-icon-svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .sd-notice-open-badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 .4rem;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #fff;
+            border: 2px solid #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .sd-notice-item {
+            padding: 1rem;
+            transition: .2s ease;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .85rem;
+        }
+
+        .sd-notice-item:hover {
+            background: var(--sd-surface-2) !important;
+        }
+
+        .sd-notice-title {
+            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: .25rem;
+            color: var(--sd-text);
+        }
+
+        .sd-notice-desc {
+            font-size: 13px;
+            color: var(--sd-muted);
+            line-height: 1.85;
+        }
+
+        .sd-notice-meta {
+            font-size: 12px;
+            color: var(--sd-muted);
+            margin-top: .45rem;
+        }
+
+        .sd-notice-actions {
+            margin-top: .75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            justify-content: flex-start;
+        }
+
+        .sd-modal-section + .sd-modal-section {
+            margin-top: 1rem;
+        }
+
+        .sd-modal-section-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--sd-muted);
+            margin-bottom: .75rem;
+            text-align: right;
+        }
+
+        .sd-notice-modal .modal-dialog {
+            max-width: 980px;
+        }
+
+        .sd-notice-modal .modal-content {
+            height: min(90vh, 920px);
+            overflow: hidden;
+            border-radius: 24px;
+        }
+
+        .sd-notice-modal .modal-header,
+        .sd-notice-modal .modal-footer {
+            flex: 0 0 auto;
+        }
+
+        .sd-notice-modal .modal-body {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 1rem 1.1rem 1.15rem;
+        }
+
+        .sd-notice-modal-body {
+            display: grid;
+            gap: .85rem;
+        }
+
+        .swal2-container {
+            z-index: 9999 !important;
+        }
+
         @media (max-width: 991.98px) {
             .top-stack-order-1 { order: 1; }
             .top-stack-order-2 { order: 2; }
             .top-stack-order-3 { order: 3; }
+
+            .sd-wrap {
+                padding-bottom: 20px;
+            }
         }
 
         @media (max-width: 767.98px) {
@@ -592,14 +779,36 @@
             }
 
             .sd-icon-wrap {
-                width: 42px;
-                height: 42px;
-                min-width: 42px;
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
                 border-radius: 14px;
             }
 
             .sd-stat-number {
-                font-size: 1.25rem;
+                font-size: 1.3rem;
+            }
+
+            .sd-notice-item {
+                padding: .92rem;
+            }
+
+            .sd-notice-open-btn {
+                width: 56px;
+                height: 56px;
+                min-width: 56px;
+                border-radius: 16px;
+            }
+
+            .sd-notice-modal .modal-dialog {
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .sd-notice-modal .modal-content {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0 !important;
             }
         }
     </style>
@@ -628,8 +837,30 @@
                 </script>
             @endif
 
+            <div class="sd-card sd-notice-launcher mb-4">
+                <div class="p-3 p-md-4">
+                    <div class="sd-between-rtl">
+                        <button type="button"
+                                class="sd-notice-open-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#notificationsModal"
+                                aria-label="باز کردن اعلان‌ها">
+                            {!! dash_icon_pro('megaphone') !!}
+                            @if($notificationCount > 0)
+                                <span class="sd-notice-open-badge">{{ $notificationCount }}</span>
+                            @endif
+                        </button>
+
+                        <div class="text-end">
+                            <div class="sd-section-title">اطلاعیه و اعلان‌ها</div>
+                            <div class="sd-muted small mt-1">برای مشاهده موارد، روی آیکن کلیک کن</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row g-3 mb-4 align-items-stretch">
-                <div class="col-12 col-lg-5 top-stack-order-1">
+                <div class="col-12 col-xl-7 top-stack-order-1">
                     @if($showTasksWidget)
                         <div class="sd-card overflow-hidden h-100">
                             <div class="p-4 border-bottom sd-border">
@@ -658,7 +889,7 @@
                                                 <div class="sd-row-reverse-start gap-2">
                                                     <div class="flex-grow-1 sd-text-end">
                                                         <label for="task-{{ $task->id }}"
-                                                            class="fw-semibold d-block {{ $task->completed ? 'text-decoration-line-through sd-muted' : 'sd-text' }}">
+                                                               class="fw-semibold d-block {{ $task->completed ? 'text-decoration-line-through sd-muted' : 'sd-text' }}">
                                                             {{ $task->title }}
                                                         </label>
 
@@ -670,10 +901,10 @@
                                                     </div>
 
                                                     <input class="form-check-input mt-1 task-checkbox"
-                                                        type="checkbox"
-                                                        id="task-{{ $task->id }}"
-                                                        data-id="{{ $task->id }}"
-                                                        {{ $task->completed ? 'checked' : '' }}>
+                                                           type="checkbox"
+                                                           id="task-{{ $task->id }}"
+                                                           data-id="{{ $task->id }}"
+                                                           {{ $task->completed ? 'checked' : '' }}>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -681,9 +912,9 @@
 
                                     <div class="mt-3 d-grid">
                                         <button class="btn btn-outline-primary"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#tasksModal">
+                                                type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#tasksModal">
                                             مشاهده همه تسک‌ها
                                         </button>
                                     </div>
@@ -699,13 +930,11 @@
                     @endif
                 </div>
 
-                <div class="col-12 col-lg-7 top-stack-order-2">
+                <div class="col-12 col-xl-5 top-stack-order-2">
                     @if(count($statCards) > 0)
                         <div class="sd-card sd-summary-board p-4 h-100">
                             <div class="sd-between-rtl mb-3 flex-wrap">
-                                <span class="sd-pill sd-surface-soft">
-                                    ۲۴ ساعت گذشته
-                                </span>
+                                <span class="sd-pill sd-surface-soft">۲۴ ساعت گذشته</span>
 
                                 <div class="sd-text-end">
                                     <div class="sd-section-title">خلاصه عملکرد</div>
@@ -715,7 +944,7 @@
 
                             <div class="row g-3">
                                 @foreach($statCards as $s)
-                                    <div class="col-12 col-sm-6 col-xl-4">
+                                    <div class="col-12 col-sm-6 col-xl-6">
                                         <div class="sd-stat-box">
                                             <div class="sd-between-rtl-start">
                                                 <span class="sd-pill tone-{{ $s['tone'] }}">{{ $s['desc'] }}</span>
@@ -760,7 +989,7 @@
                                             <div class="sd-card sd-group-card p-4 h-100">
                                                 <div class="sd-between-rtl-start">
                                                     <div class="sd-icon-wrap tone-{{ $group['tone'] }}">
-                                                        {!! dash_icon_final_v2($group['icon']) !!}
+                                                        {!! dash_icon_pro($group['icon']) !!}
                                                     </div>
 
                                                     <div class="flex-grow-1 sd-text-end">
@@ -814,7 +1043,7 @@
 
                                                 <div class="sd-row-reverse gap-3">
                                                     <div class="sd-icon-wrap sd-surface-soft">
-                                                        {!! dash_icon_final_v2($item['icon']) !!}
+                                                        {!! dash_icon_pro($item['icon']) !!}
                                                     </div>
 
                                                     <div class="sd-text-end">
@@ -882,6 +1111,134 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="notificationsModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-fullscreen-md-down smart-dashboard dashboard-rtl sd-notice-modal">
+                    <div class="modal-content border-0">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal"></button>
+
+                            <div class="sd-text-end">
+                                <h5 class="sd-modal-title fw-bold mb-1">اطلاعیه‌ها و اعلان‌ها</h5>
+                                <div class="sd-muted small">{{ $notificationCount }} مورد برای بررسی</div>
+                            </div>
+                        </div>
+
+                        <div class="modal-body sd-soft-scroll">
+                            <div class="sd-notice-modal-body">
+
+                                @if(($newAssignedCustomerSatisfactionFormsCount ?? 0) > 0)
+                                    <div class="sd-modal-section">
+                                        <div class="sd-modal-section-title">ارجاع‌ها</div>
+
+                                        <div class="sd-notice-item">
+                                            <div class="flex-grow-1 sd-text-end">
+                                                <div class="sd-notice-title">ارجاع جدید فرم رضایت مشتری</div>
+                                                <div class="sd-notice-desc">
+                                                    {{ $newAssignedCustomerSatisfactionFormsCount }} مشتری جدید برای شما در فرم رضایت مشتری ثبت شده است.
+                                                </div>
+
+                                                <div class="sd-notice-actions">
+                                                    <a href="{{ route('customer-satisfaction-forms.index') }}" class="btn btn-sm btn-primary">
+                                                        مشاهده فرم‌ها
+                                                    </a>
+
+                                                    <button type="button" class="btn btn-sm btn-outline-success js-mark-assigned-seen">
+                                                        خواندم
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="sd-icon-wrap tone-teal">
+                                                {!! dash_icon_pro('doc') !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if(($todayReminders->count() ?? 0) > 0)
+                                    <div class="sd-modal-section">
+                                        <div class="sd-modal-section-title">یادآورها</div>
+
+                                        @foreach($todayReminders as $reminder)
+                                            <div class="sd-notice-item">
+                                                <div class="flex-grow-1 sd-text-end">
+                                                    <div class="sd-notice-title">{{ $reminder->title }}</div>
+
+                                                    @if($reminder->description)
+                                                        <div class="sd-notice-desc">{{ $reminder->description }}</div>
+                                                    @endif
+
+                                                    <div class="sd-notice-meta">
+                                                        زمان یادآوری:
+                                                        {{ \Hekmatinasser\Verta\Verta::instance($reminder->remind_at)->format('Y/m/d H:i') }}
+                                                    </div>
+
+                                                    <div class="sd-notice-actions">
+                                                        <form action="{{ route('reminders.markAsSeen', $reminder->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="btn btn-sm btn-success">خواندم</button>
+                                                        </form>
+
+                                                        <a href="{{ route('reminders.index') }}" class="btn btn-sm btn-outline-primary">
+                                                            مدیریت یادآورها
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sd-icon-wrap tone-warning">
+                                                    {!! dash_icon_pro('bell') !!}
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                @if(($groupedNotifications->count() ?? 0) > 0)
+                                    <div class="sd-modal-section">
+                                        <div class="sd-modal-section-title">اعلان‌های سیستمی</div>
+
+                                        @foreach($groupedNotifications as $note)
+                                            <div class="sd-notice-item">
+                                                <div class="flex-grow-1 sd-text-end">
+                                                    <div class="sd-notice-title">{{ $note['title'] }}</div>
+                                                    <div class="sd-notice-desc">
+                                                        @if($note['count'] > 1)
+                                                            {{ $note['count'] }} اعلان با این عنوان برای شما ثبت شده است.
+                                                        @else
+                                                            یک اعلان جدید برای شما ثبت شده است.
+                                                        @endif
+                                                    </div>
+
+                                                    @if($note['latestCreatedAt'])
+                                                        <div class="sd-notice-meta">آخرین زمان: {{ $note['latestCreatedAt'] }}</div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="sd-icon-wrap tone-primary">
+                                                    {!! dash_icon_pro('chat') !!}
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            @if(($groupedNotifications->count() ?? 0) > 0)
+                                <button type="button" class="btn btn-outline-success js-mark-all-notifications-seen">
+                                    خواندن همه اعلان‌های سیستمی
+                                </button>
+                            @endif
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if($user->force_password_reset)
                 <div class="modal fade" id="passwordResetModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered smart-dashboard dashboard-rtl">
@@ -913,46 +1270,6 @@
                     </div>
                 </div>
             @endif
-
-            @if($todayReminders->count() > 0)
-                <div class="modal fade" id="reminderModal" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered smart-dashboard dashboard-rtl">
-                        <div class="modal-content border-0">
-                            <div class="modal-header">
-                                <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal"></button>
-                                <h5 class="sd-modal-title fw-bold mb-0">یادآورهای امروز</h5>
-                            </div>
-
-                            <div class="modal-body">
-                                <ul class="list-group">
-                                    @foreach($todayReminders as $reminder)
-                                        <li class="list-group-item sd-list-item">
-                                            <div class="sd-between-rtl-start">
-                                                <form action="{{ route('reminders.markAsSeen', $reminder->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="btn btn-success btn-sm">خواندم</button>
-                                                </form>
-
-                                                <div class="flex-grow-1 sd-text-end">
-                                                    <strong class="sd-text">{{ $reminder->title }}</strong><br>
-                                                    @if($reminder->description)
-                                                        <small class="sd-muted">{{ $reminder->description }}</small><br>
-                                                    @endif
-                                                    <small class="sd-muted">
-                                                        {{ \Hekmatinasser\Verta\Verta::instance($reminder->remind_at)->format('Y/m/d H:i') }}
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
         </div>
     </div>
 
@@ -975,10 +1292,6 @@
                     backdrop: 'static',
                     keyboard: false
                 }).show();
-            @endif
-
-            @if($todayReminders->count() > 0)
-                new bootstrap.Modal(document.getElementById('reminderModal')).show();
             @endif
 
             async function toggleTask(checkbox) {
@@ -1032,83 +1345,69 @@
                 });
             });
 
-            @if(($newAssignedCustomerSatisfactionFormsCount ?? 0) > 0)
-                Swal.fire({
-                    title: 'ارجاع جدید فرم رضایت مشتری',
-                    text: '{{ $newAssignedCustomerSatisfactionFormsCount }} تا مشتری ارجاع شده در فرم رضایت مشتری',
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: true,
-                    confirmButtonText: 'خواندم'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch("{{ route('customer-satisfaction-forms.mark-assigned-seen') }}", {
+            document.querySelectorAll('.js-mark-assigned-seen').forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    try {
+                        const res = await fetch("{{ route('customer-satisfaction-forms.mark-assigned-seen') }}", {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': csrf,
                                 'Accept': 'application/json'
                             }
                         });
-                    }
-                });
-            @endif
 
-            @if($notifications->count() > 0)
-                (function () {
-                    let notifications = @json($notifications);
-                    let grouped = {};
+                        if (!res.ok) throw new Error('failed');
 
-                    notifications.forEach(n => {
-                        if (grouped[n.title]) {
-                            grouped[n.title].count++;
-                            grouped[n.title].latestCreatedAt = n.created_at_human;
-                        } else {
-                            grouped[n.title] = {
-                                count: 1,
-                                latestCreatedAt: n.created_at_human
-                            };
-                        }
-                    });
+                        await Swal.fire({
+                            title: 'ثبت شد',
+                            text: 'اعلان ارجاع فرم رضایت مشتری خوانده شد.',
+                            icon: 'success',
+                            confirmButtonText: 'باشه'
+                        });
 
-                    let items = Object.keys(grouped).map(title => ({
-                        title,
-                        count: grouped[title].count,
-                        latestCreatedAt: grouped[title].latestCreatedAt
-                    }));
-
-                    let i = 0;
-
-                    function showNext() {
-                        if (i >= items.length) {
-                            fetch("{{ route('notifications.markAllSeen') }}", {
-                                method: "POST",
-                                headers: { "X-CSRF-TOKEN": csrf }
-                            });
-                            return;
-                        }
-
-                        const note = items[i];
-                        const msg = note.count > 1 ? `تعداد: ${note.count}` : "";
-
+                        window.location.reload();
+                    } catch (error) {
                         Swal.fire({
-                            title: note.title,
-                            text: msg,
-                            icon: "info",
-                            timer: 5000,
-                            timerProgressBar: true,
-                            showConfirmButton: true,
-                            confirmButtonText: "باشه",
-                            footer: note.latestCreatedAt
-                        }).then(() => {
-                            i++;
-                            showNext();
+                            title: 'خطا',
+                            text: 'عملیات انجام نشد.',
+                            icon: 'error',
+                            confirmButtonText: 'باشه'
                         });
                     }
+                });
+            });
 
-                    showNext();
-                })();
-            @endif
+            document.querySelectorAll('.js-mark-all-notifications-seen').forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    try {
+                        const res = await fetch("{{ route('notifications.markAllSeen') }}", {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": csrf,
+                                "Accept": "application/json"
+                            }
+                        });
+
+                        if (!res.ok) throw new Error('failed');
+
+                        await Swal.fire({
+                            title: 'انجام شد',
+                            text: 'همه اعلان‌های سیستمی خوانده‌شده ثبت شدند.',
+                            icon: 'success',
+                            confirmButtonText: 'باشه'
+                        });
+
+                        window.location.reload();
+                    } catch (error) {
+                        Swal.fire({
+                            title: 'خطا',
+                            text: 'در ثبت خواندن اعلان‌ها مشکلی پیش آمد.',
+                            icon: 'error',
+                            confirmButtonText: 'باشه'
+                        });
+                    }
+                });
+            });
         });
     </script>
 </x-app-layout>

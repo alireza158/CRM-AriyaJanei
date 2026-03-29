@@ -1,88 +1,110 @@
 <?php
 
-
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use App\Models\Task;
-use App\Models\User;
+
 use App\Models\Customer;
 use App\Models\CustomerNote;
-use App\Models\Report;
-use App\Models\Reminder;
-use App\Models\Notification;
 use App\Models\CustomerSatisfactionForm;
+use App\Models\Notification;
+use App\Models\Reminder;
+use App\Models\Report;
+use App\Models\Task;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $tasks = collect();
-
-        $userId = Auth::id();
-
-
-        $newCustomersCount = Customer::where('user_id', $userId)
-        ->where(function($q){
-            $q->where('created_at', '>=', now()->subDay())
-            ->orWhere('updated_at', '>=', now()->subDay());
-        })
-        ->count();
-
-
-        // برای نمایش مودال بعد از لاگین، یک session می‌فرستیم
-        session()->put('just_logged_in', true);
-
-        $tasks = Task::whereDate('created_at', now()->toDateString())
-        ->where('user_id', auth()->id())
-        ->get();
-
+        $userId = $user->id;
         $since = now()->subDay();
 
-        $newCustomersCount = Customer::where('updated_at', '>=', now()->subDay())->count();
+        // اگر در زمان لاگین این سشن را flash/set کرده باشی، فقط همان بار اول استفاده می‌شود
+        $showTasksModalOnLogin = session()->pull('just_logged_in', false);
+
+        // تسک‌های امروز
+        $tasks = Task::query()
+            ->where('user_id', $userId)
+            ->whereDate('created_at', now()->toDateString())
+            ->latest()
+            ->get();
+
         $todayTasksCount = $tasks->count();
 
+        // مشتری‌های جدید 24 ساعت اخیر
+        $newCustomersQuery = Customer::query()
+            ->where('created_at', '>=', $since);
 
+        if (!$user->hasAnyRole(['Admin', 'Manager'])) {
+            $newCustomersQuery->where('user_id', $userId);
+        }
 
+        $newCustomersCount = $newCustomersQuery->count();
 
-        $newNotesCount = CustomerNote::where('created_at', '>=', $since)->count();
+        // یادداشت‌های جدید
+        $newNotesCount = CustomerNote::query()
+            ->where('created_at', '>=', $since)
+            ->count();
 
-        $newReportsCount = Report::where('created_at', '>=', $since)->count();
+        // گزارش‌های جدید
+        $newReportsCount = Report::query()
+            ->where('created_at', '>=', $since)
+            ->count();
 
-$todayReminders = Reminder::where('user_id', auth()->id())
-    ->where('remind_at', '<=', Carbon::now())
-    ->where('seen', false)
-    ->orderBy('remind_at', 'asc')
-    ->get();
+        // یادآورهای امروز/معوق که هنوز دیده نشده‌اند
+        $todayReminders = Reminder::query()
+            ->where('user_id', $userId)
+            ->where('remind_at', '<=', Carbon::now())
+            ->where('seen', false)
+            ->orderBy('remind_at', 'asc')
+            ->get();
 
+        // فرم‌های رضایت مشتری ارجاع‌شده و ندیده
+        $newAssignedCustomerSatisfactionFormsCount = CustomerSatisfactionForm::query()
+            ->where('assigned_to_user_id', $userId)
+            ->whereNull('referral_seen_at')
+            ->count();
 
+        // اعلان‌های ندیده
+        $notifications = Notification::query()
+            ->where('user_id', $userId)
+            ->where('seen', false)
+            ->latest()
+            ->get();
 
-    // ...
+        $groupedNotifications = $notifications
+            ->groupBy(function ($item) {
+                return $item->title ?: 'اعلان';
+            })
+            ->map(function ($items, $title) {
+                $latest = $items->sortByDesc('created_at')->first();
 
-    $newAssignedCustomerSatisfactionFormsCount = CustomerSatisfactionForm::query()
-        ->where('assigned_to_user_id', auth()->id())
-        ->whereNull('referral_seen_at')
-        ->count();
+                return [
+                    'title' => $title,
+                    'count' => $items->count(),
+                    'latestCreatedAt' => optional($latest)->created_at_human,
+                ];
+            })
+            ->values();
 
-    $notifications = Notification::where('user_id', auth()->id())
-        ->where('seen', false)
-        ->orderBy('created_at', 'desc')
-        ->get();
+        $notificationCount =
+            $todayReminders->count() +
+            $notifications->count() +
+            ($newAssignedCustomerSatisfactionFormsCount > 0 ? 1 : 0);
 
-    return view('dashboard', [
-        'tasks' => $tasks,
-        'newCustomersCount' => $newCustomersCount,
-        'todayTasksCount' => $todayTasksCount,
-        'newNotesCount' =>$newNotesCount,
-        'newReportsCount' =>$newReportsCount,
-        'todayReminders'=>$todayReminders,
-        'notifications' => $notifications, // اضافه شد
-        'newAssignedCustomerSatisfactionFormsCount' => $newAssignedCustomerSatisfactionFormsCount,
-    ]);
-
+        return view('dashboard', [
+            'tasks' => $tasks,
+            'todayTasksCount' => $todayTasksCount,
+            'newCustomersCount' => $newCustomersCount,
+            'newNotesCount' => $newNotesCount,
+            'newReportsCount' => $newReportsCount,
+            'todayReminders' => $todayReminders,
+            'notifications' => $notifications,
+            'groupedNotifications' => $groupedNotifications,
+            'notificationCount' => $notificationCount,
+            'newAssignedCustomerSatisfactionFormsCount' => $newAssignedCustomerSatisfactionFormsCount,
+            'showTasksModalOnLogin' => $showTasksModalOnLogin && $tasks->isNotEmpty(),
+        ]);
     }
-
-
-
 }
-
