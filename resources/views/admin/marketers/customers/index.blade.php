@@ -3,7 +3,7 @@
         <h2 class="h4 font-weight-bold">مدیریت مشتریان</h2>
     </x-slot>
 
-    <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
     <div class="container mt-4" dir="rtl">
 
