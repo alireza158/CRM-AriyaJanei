@@ -413,47 +413,8 @@
 
     <script src="{{ asset('lib/bootstrap.bundle.min.js') }}"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggles = document.querySelectorAll('[data-theme-toggle]');
-
-            const getCurrentTheme = () =>
-                document.documentElement.getAttribute('data-bs-theme') || 'light';
-
-            const getNextTheme = (theme) => theme === 'dark' ? 'light' : 'dark';
-
-            const syncToggles = (theme) => {
-                const nextTheme = getNextTheme(theme);
-
-                toggles.forEach((toggle) => {
-                    const icon = toggle.querySelector('[data-theme-icon]');
-                    const label = toggle.querySelector('[data-theme-label]');
-
-                    if (icon) {
-                        icon.textContent = nextTheme === 'dark' ? '🌙' : '☀️';
-                    }
-
-                    if (label) {
-                        label.textContent = nextTheme === 'dark' ? 'تم تیره' : 'تم روشن';
-                    }
-                });
-            };
-
-            syncToggles(getCurrentTheme());
-
-            toggles.forEach((toggle) => {
-                toggle.addEventListener('click', function () {
-                    const activeTheme = getCurrentTheme();
-                    const selectedTheme = getNextTheme(activeTheme);
-
-                    document.documentElement.setAttribute('data-bs-theme', selectedTheme);
-                    localStorage.setItem('theme', selectedTheme);
-                    syncToggles(selectedTheme);
-                });
-            });
-        });
-    </script>
-
+ 
     @stack('scripts')
+    
 </body>
 </html>

@@ -126,8 +126,7 @@
     }
 
     .glass-header-icon-btn,
-    .glass-header-user-btn,
-    .glass-header-theme-btn {
+    .glass-header-user-btn {
         background: var(--gh-btn-bg) !important;
         border: 1px solid var(--gh-btn-border) !important;
         color: var(--gh-text) !important;
@@ -136,8 +135,7 @@
     }
 
     .glass-header-icon-btn:hover,
-    .glass-header-user-btn:hover,
-    .glass-header-theme-btn:hover {
+    .glass-header-user-btn:hover {
         background: var(--gh-btn-hover) !important;
         border-color: var(--gh-border-strong) !important;
         color: var(--gh-text) !important;
@@ -231,6 +229,11 @@
 
     .glass-header-user-email {
         color: var(--gh-muted);
+    }
+
+    .glass-header-mobile-theme-wrap {
+        display: flex;
+        justify-content: center;
     }
 
     /* =========================
@@ -359,7 +362,6 @@
 
     #headerAnnouncementsModal [data-ann-card] {
         position: relative;
-       
         border: 1px solid rgba(148, 163, 184, .22) !important;
         border-radius: 24px;
         padding: 1.05rem 1rem 1rem 1.1rem;
@@ -609,7 +611,6 @@
 
     #headerNotificationsModal [data-notif-card] {
         position: relative;
-       
         border: 1px solid rgba(148, 163, 184, .22) !important;
         border-radius: 24px;
         padding: 1.05rem 1rem 1rem 1.1rem;
@@ -979,10 +980,10 @@
 
                 <button type="button"
                         data-theme-toggle
-                        class="btn btn-sm d-inline-flex align-items-center gap-2 glass-header-theme-btn"
-                        aria-label="تغییر تم">
-                    <span data-theme-icon aria-hidden="true">🌙</span>
-                    <span data-theme-label>تم تیره</span>
+                        class="btn glass-header-icon-btn"
+                        aria-label="تغییر تم"
+                        title="تغییر تم">
+                    <i class="bi bi-moon-stars-fill" data-theme-icon></i>
                 </button>
 
                 <x-dropdown align="left" width="56">
@@ -1049,7 +1050,8 @@
                         class="btn glass-header-icon-btn"
                         data-bs-toggle="modal"
                         data-bs-target="#headerAnnouncementsModal"
-                        aria-label="اطلاعیه‌ها">
+                        aria-label="اطلاعیه‌ها"
+                        title="اطلاعیه‌ها">
                     <i class="bi bi-megaphone"></i>
                     @if($announcementsCount > 0)
                         <span class="glass-header-badge glass-header-badge-primary">{{ $announcementsCount }}</span>
@@ -1060,7 +1062,8 @@
                         class="btn glass-header-icon-btn"
                         data-bs-toggle="modal"
                         data-bs-target="#headerNotificationsModal"
-                        aria-label="اعلان‌ها">
+                        aria-label="اعلان‌ها"
+                        title="اعلان‌ها">
                     <i class="bi bi-bell"></i>
                     @if($notificationsCount > 0)
                         <span class="glass-header-badge glass-header-badge-danger">{{ $notificationsCount }}</span>
@@ -1109,13 +1112,15 @@
 
             <div class="mt-3 space-y-1">
                 <div class="px-4 py-2">
-                    <button type="button"
-                            data-theme-toggle
-                            class="btn btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-2 glass-header-theme-btn"
-                            aria-label="تغییر تم">
-                        <span data-theme-icon aria-hidden="true">🌙</span>
-                        <span data-theme-label>تم تیره</span>
-                    </button>
+                    <div class="glass-header-mobile-theme-wrap">
+                        <button type="button"
+                                data-theme-toggle
+                                class="btn glass-header-icon-btn"
+                                aria-label="تغییر تم"
+                                title="تغییر تم">
+                            <i class="bi bi-moon-stars-fill" data-theme-icon></i>
+                        </button>
+                    </div>
                 </div>
 
                 @auth
@@ -1270,7 +1275,7 @@
                             <i class="bi bi-bell"></i>
                         </div>
                         <div data-notif-empty-title>اعلانی وجود ندارد</div>
-                        <div data-notif-empty-text">فعلاً اعلان جدیدی برای شما ثبت نشده است.</div>
+                        <div data-notif-empty-text>فعلاً اعلان جدیدی برای شما ثبت نشده است.</div>
                     </div>
                 @endif
             </div>
@@ -1281,3 +1286,54 @@
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<script>
+    (function () {
+        const storedTheme = localStorage.getItem('theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = storedTheme || systemTheme;
+
+        document.documentElement.setAttribute('data-bs-theme', theme);
+    })();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggles = document.querySelectorAll('[data-theme-toggle]');
+
+        const getNextTheme = (theme) => theme === 'dark' ? 'light' : 'dark';
+
+        const syncToggles = (theme) => {
+            const nextTheme = getNextTheme(theme);
+
+            toggles.forEach((toggle) => {
+                const icon = toggle.querySelector('[data-theme-icon]');
+
+                if (icon) {
+                    icon.className = nextTheme === 'dark'
+                        ? 'bi bi-moon-stars-fill'
+                        : 'bi bi-sun-fill';
+                }
+
+                toggle.setAttribute('title', nextTheme === 'dark' ? 'تم تیره' : 'تم روشن');
+                toggle.setAttribute('aria-label', nextTheme === 'dark' ? 'تغییر به تم تیره' : 'تغییر به تم روشن');
+            });
+        };
+
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+        syncToggles(currentTheme);
+
+        toggles.forEach((toggle) => {
+            toggle.addEventListener('click', function () {
+                const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                const selectedTheme = getNextTheme(activeTheme);
+
+                document.documentElement.setAttribute('data-bs-theme', selectedTheme);
+                localStorage.setItem('theme', selectedTheme);
+                syncToggles(selectedTheme);
+            });
+        });
+    });
+</script>
