@@ -19,6 +19,7 @@
 
     <link href="https://lib.arvancloud.ir/bootstrap/5.3.0-alpha1/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <link rel="stylesheet" href="{{ asset('css/instrument-sans.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -389,6 +390,8 @@
             color: var(--muted) !important;
             border-top-color: var(--border) !important;
         }
+
+        
     </style>
 </head>
 <body dir="rtl" class="font-sans antialiased">

@@ -837,27 +837,7 @@
                 </script>
             @endif
 
-            <div class="sd-card sd-notice-launcher mb-4">
-                <div class="p-3 p-md-4">
-                    <div class="sd-between-rtl">
-                        <button type="button"
-                                class="sd-notice-open-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#notificationsModal"
-                                aria-label="باز کردن اعلان‌ها">
-                            {!! dash_icon_pro('megaphone') !!}
-                            @if($notificationCount > 0)
-                                <span class="sd-notice-open-badge">{{ $notificationCount }}</span>
-                            @endif
-                        </button>
-
-                        <div class="text-end">
-                            <div class="sd-section-title">اطلاعیه و اعلان‌ها</div>
-                            <div class="sd-muted small mt-1">برای مشاهده موارد، روی آیکن کلیک کن</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
 
             <div class="row g-3 mb-4 align-items-stretch">
                 <div class="col-12 col-xl-7 top-stack-order-1">
