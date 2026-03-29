@@ -32,6 +32,68 @@
             </div>
 
             <!-- Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center sm:me-3 gap-2">
+                <x-dropdown align="left" width="96">
+                    <x-slot name="trigger">
+                        <button class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-megaphone"></i>
+                            <span>اطلاعیه‌ها</span>
+                            <span class="badge bg-primary">{{ $headerAnnouncements->count() }}</span>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        <div class="px-3 py-2 border-bottom fw-semibold">اطلاعیه‌های اخیر</div>
+                        @forelse($headerAnnouncements as $announcement)
+                            <div class="px-3 py-2 border-bottom">
+                                <div class="fw-semibold">{{ $announcement->title }}</div>
+                                <div class="small text-muted">{{ $announcement->message }}</div>
+                                <div class="small text-secondary mt-1">
+                                    {{ $announcement->creator?->name ?? '---' }} -
+                                    {{ \Hekmatinasser\Verta\Verta::instance($announcement->created_at)->format('Y/m/d H:i') }}
+                                </div>
+                            </div>
+                        @empty
+                            <div class="px-3 py-3 text-muted small">فعلا اطلاعیه‌ای وجود ندارد.</div>
+                        @endforelse
+
+                        <div class="px-3 py-2">
+                            <a class="btn btn-sm btn-outline-primary w-100" href="{{ route('announcements.index') }}">مشاهده همه اطلاعیه‌ها</a>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+
+                <x-dropdown align="left" width="96">
+                    <x-slot name="trigger">
+                        <button class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-bell"></i>
+                            <span>اعلان‌ها</span>
+                            <span class="badge {{ $headerNotificationsUnseenCount > 0 ? 'bg-danger' : 'bg-secondary' }}">
+                                {{ $headerNotificationsUnseenCount }}
+                            </span>
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        <div class="px-3 py-2 border-bottom fw-semibold">اعلان‌های اخیر</div>
+                        @forelse($headerNotifications as $notification)
+                            <div class="px-3 py-2 border-bottom">
+                                <div class="fw-semibold">
+                                    {{ $notification->title }}
+                                    @if(!$notification->seen)
+                                        <span class="badge bg-danger">جدید</span>
+                                    @endif
+                                </div>
+                                <div class="small text-muted">{{ $notification->message }}</div>
+                                <div class="small text-secondary mt-1">
+                                    {{ \Hekmatinasser\Verta\Verta::instance($notification->created_at)->format('Y/m/d H:i') }}
+                                </div>
+                            </div>
+                        @empty
+                            <div class="px-3 py-3 text-muted small">فعلا اعلانی ندارید.</div>
+                        @endforelse
+                    </x-slot>
+                </x-dropdown>
+            </div>
+
             <div class="hidden sm:flex sm:items-center sm:me-4">
                 <button type="button" data-theme-toggle class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" aria-label="تغییر تم">
                     <span data-theme-icon aria-hidden="true">🌙</span>
@@ -101,6 +163,15 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             پروفایل
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('announcements.index')">
+                            اطلاعیه‌ها
+                        </x-dropdown-link>
+
+                        @if(auth()->user()->hasAnyRole(['Admin', 'internalManager', 'InternalManager']))
+                            <x-dropdown-link :href="route('announcements.create')">
+                                ایجاد اطلاعیه
+                            </x-dropdown-link>
+                        @endif
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -163,6 +234,14 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     پروفایل
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('announcements.index')">
+                    اطلاعیه‌ها
+                </x-responsive-nav-link>
+                @if(auth()->user()->hasAnyRole(['Admin', 'internalManager', 'InternalManager']))
+                    <x-responsive-nav-link :href="route('announcements.create')">
+                        ایجاد اطلاعیه
+                    </x-responsive-nav-link>
+                @endif
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
