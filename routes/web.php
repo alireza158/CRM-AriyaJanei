@@ -20,6 +20,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\RemindersController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CustomerSatisfactionFormController;
+use App\Http\Controllers\AnnouncementController;
 
 
 Route::middleware(['auth'])->group(function () {
@@ -135,6 +136,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class,'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class,'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class,'destroy'])->name('profile.destroy');
+
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
 });
 Route::get('/admin/sync-user-products', [AdminController::class, 'syncUserProducts'])->name('admin.syncUserProducts');
 // فرم ویرایش محصول
