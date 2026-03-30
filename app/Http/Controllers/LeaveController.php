@@ -1,86 +1,90 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use App\Models\Notification;
+use App\Models\User;
+use Hekmatinasser\Verta\Verta;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Spatie\Permission\Traits\HasRoles;
-use Hekmatinasser\Verta\Verta;
-use App\Models\Notification;
-  use Kavenegar\KavenegarApi;
-use Illuminate\Support\Facades\Http;
-
-
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\QueryException;
 
 class LeaveController extends Controller
 {
     public function index()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    if (Auth::user()->hasRole('Admin')) {
-        // ادمین همه مرخصی‌ها رو می‌بینه
-        $leaves = Leave::latest()->paginate(15);
+        if ($user->hasRole('Admin')) {
+            $leaves = Leave::with(['user', 'substituteUser'])->latest()->paginate(15);
+        } elseif ($user->hasRole('Manager')) {
+            $leaves = Leave::with(['user', 'substituteUser'])
+                ->where(function ($q) use ($user) {
+                    $q->where('manager_id', $user->id)
+                        ->orWhere('substitute_user_id', $user->id);
+                })
+                ->latest()
+                ->paginate(15);
+        } elseif ($user->hasRole('User')) {
+            $leaves = Leave::with(['user', 'substituteUser'])
+                ->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                        ->orWhere('substitute_user_id', $user->id);
+                })
+                ->latest()
+                ->paginate(15);
+        } else {
+            $leaves = Leave::with(['user', 'substituteUser'])->latest()->paginate(15);
+        }
 
-    } elseif (Auth::user()->hasRole(roles: 'Manager')) {
-        // مدیر فقط مرخصی‌هایی که به اون ارجاع داده شدن رو می‌بینه
-        $leaves = Leave::where('manager_id', $user->id)
-                       ->latest()
-                       ->paginate(15);
-
-    } elseif (Auth::user()->hasRole('Accountant')) {
-        // حسابداری مرخصی‌هایی که مدیر تایید کرده رو می‌بینه
-         $leaves = Leave::latest()->paginate(15);
-
-
-    }  else if(Auth::user()->hasRole('User') ) {
-        // کارمند فقط مرخصی‌های خودش رو می‌بینه
-        $leaves = Leave::where('user_id', $user->id)
-                       ->latest()
-                       ->paginate(15);
+        return view('leaves.index', compact('leaves'));
     }
 
-    return view('leaves.index', compact('leaves'));
-}
-// app/Http/Controllers/LeaveController.php
-public function destroy(int $leave)
-{
-    $model = Leave::findOrFail($leave);
+    public function destroy(int $leave)
+    {
+        $model = Leave::findOrFail($leave);
+        $this->authorize('delete', $model);
 
-    // 2) مجوز (Policy delete(User $user, Leave $leave))
-    $this->authorize('delete', $model);
+        try {
+            $model->forceDelete();
 
-    try {
-        // 3) حذف: اگر SoftDeletes داری => delete(); اگر حذف دائمی می‌خواهی => forceDelete()
-        $model->forceDelete();
-
-        return redirect()
-            ->route('leaves.index')   // نام روت ایندکس را درست بگذار
-            ->with('success', 'مرخصی با موفقیت حذف شد.');
-    } catch (QueryException $e) {
-        // اگر محدودیت FK مانع حذف شد
-     return back()->with('success', 'مرخصی با موفقیت حذف شد.');
-    } catch (\Throwable $e) {
-        return back()->with('success', 'مرخصی با موفقیت حذف شد.');
-    }
-}
-
-
-    public function create() {
-        return view('leaves.create');
+            return redirect()
+                ->route('leaves.index')
+                ->with('success', 'مرخصی با موفقیت حذف شد.');
+        } catch (QueryException $e) {
+            return back()->with('success', 'مرخصی با موفقیت حذف شد.');
+        } catch (\Throwable $e) {
+            return back()->with('success', 'مرخصی با موفقیت حذف شد.');
+        }
     }
 
+    public function create()
+    {
+        $user = auth()->user();
 
+        $substitutes = User::query()
+            ->where('id', '!=', $user->id)
+            ->when(
+                $user->manager_id,
+                fn ($q) => $q->where('manager_id', $user->manager_id),
+                fn ($q) => $q->whereNull('manager_id')
+            )
+            ->orderBy('name')
+            ->get();
 
-    public function edit(Leave $leave) {
+        return view('leaves.create', compact('substitutes'));
+    }
+
+    public function edit(Leave $leave)
+    {
         $this->authorize('update', $leave);
+
         return view('leaves.edit', compact('leave'));
     }
 
-    public function update(Request $request, Leave $leave) {
+    public function update(Request $request, Leave $leave)
+    {
         $this->authorize('update', $leave);
 
         $data = $request->validate([
@@ -94,183 +98,204 @@ public function destroy(int $leave)
 
         $leave->update($data);
 
-        return redirect()->route('leaves')->with('success','مرخصی به‌روزرسانی شد.');
+        return redirect()->route('leaves')->with('success', 'مرخصی به‌روزرسانی شد.');
     }
 
+    public function store(Request $request)
+    {
+        $user = auth()->user();
 
-
-
-
-
-public function store(Request $request)
-{
-    $start_date = Verta::parse($request->start_date)->datetime();
-    $end_date   = Verta::parse($request->end_date)->datetime();
-    $user = auth()->user();
-
-    $leave = Leave::create([
-        'user_id'    => $user->id,
-        'leave_type' => $request->leave_type,
-        'start_date' => $start_date,
-        'end_date'   => $end_date,
-        'start_time' => $request->start_time,
-        'end_time'   => $request->end_time,
-        'reason'     => $request->reason,
-        'manager_id' => $user->manager_id,
-        'status'     => 'pending',
-    ]);
-
-    if ($user->hasRole('Manager')) {
-        $leave->update([
-            'status'     => 'manager_approved',
-            'manager_id' => $user->id,
+        $request->validate([
+            'leave_type' => 'required|string|max:255',
+            'start_date' => 'required|string',
+            'end_date' => 'required|string',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i',
+            'reason' => 'nullable|string',
+            'substitute_user_id' => 'required|exists:users,id',
         ]);
+
+        $substitute = User::findOrFail($request->substitute_user_id);
+
+
+        if ((int) $substitute->id === (int) $user->id) {
+            return back()->withErrors([
+                'substitute_user_id' => 'نمی‌توانید خودتان را به‌عنوان جایگزین انتخاب کنید.',
+            ])->withInput();
+        }
+        $sameUnit = $substitute->manager_id === $user->manager_id;
+        if (!$sameUnit) {
+            return back()->withErrors([
+                'substitute_user_id' => 'فرد جایگزین باید از همان واحد شما انتخاب شود.',
+            ])->withInput();
+        }
+
+        $startDate = Verta::parse($request->start_date)->datetime();
+        $endDate = Verta::parse($request->end_date)->datetime();
+
+        $leave = Leave::create([
+            'user_id' => $user->id,
+            'substitute_user_id' => $substitute->id,
+            'leave_type' => $request->leave_type,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'reason' => $request->reason,
+            'manager_id' => $user->manager_id,
+            'status' => 'pending',
+        ]);
+
+        $this->notifyUser(
+            $substitute->id,
+            'درخواست تایید جایگزین مرخصی',
+            "{$user->name} شما را به‌عنوان جایگزین انتخاب کرده است. لطفاً درخواست را تایید یا رد کنید.",
+            $leave->id
+        );
+
+        $this->notifyUser(
+            $user->id,
+            'مرخصی ثبت شد',
+            'درخواست مرخصی ثبت شد و در انتظار تایید فرد جایگزین است.',
+            $leave->id
+        );
+
+        return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و برای فرد جایگزین ارسال گردید.');
     }
 
-    $allIds = User::role(['Admin','Accountant','Manager'])->pluck('id')->toArray();
-    $allIds = array_unique($allIds);
+    public function approve(Leave $leave)
+    {
+        $user = auth()->user();
 
-    $message = "یک درخواست مرخصی جدید از طرف {$user->name} ثبت شد.";
-    $title = "درخواست مرخصی جدید" ;
+        if ($leave->status === 'pending' && (int) $leave->substitute_user_id === (int) $user->id) {
+            $leave->update(['status' => 'manager_approved']);
 
-    foreach ($allIds as $id) {
+            if ($leave->manager_id) {
+                $this->notifyUser(
+                    $leave->manager_id,
+                    'تایید مرخصی توسط جایگزین',
+                    "مرخصی {$leave->user->name} توسط جایگزین تایید شد و منتظر تایید مدیر واحد است.",
+                    $leave->id
+                );
+            }
+
+            $this->notifyUser(
+                $leave->user_id,
+                'مرخصی شما توسط جایگزین تایید شد',
+                'درخواست مرخصی شما وارد مرحله تایید مدیر واحد شد.',
+                $leave->id
+            );
+        } elseif ($user->hasRole('Manager') && $leave->status === 'manager_approved' && (int) $leave->manager_id === (int) $user->id) {
+            $leave->update(['status' => 'internal_approved', 'manager_id' => $user->id]);
+
+            $internalIds = User::role(['Admin', 'internalManager', 'InternalManager'])->pluck('id')->unique();
+            foreach ($internalIds as $id) {
+                $this->notifyUser(
+                    $id,
+                    'مرخصی آماده تایید مدیر داخلی',
+                    "مرخصی {$leave->user->name} تایید مدیر واحد را گرفته و منتظر تصمیم مدیر داخلی است.",
+                    $leave->id
+                );
+            }
+        } elseif (($user->hasRole('Admin') || $user->hasAnyRole(['internalManager', 'InternalManager'])) && $leave->status === 'internal_approved') {
+            $leave->update(['status' => 'final_approved', 'super_manager_id' => $user->id]);
+
+            $this->notifyUser(
+                $leave->user_id,
+                'مرخصی شما تایید نهایی شد',
+                'درخواست مرخصی شما پس از تایید جایگزین و مدیر واحد، توسط مدیر داخلی تایید نهایی شد.',
+                $leave->id
+            );
+        } else {
+            abort(403, 'شما مجوز تایید این مرخصی را ندارید.');
+        }
+
+        return back()->with('success', 'مرخصی تأیید شد.');
+    }
+
+    public function reject(Leave $leave)
+    {
+        $user = auth()->user();
+
+        if ($leave->status === 'pending' && (int) $leave->substitute_user_id === (int) $user->id) {
+            $leave->update(['status' => 'manager_rejected']);
+
+            $this->notifyUser(
+                $leave->user_id,
+                'مرخصی شما توسط جایگزین رد شد',
+                'فرد جایگزین درخواست مرخصی شما را رد کرد.',
+                $leave->id
+            );
+        } elseif ($user->hasRole('Manager') && $leave->status === 'manager_approved' && (int) $leave->manager_id === (int) $user->id) {
+            $leave->update(['status' => 'internal_rejected', 'manager_id' => $user->id]);
+
+            $this->notifyUser(
+                $leave->user_id,
+                'مرخصی شما توسط مدیر واحد رد شد',
+                'درخواست مرخصی شما در مرحله مدیر واحد رد شد.',
+                $leave->id
+            );
+        } elseif (($user->hasRole('Admin') || $user->hasAnyRole(['internalManager', 'InternalManager'])) && $leave->status === 'internal_approved') {
+            $leave->update(['status' => 'accounting_rejected', 'super_manager_id' => $user->id]);
+
+            $this->notifyUser(
+                $leave->user_id,
+                'مرخصی شما توسط مدیر داخلی رد شد',
+                'درخواست مرخصی شما در مرحله تایید مدیر داخلی رد شد.',
+                $leave->id
+            );
+        } else {
+            abort(403, 'شما مجوز رد این مرخصی را ندارید.');
+        }
+
+        return back()->with('error', 'مرخصی رد شد.');
+    }
+
+    private function notifyUser(int $userId, string $title, string $message, ?int $leaveId = null): void
+    {
         Notification::create([
-            'user_id' => $id,
+            'user_id' => $userId,
+            'leave_id' => $leaveId,
             'title' => $title,
             'message' => $message,
             'seen' => false,
         ]);
     }
 
-    $manager = $user->manager;
-
-$phones = User::role('InternalManager')   // همه کاربران با نقش InternalManager
-    ->pluck('phone')                       // فقط شماره تلفن‌ها
-    ->filter()                             // حذف مقادیر null یا خالی
-    ->unique()                             // حذف شماره‌های تکراری
-    ->values()
-    ->toArray();
-
-    $managerPhone = $manager->phone; // فرض می‌کنیم ستون شماره تلفن phone است
-    $managerId = $manager->id;
-
-    $apiKey = '7867584376656655436E6279396C6148302B41774F317A7359486B76634C74324276584C356964677049413D';
-    $template = 'req';
-$token = "."; // تبدیل متن به فرمت مناسب URL
-
- 
-foreach ($phones as $phone) {
-   
-
-    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-        'receptor' => $phone,
-        'token'    =>$token ,
-        'template' => $template,
-    ]);
-  
-
-    $results[] = [
-        'phone'    => $phone,
-        'token'    => $token ,
-        'response' => $response->json(),
-    ];
-}
-    $response = Http::get("https://api.kavenegar.com/v1/{$apiKey}/verify/lookup.json", [
-        'receptor' => $managerPhone,
-        'token'    => $token ,
-        'template' => $template,
-    ]);
-    return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و پیامک ارسال گردید.');
-}
-public function approve(Leave $leave)
-{
-    $user = auth()->user();
-
-    
-    if ($user->hasRole('Manager') && $leave->status === 'pending' && $leave->manager_id == $user->id) {
-        $leave->update(['status' => 'manager_approved', 'manager_id' => $user->id]);
-    } elseif (($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved') {
-        $leave->update(['status' => 'internal_approved', 'super_manager_id' => $user->id]);
-    } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
-        $leave->update(['status' => 'final_approved', 'accountant_id' => $user->id]);
-    }else if ($user->hasRole('Admin') && $leave->status === 'pending') {
-         $leave->update(['status' => 'final_approved', 'accountant_id' => $user->id]);
-    }
-     else {
-        abort(403, 'شما مجوز تایید این مرخصی را ندارید.');
-    }
-
-    return back()->with('success', 'مرخصی تأیید شد.');
-}
-
-public function reject(Leave $leave)
-{
-    $user = auth()->user();
-
-    if ($user->hasRole('Manager') && $leave->status === 'pending') {
-        $leave->update(['status' => 'manager_rejected', 'manager_id' => $user->id]);
-    } elseif (($user->hasRole('Admin') || $user->hasRole('internalManager')) && $leave->status === 'manager_approved') {
-        $leave->update(['status' => 'internal_rejected', 'super_manager_id' => $user->id]);
-    } elseif ($user->hasRole('Accountant') && $leave->status === 'internal_approved') {
-        $leave->update(['status' => 'accounting_rejected', 'accountant_id' => $user->id]);
-    }else if ($user->hasRole('Admin') && $leave->status === 'pending') {
-          $leave->update(['status' => 'accounting_rejected', 'accountant_id' => $user->id]);
-    } else {
-        abort(403, 'شما مجوز رد این مرخصی را ندارید.');
-    }
-
-    return back()->with('error', 'مرخصی رد شد.');
-}
-
-  public function exportCsv(Request $request)
+    public function exportCsv(Request $request)
     {
         $request->validate([
             'from' => 'required|string',
-            'to'   => 'required|string',
+            'to' => 'required|string',
         ]);
 
-        // تبدیل تاریخ جلالی به datetime میلادی
         $from = Verta::parse($request->from)->startDay()->datetime();
-        $to   = Verta::parse($request->to)->endDay()->datetime();
+        $to = Verta::parse($request->to)->endDay()->datetime();
 
         $user = Auth::user();
-
-        // Query اصلی
         $query = Leave::query()->with(['user', 'manager']);
 
-        // فیلتر بر اساس نقش‌ها (مثل منطق index شما)
         if ($user->hasRole('Admin')) {
-            // همه مرخصی‌ها
         } elseif ($user->hasRole('Manager')) {
             $query->where('manager_id', $user->id);
-        } elseif ($user->hasRole('Accountant')) {
-            // اگر می‌خواهی محدود کنی اینجا شرط بگذار
-            // مثلا فقط internal_approved:
-            // $query->where('status', 'internal_approved');
         } elseif ($user->hasRole('User')) {
             $query->where('user_id', $user->id);
         } else {
             abort(403);
         }
 
-        // فیلتر بازه زمانی
-        // اگر معیار شما created_at است، این خط را به created_at تغییر بده
         $query->whereBetween('start_date', [$from, $to])->latest();
 
-$fromSafe = str_replace('/', '-', $request->from);
-$toSafe   = str_replace('/', '-', $request->to);
+        $fromSafe = str_replace('/', '-', $request->from);
+        $toSafe = str_replace('/', '-', $request->to);
 
-$filename = "leaves_{$fromSafe}_to_{$toSafe}.csv";
-
+        $filename = "leaves_{$fromSafe}_to_{$toSafe}.csv";
 
         return response()->streamDownload(function () use ($query) {
-
             $out = fopen('php://output', 'w');
 
-            // BOM برای نمایش درست فارسی در Excel
-            fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            // سرستون‌ها
             fputcsv($out, [
                 'ID',
                 'کارمند',
@@ -282,10 +307,9 @@ $filename = "leaves_{$fromSafe}_to_{$toSafe}.csv";
                 'دلیل',
                 'مدیر',
                 'وضعیت',
-                'تاریخ ثبت'
+                'تاریخ ثبت',
             ]);
 
-            // خروجی chunk برای دیتا زیاد
             $query->chunk(500, function ($leaves) use ($out) {
                 foreach ($leaves as $leave) {
                     fputcsv($out, [
@@ -305,11 +329,8 @@ $filename = "leaves_{$fromSafe}_to_{$toSafe}.csv";
             });
 
             fclose($out);
-
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
-
-
 }

@@ -868,6 +868,28 @@
                                     <div data-notif-text>{{ $notification->message }}</div>
                                 @endif
 
+                                @php
+                                    $notifLeave = $notification->leave;
+                                    $canSubstituteAction = $notifLeave && $notifLeave->status === 'pending' && (int) $notifLeave->substitute_user_id === (int) auth()->id();
+                                    $canManagerAction = $notifLeave && $notifLeave->status === 'manager_approved' && auth()->user()->hasRole('Manager') && (int) $notifLeave->manager_id === (int) auth()->id();
+                                    $canInternalAction = $notifLeave && $notifLeave->status === 'internal_approved' && (auth()->user()->hasRole('Admin') || auth()->user()->hasAnyRole(['internalManager', 'InternalManager']));
+                                @endphp
+
+                                @if($canSubstituteAction || $canManagerAction || $canInternalAction)
+                                    <div class="d-flex gap-2 mt-2">
+                                        <form action="{{ route('leaves.approve', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success btn-sm">تایید</button>
+                                        </form>
+                                        <form action="{{ route('leaves.reject', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-danger btn-sm">رد</button>
+                                        </form>
+                                    </div>
+                                @endif
+
                                 <div data-notif-meta>
                                     <span data-notif-chip>
                                         <i class="bi bi-clock-history"></i>
@@ -940,6 +962,53 @@
                 localStorage.setItem('theme', selectedTheme);
                 syncToggles(selectedTheme);
             });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('headerNotificationsModal');
+        if (!modalEl) return;
+
+        let markedSeen = false;
+
+        modalEl.addEventListener('shown.bs.modal', async function () {
+            if (markedSeen) return;
+
+            const unseenCount = {{ (int)($headerNotificationsUnseenCount ?? 0) }};
+            if (unseenCount <= 0) return;
+
+            try {
+                const response = await fetch("{{ route('notifications.markAllSeen') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                markedSeen = true;
+
+                const notifCountLabel = modalEl.querySelector('[data-notif-count]');
+                if (notifCountLabel) {
+                    notifCountLabel.textContent = '0 دیده\u200cنشده';
+                }
+
+                modalEl.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
+
+                document.querySelectorAll('.glass-header-badge-danger').forEach((badge) => {
+                    badge.textContent = '0';
+                    badge.style.display = 'none';
+                });
+            } catch (e) {
+                // fail silently
+            }
         });
     });
 </script>
