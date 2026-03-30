@@ -36,7 +36,6 @@
             ['title' => 'گزارش‌های من', 'route' => 'user.reports.index', 'icon' => 'doc'],
             ['title' => 'ثبت مرخصی', 'route' => 'leaves', 'icon' => 'calendar'],
             ['title' => 'یادآورها', 'route' => 'reminders.index', 'icon' => 'bell'],
-            ['title' => 'مدیریت پیام‌ها', 'route' => 'messages.index', 'icon' => 'chat'],
             ['title' => 'مدیریت درخواست‌ها', 'route' => 'requests.index', 'icon' => 'bolt'],
         ];
 
@@ -96,7 +95,7 @@
             ],
             'requests' => [
                 'title' => 'درخواست‌ها و ارتباطات',
-                'desc'  => 'مرخصی، پیام‌ها، یادآورها و درخواست‌ها',
+                'desc'  => 'مرخصی، یادآورها و درخواست‌ها',
                 'tone'  => 'indigo',
                 'icon'  => 'chat',
                 'items' => [],
@@ -141,7 +140,6 @@
             } elseif (in_array($route, [
                 'leaves',
                 'reminders.index',
-                'messages.index',
                 'requests.index',
                 'admin.tasks.index',
             ])) {
