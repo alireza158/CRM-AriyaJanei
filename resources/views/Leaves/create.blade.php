@@ -31,8 +31,8 @@
 
                 <div class="mb-4">
                     <label for="substitute_user_id">فرد جایگزین (از واحد شما)</label>
-                    <select name="substitute_user_id" id="substitute_user_id" class="form-control" required>
-                        <option value="">انتخاب کنید</option>
+                    <select name="substitute_user_id" id="substitute_user_id" class="form-control">
+                        <option value="">بدون جایگزین</option>
                         @foreach($substitutes as $substitute)
                             <option value="{{ $substitute->id }}" @selected(old('substitute_user_id') == $substitute->id)>{{ $substitute->name }}</option>
                         @endforeach

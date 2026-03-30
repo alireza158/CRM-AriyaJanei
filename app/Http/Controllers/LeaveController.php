@@ -112,22 +112,25 @@ class LeaveController extends Controller
             'start_time' => 'nullable|date_format:H:i',
             'end_time' => 'nullable|date_format:H:i',
             'reason' => 'nullable|string',
-            'substitute_user_id' => 'required|exists:users,id',
+            'substitute_user_id' => 'nullable|exists:users,id',
         ]);
 
-        $substitute = User::findOrFail($request->substitute_user_id);
+        $substitute = null;
+        if ($request->filled('substitute_user_id')) {
+            $substitute = User::findOrFail($request->substitute_user_id);
 
+            if ((int) $substitute->id === (int) $user->id) {
+                return back()->withErrors([
+                    'substitute_user_id' => 'نمی‌توانید خودتان را به‌عنوان جایگزین انتخاب کنید.',
+                ])->withInput();
+            }
 
-        if ((int) $substitute->id === (int) $user->id) {
-            return back()->withErrors([
-                'substitute_user_id' => 'نمی‌توانید خودتان را به‌عنوان جایگزین انتخاب کنید.',
-            ])->withInput();
-        }
-        $sameUnit = $substitute->manager_id === $user->manager_id;
-        if (!$sameUnit) {
-            return back()->withErrors([
-                'substitute_user_id' => 'فرد جایگزین باید از همان واحد شما انتخاب شود.',
-            ])->withInput();
+            $sameUnit = $substitute->manager_id === $user->manager_id;
+            if (!$sameUnit) {
+                return back()->withErrors([
+                    'substitute_user_id' => 'فرد جایگزین باید از همان واحد شما انتخاب شود.',
+                ])->withInput();
+            }
         }
 
         $startDate = Verta::parse($request->start_date)->datetime();
@@ -135,7 +138,7 @@ class LeaveController extends Controller
 
         $leave = Leave::create([
             'user_id' => $user->id,
-            'substitute_user_id' => $substitute->id,
+            'substitute_user_id' => $substitute?->id,
             'leave_type' => $request->leave_type,
             'start_date' => $startDate,
             'end_date' => $endDate,
@@ -143,24 +146,44 @@ class LeaveController extends Controller
             'end_time' => $request->end_time,
             'reason' => $request->reason,
             'manager_id' => $user->manager_id,
-            'status' => 'pending',
+            'status' => $substitute ? 'pending' : 'manager_approved',
         ]);
 
-        $this->notifyUser(
-            $substitute->id,
-            'درخواست تایید جایگزین مرخصی',
-            "{$user->name} شما را به‌عنوان جایگزین انتخاب کرده است. لطفاً درخواست را تایید یا رد کنید.",
-            $leave->id
-        );
+        if ($substitute) {
+            $this->notifyUser(
+                $substitute->id,
+                'درخواست تایید جایگزین مرخصی',
+                "{$user->name} شما را به‌عنوان جایگزین انتخاب کرده است. لطفاً درخواست را تایید یا رد کنید.",
+                $leave->id
+            );
+
+            $this->notifyUser(
+                $user->id,
+                'مرخصی ثبت شد',
+                'درخواست مرخصی ثبت شد و در انتظار تایید فرد جایگزین است.',
+                $leave->id
+            );
+
+            return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و برای فرد جایگزین ارسال گردید.');
+        }
+
+        if ($leave->manager_id) {
+            $this->notifyUser(
+                $leave->manager_id,
+                'درخواست مرخصی بدون جایگزین',
+                "{$user->name} یک درخواست مرخصی بدون جایگزین ثبت کرده است.",
+                $leave->id
+            );
+        }
 
         $this->notifyUser(
             $user->id,
             'مرخصی ثبت شد',
-            'درخواست مرخصی ثبت شد و در انتظار تایید فرد جایگزین است.',
+            'درخواست مرخصی بدون جایگزین ثبت شد و مستقیماً برای مدیر واحد ارسال شد.',
             $leave->id
         );
 
-        return redirect()->route('leaves')->with('success', 'درخواست مرخصی ثبت شد و برای فرد جایگزین ارسال گردید.');
+        return redirect()->route('leaves')->with('success', 'درخواست مرخصی بدون جایگزین ثبت شد و برای مدیر واحد ارسال گردید.');
     }
 
     public function approve(Leave $leave)
