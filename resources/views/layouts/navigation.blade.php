@@ -1,6 +1,7 @@
 @php
     $announcementsCount = $headerAnnouncements->count();
     $notificationsCount = $headerNotificationsUnseenCount ?? 0;
+    $messagesCount = $headerMessagesUnseenCount ?? 0;
 @endphp
 
 <style>
@@ -181,6 +182,11 @@
     .glass-header-badge-danger {
         background: var(--gh-badge-danger-bg);
         color: var(--gh-badge-danger-text);
+    }
+
+    .glass-header-badge-info {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: #fff;
     }
 
     .glass-header-mobile-toggle {
@@ -638,10 +644,158 @@
             font-size: 13px;
         }
 
-        #headerNotificationsModal [data-notif-new] {
-            min-width: 46px;
-            height: 27px;
-        }
+    #headerNotificationsModal [data-notif-new] {
+        min-width: 46px;
+        height: 27px;
+    }
+
+    /* =========================
+       MESSAGES (Telegram-like)
+       ========================= */
+    #headerMessagesModal .modal-dialog {
+        max-width: 560px;
+    }
+
+    #headerMessagesModal .modal-content {
+        border: 1px solid var(--gh-border) !important;
+        border-radius: 28px !important;
+        overflow: hidden;
+        box-shadow: var(--gh-shadow-lg);
+        background: var(--gh-surface);
+    }
+
+    #headerMessagesModal .modal-header {
+        border-bottom: 1px solid var(--gh-border);
+        background: linear-gradient(135deg, rgba(37, 99, 235, .12) 0%, rgba(6, 182, 212, .06) 100%);
+        padding: 1rem 1.25rem;
+    }
+
+    #headerMessagesModal .modal-body {
+        background: var(--gh-surface-2);
+        padding: .75rem;
+    }
+
+    #headerMessagesModal .modal-footer {
+        border-top: 1px solid var(--gh-border);
+        background: var(--gh-surface);
+    }
+
+    #headerMessagesModal [data-msg-list] {
+        display: flex;
+        flex-direction: column;
+        gap: .55rem;
+    }
+
+    #headerMessagesModal [data-msg-item] {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: .75rem;
+        align-items: center;
+        text-decoration: none;
+        border-radius: 18px;
+        border: 1px solid var(--gh-border);
+        padding: .8rem .85rem;
+        background: var(--gh-surface);
+        transition: all .2s ease;
+    }
+
+    #headerMessagesModal [data-msg-item]:hover {
+        transform: translateY(-1px);
+        border-color: var(--gh-border-strong);
+        box-shadow: var(--gh-shadow-sm);
+    }
+
+    #headerMessagesModal [data-msg-main] {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        min-width: 0;
+    }
+
+    #headerMessagesModal [data-msg-avatar] {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: #fff;
+        font-weight: 800;
+        font-size: 15px;
+        flex: 0 0 48px;
+    }
+
+    #headerMessagesModal [data-msg-content] {
+        min-width: 0;
+    }
+
+    #headerMessagesModal [data-msg-name] {
+        color: var(--gh-text);
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: .12rem;
+    }
+
+    #headerMessagesModal [data-msg-preview] {
+        color: var(--gh-muted);
+        font-size: 12.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #headerMessagesModal [data-msg-side] {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: .35rem;
+    }
+
+    #headerMessagesModal [data-msg-time] {
+        font-size: 11px;
+        color: var(--gh-muted);
+        font-weight: 700;
+    }
+
+    #headerMessagesModal [data-msg-unseen] {
+        min-width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        padding-inline: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: #fff;
+    }
+
+    #headerMessagesModal [data-msg-empty] {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: var(--gh-muted);
+    }
+
+    html.dark #headerMessagesModal .modal-content,
+    body.dark #headerMessagesModal .modal-content,
+    .dark #headerMessagesModal .modal-content,
+    html[data-bs-theme="dark"] #headerMessagesModal .modal-content,
+    body[data-bs-theme="dark"] #headerMessagesModal .modal-content,
+    [data-bs-theme="dark"] #headerMessagesModal .modal-content {
+        background: #0f172a;
+        border-color: rgba(148, 163, 184, .2) !important;
+    }
+
+    html.dark #headerMessagesModal .modal-header,
+    body.dark #headerMessagesModal .modal-header,
+    .dark #headerMessagesModal .modal-header,
+    html[data-bs-theme="dark"] #headerMessagesModal .modal-header,
+    body[data-bs-theme="dark"] #headerMessagesModal .modal-header,
+    [data-bs-theme="dark"] #headerMessagesModal .modal-header {
+        background: linear-gradient(135deg, rgba(59, 130, 246, .25) 0%, rgba(6, 182, 212, .14) 100%);
+    }
     }
 </style>
 
@@ -697,6 +851,18 @@
                 </button>
 
                 @auth
+                    <button type="button"
+                            class="btn glass-header-icon-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#headerMessagesModal"
+                            aria-label="پیام‌ها"
+                            title="پیام‌ها">
+                        <i class="bi bi-telegram"></i>
+                        @if($messagesCount > 0)
+                            <span class="glass-header-badge glass-header-badge-info">{{ $messagesCount }}</span>
+                        @endif
+                    </button>
+
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit"
@@ -744,6 +910,18 @@
                 </button>
 
                 @auth
+                    <button type="button"
+                            class="btn glass-header-icon-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#headerMessagesModal"
+                            aria-label="پیام‌ها"
+                            title="پیام‌ها">
+                        <i class="bi bi-telegram"></i>
+                        @if($messagesCount > 0)
+                            <span class="glass-header-badge glass-header-badge-info">{{ $messagesCount }}</span>
+                        @endif
+                    </button>
+
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
                         <button type="submit"
@@ -911,6 +1089,64 @@
             </div>
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="headerMessagesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-end">
+                        <h5 class="modal-title fw-bold mb-1">پیام‌ها</h5>
+                        <div class="small text-muted">ظاهر جدید شبیه لیست چت تلگرام</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                @if(($headerMessages ?? collect())->count() > 0)
+                    <div data-msg-list>
+                        @foreach($headerMessages as $messageItem)
+                            @php
+                                $otherUser = $messageItem->sender_id === auth()->id() ? $messageItem->receiver : $messageItem->sender;
+                                if (!$otherUser) {
+                                    continue;
+                                }
+                                $isUnread = $messageItem->receiver_id === auth()->id() && is_null($messageItem->seen_at);
+                                $avatarText = trim(mb_substr($otherUser?->name ?? '؟', 0, 1));
+                            @endphp
+                            <a href="{{ route('messages.show', $otherUser?->id) }}" data-msg-item>
+                                <div data-msg-main>
+                                    <div data-msg-avatar>{{ $avatarText }}</div>
+                                    <div data-msg-content>
+                                        <div data-msg-name>{{ $otherUser?->name ?? 'کاربر حذف شده' }}</div>
+                                        <div data-msg-preview>{{ \Illuminate\Support\Str::limit($messageItem->body ?? 'پیوست ارسال شده', 55) }}</div>
+                                    </div>
+                                </div>
+                                <div data-msg-side>
+                                    <div data-msg-time>{{ \Hekmatinasser\Verta\Verta::instance($messageItem->created_at)->format('m/d H:i') }}</div>
+                                    @if($isUnread)
+                                        <div data-msg-unseen>جدید</div>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <div data-msg-empty>
+                        <i class="bi bi-chat-dots fs-2 d-block mb-2"></i>
+                        فعلاً گفت‌وگویی برای نمایش ندارید.
+                    </div>
+                @endif
+            </div>
+
+            <div class="modal-footer">
+                <a class="btn btn-primary" href="{{ route('messages.index') }}">ورود به پیام‌ها</a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
             </div>
         </div>
