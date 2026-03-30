@@ -967,12 +967,46 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const modalEl = document.getElementById('headerNotificationsModal');
-        if (!modalEl) return;
+        const notificationModal = document.getElementById('headerNotificationsModal');
+        const announcementModal = document.getElementById('headerAnnouncementsModal');
+
+        const NOTIFICATION_BADGE_DELAY = 1800;
+        const ANNOUNCEMENT_BADGE_DELAY = 1800;
+
+        const hideBadges = (selector) => {
+            document.querySelectorAll(selector).forEach((badge) => {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            });
+        };
+
+        const latestAnnouncementId = {{ (int) optional($headerAnnouncements->first())->id }};
+        const seenAnnouncementId = parseInt(localStorage.getItem('seen_header_announcement_id') || '0', 10);
+        if (latestAnnouncementId > 0 && seenAnnouncementId >= latestAnnouncementId) {
+            hideBadges('.glass-header-badge-primary');
+        }
+
+        if (announcementModal) {
+            announcementModal.addEventListener('shown.bs.modal', function () {
+                if (latestAnnouncementId <= 0) return;
+
+                localStorage.setItem('seen_header_announcement_id', String(latestAnnouncementId));
+
+                setTimeout(() => {
+                    const annCountLabel = announcementModal.querySelector('[data-ann-count]');
+                    if (annCountLabel) {
+                        annCountLabel.textContent = '0 مورد جدید';
+                    }
+                    hideBadges('.glass-header-badge-primary');
+                }, ANNOUNCEMENT_BADGE_DELAY);
+            });
+        }
+
+        if (!notificationModal) return;
 
         let markedSeen = false;
 
-        modalEl.addEventListener('shown.bs.modal', async function () {
+        notificationModal.addEventListener('shown.bs.modal', async function () {
             if (markedSeen) return;
 
             const unseenCount = {{ (int)($headerNotificationsUnseenCount ?? 0) }};
@@ -995,17 +1029,15 @@
 
                 markedSeen = true;
 
-                const notifCountLabel = modalEl.querySelector('[data-notif-count]');
-                if (notifCountLabel) {
-                    notifCountLabel.textContent = '0 دیده\u200cنشده';
-                }
+                setTimeout(() => {
+                    const notifCountLabel = notificationModal.querySelector('[data-notif-count]');
+                    if (notifCountLabel) {
+                        notifCountLabel.textContent = '0 دیده‌نشده';
+                    }
 
-                modalEl.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
-
-                document.querySelectorAll('.glass-header-badge-danger').forEach((badge) => {
-                    badge.textContent = '0';
-                    badge.style.display = 'none';
-                });
+                    notificationModal.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
+                    hideBadges('.glass-header-badge-danger');
+                }, NOTIFICATION_BADGE_DELAY);
             } catch (e) {
                 // fail silently
             }
