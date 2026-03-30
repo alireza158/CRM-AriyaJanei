@@ -23,11 +23,25 @@
                         <option value="استعلاجی">استعلاجی</option>
                         <option value="استحقاقی">استحقاقی</option>
                     </select>
-                    @error('type')
+                    @error('leave_type')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
        
+
+                <div class="mb-4">
+                    <label for="substitute_user_id">فرد جایگزین (از واحد شما)</label>
+                    <select name="substitute_user_id" id="substitute_user_id" class="form-control">
+                        <option value="">بدون جایگزین</option>
+                        @foreach($substitutes as $substitute)
+                            <option value="{{ $substitute->id }}" @selected(old('substitute_user_id') == $substitute->id)>{{ $substitute->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('substitute_user_id')
+                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <label for="start_date" class="block font-medium text-gray-700">تاریخ شروع</label>
