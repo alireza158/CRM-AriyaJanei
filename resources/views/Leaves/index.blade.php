@@ -86,7 +86,11 @@
                                             <span class="badge bg-warning">در انتظار تایید جایگزین</span>
                                             @break
                                         @case('manager_approved')
-                                            <span class="badge bg-info">تایید جایگزین — منتظر تایید مدیر واحد</span>
+                                            @if($leave->substitute_user_id)
+                                                <span class="badge bg-info">تایید جایگزین — منتظر تایید مدیر واحد</span>
+                                            @else
+                                                <span class="badge bg-info">بدون جایگزین — منتظر تایید مدیر واحد</span>
+                                            @endif
                                             @break
                                         @case('internal_approved')
                                             <span class="badge bg-primary">تایید مدیر واحد — منتظر تایید مدیر داخلی</span>
