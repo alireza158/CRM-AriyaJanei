@@ -868,6 +868,28 @@
                                     <div data-notif-text>{{ $notification->message }}</div>
                                 @endif
 
+                                @php
+                                    $notifLeave = $notification->leave;
+                                    $canSubstituteAction = $notifLeave && $notifLeave->status === 'pending' && (int) $notifLeave->substitute_user_id === (int) auth()->id();
+                                    $canManagerAction = $notifLeave && $notifLeave->status === 'manager_approved' && auth()->user()->hasRole('Manager') && (int) $notifLeave->manager_id === (int) auth()->id();
+                                    $canInternalAction = $notifLeave && $notifLeave->status === 'internal_approved' && (auth()->user()->hasRole('Admin') || auth()->user()->hasAnyRole(['internalManager', 'InternalManager']));
+                                @endphp
+
+                                @if($canSubstituteAction || $canManagerAction || $canInternalAction)
+                                    <div class="d-flex gap-2 mt-2">
+                                        <form action="{{ route('leaves.approve', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success btn-sm">تایید</button>
+                                        </form>
+                                        <form action="{{ route('leaves.reject', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-danger btn-sm">رد</button>
+                                        </form>
+                                    </div>
+                                @endif
+
                                 <div data-notif-meta>
                                     <span data-notif-chip>
                                         <i class="bi bi-clock-history"></i>
@@ -940,6 +962,85 @@
                 localStorage.setItem('theme', selectedTheme);
                 syncToggles(selectedTheme);
             });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const notificationModal = document.getElementById('headerNotificationsModal');
+        const announcementModal = document.getElementById('headerAnnouncementsModal');
+
+        const NOTIFICATION_BADGE_DELAY = 1800;
+        const ANNOUNCEMENT_BADGE_DELAY = 1800;
+
+        const hideBadges = (selector) => {
+            document.querySelectorAll(selector).forEach((badge) => {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            });
+        };
+
+        const latestAnnouncementId = {{ (int) optional($headerAnnouncements->first())->id }};
+        const seenAnnouncementId = parseInt(localStorage.getItem('seen_header_announcement_id') || '0', 10);
+        if (latestAnnouncementId > 0 && seenAnnouncementId >= latestAnnouncementId) {
+            hideBadges('.glass-header-badge-primary');
+        }
+
+        if (announcementModal) {
+            announcementModal.addEventListener('shown.bs.modal', function () {
+                if (latestAnnouncementId <= 0) return;
+
+                localStorage.setItem('seen_header_announcement_id', String(latestAnnouncementId));
+
+                setTimeout(() => {
+                    const annCountLabel = announcementModal.querySelector('[data-ann-count]');
+                    if (annCountLabel) {
+                        annCountLabel.textContent = '0 مورد جدید';
+                    }
+                    hideBadges('.glass-header-badge-primary');
+                }, ANNOUNCEMENT_BADGE_DELAY);
+            });
+        }
+
+        if (!notificationModal) return;
+
+        let markedSeen = false;
+
+        notificationModal.addEventListener('shown.bs.modal', async function () {
+            if (markedSeen) return;
+
+            const unseenCount = {{ (int)($headerNotificationsUnseenCount ?? 0) }};
+            if (unseenCount <= 0) return;
+
+            try {
+                const response = await fetch("{{ route('notifications.markAllSeen') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                markedSeen = true;
+
+                setTimeout(() => {
+                    const notifCountLabel = notificationModal.querySelector('[data-notif-count]');
+                    if (notifCountLabel) {
+                        notifCountLabel.textContent = '0 دیده‌نشده';
+                    }
+
+                    notificationModal.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
+                    hideBadges('.glass-header-badge-danger');
+                }, NOTIFICATION_BADGE_DELAY);
+            } catch (e) {
+                // fail silently
+            }
         });
     });
 </script>
