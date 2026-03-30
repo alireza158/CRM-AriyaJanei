@@ -857,8 +857,433 @@
             font-size: 13px;
         }
     }
-</style>
 
+    
+</style>
+<style>
+    .mx-modal,
+    .mx-modal * {
+        font-family: "Vazirmatn", "IRANSansX", "Yekan Bakh", Tahoma, sans-serif;
+    }
+
+    .mx-modal .modal-content {
+        border-radius: 24px !important;
+        overflow: hidden;
+        border: 1px solid #e2e8f0 !important;
+        background: #fff !important;
+        background-image: none !important;
+    }
+
+    .mx-modal .modal-header {
+        background: #fff !important;
+        background-image: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 1rem 1.1rem;
+    }
+
+    .mx-modal .modal-body {
+        background: #f8fafc !important;
+        background-image: none !important;
+        padding: 1rem;
+    }
+
+    .mx-modal .modal-footer {
+        background: #fff !important;
+        background-image: none !important;
+        border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .mx-head {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        direction: rtl;
+    }
+
+    .mx-head__side {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+    .mx-msg {
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-layout] {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        grid-template-areas: "sidebar pane";
+        gap: .9rem;
+        min-height: 72vh;
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-sidebar] {
+        grid-area: sidebar;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .mx-msg [data-msg-pane] {
+        grid-area: pane;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        background: #fff;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .mx-msg [data-msg-sidebar-top] {
+        padding: .9rem;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-sidebar-title] {
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: .55rem;
+        color: #0f172a;
+    }
+
+    .mx-msg [data-msg-list] {
+        max-height: calc(72vh - 92px);
+        overflow-y: auto;
+        padding: .5rem;
+        display: flex;
+        flex-direction: column;
+        gap: .45rem;
+        background: #fff;
+    }
+
+    .mx-msg [data-msg-item] {
+        width: 100%;
+        border: 1px solid transparent;
+        background: transparent;
+        color: inherit;
+        border-radius: 18px;
+        padding: .8rem;
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        direction: rtl;
+        text-align: right;
+        transition: .2s ease;
+    }
+
+    .mx-msg [data-msg-item]:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+
+    .mx-msg [data-msg-item].active {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .mx-msg [data-msg-avatar],
+    .mx-msg [data-msg-chat-avatar],
+    .mx-msg [data-msg-inline-avatar] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 900;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        flex-shrink: 0;
+        border-radius: 50%;
+    }
+
+    .mx-msg [data-msg-avatar] {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        font-size: 15px;
+    }
+
+    .mx-msg [data-msg-chat-avatar] {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        font-size: 14px;
+    }
+
+    .mx-msg [data-msg-inline-avatar] {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        font-size: 11px;
+    }
+
+    .mx-msg [data-msg-item-body] {
+        flex: 1 1 auto;
+        min-width: 0;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-name] {
+        font-size: 14px;
+        font-weight: 900;
+        color: #0f172a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mx-msg [data-msg-preview] {
+        display: block;
+        font-size: 12.5px;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-item-meta] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .3rem;
+        min-width: 44px;
+        flex: 0 0 44px;
+    }
+
+    .mx-msg [data-msg-time] {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .mx-msg [data-msg-unread-dot] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, .12);
+    }
+
+    .mx-msg [data-msg-chat-head] {
+        padding: .9rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-chat-user] {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-chat-name] {
+        font-size: 15px;
+        font-weight: 900;
+        color: #0f172a;
+        line-height: 1.4;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-chat-status] {
+        color: #64748b;
+        font-size: 12px;
+        margin-top: .15rem;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-chat-scroll] {
+        height: calc(72vh - 170px);
+        overflow-y: auto;
+        padding: 1rem;
+        background: #f8fafc !important;
+        background-image: none !important;
+        display: flex;
+        flex-direction: column;
+        gap: .8rem;
+        direction: ltr;
+    }
+
+    .mx-msg [data-msg-row] {
+        display: flex;
+        align-items: flex-end;
+        gap: .55rem;
+        width: 100%;
+    }
+
+    .mx-msg [data-msg-row].mine {
+        justify-content: flex-end;
+    }
+
+    .mx-msg [data-msg-row].theirs {
+        justify-content: flex-start;
+    }
+
+    .mx-msg [data-msg-bubble-wrap] {
+        max-width: min(78%, 620px);
+    }
+
+    .mx-msg [data-msg-bubble-sender] {
+        font-size: 11px;
+        font-weight: 800;
+        margin-bottom: .2rem;
+        color: #64748b;
+        text-align: left;
+        padding-inline: .35rem;
+    }
+
+    .mx-msg [data-msg-bubble] {
+        border-radius: 20px;
+        padding: .7rem .85rem .5rem;
+        font-size: 13.4px;
+        line-height: 1.9;
+        word-break: break-word;
+        direction: ltr;
+        text-align: left;
+    }
+
+    .mx-msg [data-msg-bubble].mine {
+        background: #dbeafe;
+        border: 1px solid #bfdbfe;
+        color: #0f172a;
+        border-top-right-radius: 8px;
+    }
+
+    .mx-msg [data-msg-bubble].theirs {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #0f172a;
+        border-top-left-radius: 8px;
+    }
+
+    .mx-msg [data-msg-bubble-time] {
+        display: block;
+        margin-top: .35rem;
+        font-size: 10.5px;
+        color: #64748b;
+        text-align: left;
+        direction: ltr;
+    }
+
+    .mx-msg [data-msg-compose] {
+        padding: .85rem;
+        border-top: 1px solid #e2e8f0;
+        background: #fff;
+    }
+
+    .mx-msg [data-msg-compose-form] {
+        display: flex;
+        align-items: flex-end;
+        gap: .55rem;
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-compose-form] textarea {
+        min-height: 52px;
+        resize: none;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #0f172a;
+        box-shadow: none !important;
+        text-align: right;
+        direction: rtl;
+    }
+
+    .mx-msg [data-msg-send-btn] {
+        min-width: 92px;
+        height: 52px;
+        border-radius: 16px !important;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .mx-msg [data-msg-send-btn].is-loading {
+        opacity: .75;
+        pointer-events: none;
+    }
+
+    .mx-msg [data-msg-empty] {
+        height: 100%;
+        min-height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #64748b;
+        padding: 1.5rem;
+        background: #fff;
+    }
+
+    @media (max-width: 991.98px) {
+        #headerMessagesModal .modal-dialog {
+            max-width: 100%;
+            margin: 0;
+        }
+
+        .mx-modal .modal-content {
+            min-height: 100vh;
+            border-radius: 0 !important;
+        }
+
+        .mx-msg .modal-body {
+            padding: 0;
+        }
+
+        .mx-msg [data-msg-layout] {
+            grid-template-columns: 1fr;
+            grid-template-areas: "sidebar";
+            gap: 0;
+            min-height: calc(100vh - 126px);
+        }
+
+        .mx-msg [data-msg-sidebar],
+        .mx-msg [data-msg-pane] {
+            border: 0;
+            border-radius: 0;
+        }
+
+        .mx-msg [data-msg-pane] {
+            display: none;
+        }
+
+        .mx-msg [data-msg-layout].show-chat {
+            grid-template-areas: "pane";
+        }
+
+        .mx-msg [data-msg-layout].show-chat [data-msg-sidebar] {
+            display: none;
+        }
+
+        .mx-msg [data-msg-layout].show-chat [data-msg-pane] {
+            display: block;
+        }
+
+        .mx-msg [data-msg-list] {
+            max-height: calc(100vh - 210px);
+        }
+
+        .mx-msg [data-msg-chat-scroll] {
+            height: calc(100vh - 255px);
+            padding: .85rem;
+        }
+
+        .mx-msg [data-msg-bubble-wrap] {
+            max-width: 88%;
+        }
+    }
+</style>
 <nav class="mx-header">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mx-header__row">
@@ -1144,7 +1569,12 @@
                                     $avatarText = trim(mb_substr($otherUser->name, 0, 1));
                                 @endphp
 
-                                <button type="button" data-msg-item data-chat-target="{{ $otherUser->id }}">
+                                <button
+                                    type="button"
+                                    data-msg-item
+                                    data-chat-target="{{ $otherUser->id }}"
+                                    data-user-name="{{ $otherUser->name }}"
+                                >
                                     <span data-msg-avatar>{{ $avatarText }}</span>
 
                                     <span data-msg-item-body>
@@ -1162,7 +1592,9 @@
                                     </span>
                                 </button>
                             @empty
-                                <div class="small text-muted text-center py-4">هنوز گفتگویی ندارید.</div>
+                                <div class="small text-muted text-center py-4" data-msg-list-empty>
+                                    هنوز گفتگویی ندارید.
+                                </div>
                             @endforelse
                         </div>
                     </aside>
@@ -1182,7 +1614,12 @@
                                         $threadAvatar = trim(mb_substr($threadUser->name, 0, 1));
                                     @endphp
 
-                                    <div data-msg-thread="{{ $threadUserId }}" style="{{ $firstThreadUser && (int) $firstThreadUser->id === (int) $threadUserId ? '' : 'display:none;' }}">
+                                    <div
+                                        data-msg-thread="{{ $threadUserId }}"
+                                        data-user-name="{{ $threadUser->name }}"
+                                        data-user-avatar="{{ $threadAvatar }}"
+                                        style="{{ $firstThreadUser && (int) $firstThreadUser->id === (int) $threadUserId ? '' : 'display:none;' }}"
+                                    >
                                         <div data-msg-chat-head>
                                             <div data-msg-chat-user>
                                                 <div data-msg-chat-avatar>{{ $threadAvatar }}</div>
@@ -1225,10 +1662,24 @@
                                         </div>
 
                                         <div data-msg-compose>
-                                            <form action="{{ route('messages.reply', $threadUserId) }}" method="POST" data-msg-compose-form>
+                                            <form
+                                                action="{{ route('messages.reply', $threadUserId) }}"
+                                                method="POST"
+                                                data-msg-compose-form
+                                                data-thread-user-id="{{ $threadUserId }}"
+                                            >
                                                 @csrf
-                                                <textarea class="form-control form-control-sm" name="body" rows="2" required placeholder="پیام خود را بنویسید..."></textarea>
-                                                <button class="btn btn-primary btn-sm px-3" data-msg-send-btn type="submit">ارسال</button>
+                                                <textarea
+                                                    class="form-control form-control-sm"
+                                                    name="body"
+                                                    rows="2"
+                                                    required
+                                                    placeholder="پیام خود را بنویسید..."
+                                                ></textarea>
+
+                                                <button class="btn btn-primary btn-sm px-3" data-msg-send-btn type="submit">
+                                                    <span data-send-text>ارسال</span>
+                                                </button>
                                             </form>
                                         </div>
                                     </div>
@@ -1253,7 +1704,6 @@
         </div>
     </div>
 </div>
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <script>
@@ -1383,175 +1833,394 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('headerMessagesModal');
-        if (!modal) return;
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('headerMessagesModal');
+    if (!modal) return;
 
-        const layout = modal.querySelector('[data-msg-layout]');
-        const threadButtons = modal.querySelectorAll('[data-msg-item][data-chat-target]');
-        const threads = modal.querySelectorAll('[data-msg-thread]');
-        const placeholder = modal.querySelector('[data-msg-placeholder]');
-        const newUserSelect = modal.querySelector('[data-msg-new-user]');
-        const backButtons = modal.querySelectorAll('[data-msg-back]');
-        const baseReplyPath = "{{ url('/messages') }}";
+    const layout = modal.querySelector('[data-msg-layout]');
+    const list = modal.querySelector('[data-msg-list]');
+    const pane = modal.querySelector('[data-msg-pane]');
+    const threadButtons = () => modal.querySelectorAll('[data-msg-item][data-chat-target]');
+    const threads = () => modal.querySelectorAll('[data-msg-thread]');
+    const placeholder = modal.querySelector('[data-msg-placeholder]');
+    const newUserSelect = modal.querySelector('[data-msg-new-user]');
+    const baseReplyPath = "{{ url('/messages') }}";
+    const csrfToken = "{{ csrf_token() }}";
 
-        function isMobile() {
-            return window.innerWidth < 992;
+    function isMobile() {
+        return window.innerWidth < 992;
+    }
+
+    function scrollThreadToBottom(thread) {
+        const scroll = thread ? thread.querySelector('[data-msg-chat-scroll]') : null;
+        if (scroll) {
+            scroll.scrollTop = scroll.scrollHeight;
         }
+    }
 
-        function scrollThreadToBottom(thread) {
-            const scroll = thread ? thread.querySelector('[data-msg-chat-scroll]') : null;
-            if (scroll) {
-                scroll.scrollTop = scroll.scrollHeight;
-            }
-        }
+    function showListOnMobile() {
+        if (isMobile() && layout) layout.classList.remove('show-chat');
+    }
 
-        function showListOnMobile() {
-            if (isMobile() && layout) {
-                layout.classList.remove('show-chat');
-            }
-        }
+    function showChatOnMobile() {
+        if (isMobile() && layout) layout.classList.add('show-chat');
+    }
 
-        function showChatOnMobile() {
-            if (isMobile() && layout) {
-                layout.classList.add('show-chat');
-            }
-        }
+    function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value ?? '';
+        return div.innerHTML;
+    }
 
-        function activateThread(userId) {
-            let found = false;
+    function shortPreview(text, max = 36) {
+        if (!text) return '';
+        return text.length > max ? text.substring(0, max) + '...' : text;
+    }
 
-            threadButtons.forEach((btn) => {
-                btn.classList.toggle('active', btn.dataset.chatTarget === String(userId));
+    function nowTime() {
+        const d = new Date();
+        return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function nowDateTime() {
+        return new Date().toLocaleString('fa-IR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function bindBackButtons(scope = modal) {
+        scope.querySelectorAll('[data-msg-back]').forEach((btn) => {
+            if (btn.dataset.bound === '1') return;
+            btn.dataset.bound = '1';
+
+            btn.addEventListener('click', function () {
+                showListOnMobile();
             });
+        });
+    }
 
-            threads.forEach((thread) => {
-                const match = thread.getAttribute('data-msg-thread') === String(userId);
-                thread.style.display = match ? '' : 'none';
+    function activateThread(userId) {
+        let found = false;
 
-                if (match) {
-                    found = true;
-                    scrollThreadToBottom(thread);
-                }
-            });
+        threadButtons().forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.chatTarget === String(userId));
+        });
 
-            if (placeholder) {
-                placeholder.style.display = found ? 'none' : '';
+        threads().forEach((thread) => {
+            const match = thread.getAttribute('data-msg-thread') === String(userId);
+            thread.style.display = match ? '' : 'none';
+
+            if (match) {
+                found = true;
+                scrollThreadToBottom(thread);
             }
+        });
 
-            if (found) {
-                showChatOnMobile();
-            }
+        if (placeholder) {
+            placeholder.style.display = found ? 'none' : '';
         }
 
-        threadButtons.forEach((btn) => {
+        if (found) {
+            showChatOnMobile();
+        }
+    }
+
+    function createThreadButton(userId, userName, previewText, timeText) {
+        const btn = document.createElement('button');
+        const avatar = (userName || '?').trim().charAt(0);
+
+        btn.type = 'button';
+        btn.setAttribute('data-msg-item', '');
+        btn.setAttribute('data-chat-target', userId);
+        btn.setAttribute('data-user-name', userName);
+
+        btn.innerHTML = `
+            <span data-msg-avatar>${escapeHtml(avatar)}</span>
+
+            <span data-msg-item-body>
+                <span data-msg-item-top>
+                    <span data-msg-name>${escapeHtml(userName)}</span>
+                </span>
+                <span data-msg-preview>${escapeHtml(shortPreview(previewText || ''))}</span>
+            </span>
+
+            <span data-msg-item-meta>
+                <span data-msg-time>${escapeHtml(timeText || nowTime())}</span>
+            </span>
+        `;
+
+        btn.addEventListener('click', function () {
+            activateThread(userId);
+        });
+
+        return btn;
+    }
+
+    function moveThreadButtonToTop(userId, bodyText, timeText) {
+        const btn = modal.querySelector(`[data-msg-item][data-chat-target="${userId}"]`);
+        if (!btn || !list) return;
+
+        const preview = btn.querySelector('[data-msg-preview]');
+        const time = btn.querySelector('[data-msg-time]');
+        const unreadDot = btn.querySelector('[data-msg-unread-dot]');
+
+        if (preview) preview.textContent = shortPreview(bodyText || '');
+        if (time) time.textContent = timeText || nowTime();
+        if (unreadDot) unreadDot.remove();
+
+        list.prepend(btn);
+    }
+
+    function createThreadElement(userId, userName) {
+        const avatar = (userName || '?').trim().charAt(0);
+
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('data-msg-thread', userId);
+        wrapper.setAttribute('data-user-name', userName);
+        wrapper.setAttribute('data-user-avatar', avatar);
+
+        wrapper.innerHTML = `
+            <div data-msg-chat-head>
+                <div data-msg-chat-user>
+                    <div data-msg-chat-avatar>${escapeHtml(avatar)}</div>
+                    <div class="text-end">
+                        <div data-msg-chat-name>${escapeHtml(userName)}</div>
+                        <div data-msg-chat-status>گفتگوی مستقیم</div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-link text-decoration-none p-0 d-lg-none" data-msg-back>
+                        <i class="bi bi-arrow-right fs-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div data-msg-chat-scroll>
+                <div class="text-center text-muted py-5">اولین پیام را ارسال کنید.</div>
+            </div>
+
+            <div data-msg-compose>
+                <form
+                    method="POST"
+                    action="${baseReplyPath}/${userId}/reply"
+                    data-msg-compose-form
+                    data-thread-user-id="${userId}"
+                >
+                    <textarea
+                        class="form-control form-control-sm"
+                        name="body"
+                        rows="2"
+                        required
+                        placeholder="پیام خود را بنویسید..."
+                    ></textarea>
+
+                    <button class="btn btn-primary btn-sm px-3" data-msg-send-btn type="submit">
+                        <span data-send-text>ارسال</span>
+                    </button>
+                </form>
+            </div>
+        `;
+
+        pane.insertBefore(wrapper, placeholder);
+        bindBackButtons(wrapper);
+        bindAjaxForms(wrapper);
+
+        return wrapper;
+    }
+
+    function ensureThreadExists(userId, userName) {
+        let thread = modal.querySelector(`[data-msg-thread="${userId}"]`);
+        if (thread) return thread;
+
+        thread = createThreadElement(userId, userName);
+
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+
+        return thread;
+    }
+
+    function appendMessageToThread(userId, body, isMine, sentAt, userName, avatarText) {
+        const thread = ensureThreadExists(userId, userName);
+        const scroll = thread.querySelector('[data-msg-chat-scroll]');
+
+        const emptyText = scroll.querySelector('.text-center.text-muted.py-5');
+        if (emptyText) emptyText.remove();
+
+        const row = document.createElement('div');
+        row.setAttribute('data-msg-row', '');
+        row.className = isMine ? 'mine' : 'theirs';
+
+        row.innerHTML = `
+            ${!isMine ? `<div data-msg-inline-avatar>${escapeHtml(avatarText || (userName || '?').trim().charAt(0))}</div>` : ''}
+            <div data-msg-bubble-wrap>
+                ${!isMine ? `<div data-msg-bubble-sender>${escapeHtml(userName || '')}</div>` : ''}
+                <div data-msg-bubble class="${isMine ? 'mine' : 'theirs'}">
+                    <div>${escapeHtml(body)}</div>
+                    <span data-msg-bubble-time>${escapeHtml(sentAt || nowDateTime())}</span>
+                </div>
+            </div>
+        `;
+
+        scroll.appendChild(row);
+        scrollThreadToBottom(thread);
+    }
+
+    function bindThreadButtons() {
+        threadButtons().forEach((btn) => {
+            if (btn.dataset.bound === '1') return;
+            btn.dataset.bound = '1';
+
             btn.addEventListener('click', function () {
                 activateThread(this.dataset.chatTarget);
             });
         });
+    }
 
-        backButtons.forEach((btn) => {
-            btn.addEventListener('click', function () {
-                showListOnMobile();
+    async function sendMessageAjax(form) {
+        const textarea = form.querySelector('textarea[name="body"]');
+        const sendBtn = form.querySelector('[data-msg-send-btn]');
+        const sendText = form.querySelector('[data-send-text]');
+        const body = (textarea?.value || '').trim();
+        const userId = form.dataset.threadUserId;
+
+        if (!body || !userId) return;
+
+        const thread = modal.querySelector(`[data-msg-thread="${userId}"]`);
+        const userName = thread?.dataset.userName || modal.querySelector(`[data-msg-item][data-chat-target="${userId}"]`)?.dataset.userName || 'کاربر';
+        const avatarText = thread?.dataset.userAvatar || (userName || '?').trim().charAt(0);
+
+        sendBtn?.classList.add('is-loading');
+        sendBtn?.setAttribute('disabled', 'disabled');
+        if (sendText) sendText.textContent = 'در حال ارسال...';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: new FormData(form)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw data;
+            }
+
+            appendMessageToThread(
+                userId,
+                data.body ?? body,
+                true,
+                data.created_at_text ?? nowDateTime(),
+                userName,
+                avatarText
+            );
+
+            moveThreadButtonToTop(
+                userId,
+                data.body ?? body,
+                data.time_text ?? nowTime()
+            );
+
+            textarea.value = '';
+            textarea.style.height = '';
+            activateThread(userId);
+        } catch (error) {
+            let message = 'ارسال پیام با خطا مواجه شد.';
+
+            if (error?.errors?.body?.[0]) {
+                message = error.errors.body[0];
+            } else if (error?.message) {
+                message = error.message;
+            }
+
+            alert(message);
+        } finally {
+            sendBtn?.classList.remove('is-loading');
+            sendBtn?.removeAttribute('disabled');
+            if (sendText) sendText.textContent = 'ارسال';
+        }
+    }
+
+    function bindAjaxForms(scope = modal) {
+        scope.querySelectorAll('[data-msg-compose-form]').forEach((form) => {
+            if (form.dataset.ajaxBound === '1') return;
+            form.dataset.ajaxBound = '1';
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                sendMessageAjax(this);
             });
         });
+    }
 
-        if (newUserSelect) {
-            newUserSelect.addEventListener('change', function () {
-                const userId = this.value;
-                const userName = this.options[this.selectedIndex]?.text || 'کاربر';
+    if (newUserSelect) {
+        newUserSelect.addEventListener('change', function () {
+            const userId = this.value;
+            const userName = this.options[this.selectedIndex]?.text || 'کاربر';
 
-                if (!userId || !placeholder) return;
+            if (!userId) return;
 
-                const existingThread = modal.querySelector(`[data-msg-thread="${userId}"]`);
-                if (existingThread) {
-                    activateThread(userId);
-                    return;
-                }
+            let btn = modal.querySelector(`[data-msg-item][data-chat-target="${userId}"]`);
 
-                threadButtons.forEach((btn) => btn.classList.remove('active'));
-                threads.forEach((thread) => thread.style.display = 'none');
+            if (!btn) {
+                const emptyList = modal.querySelector('[data-msg-list-empty]');
+                if (emptyList) emptyList.remove();
 
-                const avatar = (userName || '?').trim().charAt(0);
+                btn = createThreadButton(userId, userName, '', nowTime());
+                list.prepend(btn);
+            }
 
-                placeholder.innerHTML = `
-                    <div class="w-100 h-100 d-flex flex-column">
-                        <div data-msg-chat-head>
-                            <div data-msg-chat-user>
-                                <div data-msg-chat-avatar>${avatar}</div>
-                                <div class="text-end">
-                                    <div data-msg-chat-name>${userName}</div>
-                                    <div data-msg-chat-status>گفتگوی جدید</div>
-                                </div>
-                            </div>
+            bindThreadButtons();
+            ensureThreadExists(userId, userName);
+            activateThread(userId);
+        });
+    }
 
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-link text-decoration-none p-0 d-lg-none" data-msg-dynamic-back>
-                                    <i class="bi bi-arrow-right fs-4"></i>
-                                </button>
-                            </div>
-                        </div>
+    bindThreadButtons();
+    bindBackButtons();
+    bindAjaxForms();
 
-                        <div data-msg-chat-scroll class="flex-grow-1">
-                            <div class="text-center text-muted py-5">اولین پیام را ارسال کنید.</div>
-                        </div>
-
-                        <div data-msg-compose>
-                            <form method="POST" action="${baseReplyPath}/${userId}/reply" data-msg-compose-form>
-                                <textarea class="form-control form-control-sm" name="body" rows="2" required placeholder="اولین پیام خود را بنویسید..."></textarea>
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-primary btn-sm px-3" data-msg-send-btn type="submit">ارسال</button>
-                            </form>
-                        </div>
-                    </div>
-                `;
-
-                placeholder.style.display = '';
-                showChatOnMobile();
-
-                const dynamicBack = placeholder.querySelector('[data-msg-dynamic-back]');
-                if (dynamicBack) {
-                    dynamicBack.addEventListener('click', function () {
-                        showListOnMobile();
-                    });
-                }
-            });
+    modal.addEventListener('shown.bs.modal', function () {
+        if (isMobile()) {
+            showListOnMobile();
+            return;
         }
 
-        modal.addEventListener('shown.bs.modal', function () {
-            if (isMobile()) {
-                showListOnMobile();
-                return;
-            }
+        const active = modal.querySelector('[data-msg-item].active');
+        if (active) {
+            activateThread(active.dataset.chatTarget);
+            return;
+        }
+
+        const firstButton = modal.querySelector('[data-msg-item][data-chat-target]');
+        if (firstButton) {
+            activateThread(firstButton.dataset.chatTarget);
+        }
+    });
+
+    window.addEventListener('resize', function () {
+        if (!layout) return;
+
+        if (!isMobile()) {
+            layout.classList.remove('show-chat');
 
             const active = modal.querySelector('[data-msg-item].active');
-            if (active) {
-                activateThread(active.dataset.chatTarget);
-                return;
-            }
-
-            const firstButton = modal.querySelector('[data-msg-item][data-chat-target]');
-            if (firstButton) {
-                activateThread(firstButton.dataset.chatTarget);
-            }
-        });
-
-        window.addEventListener('resize', function () {
-            if (!layout) return;
-
-            if (!isMobile()) {
-                layout.classList.remove('show-chat');
-
-                const active = modal.querySelector('[data-msg-item].active');
-                if (active) {
-                    activateThread(active.dataset.chatTarget);
-                }
-            } else {
-                const active = modal.querySelector('[data-msg-item].active');
-                if (!active) {
-                    showListOnMobile();
-                }
-            }
-        });
+            if (active) activateThread(active.dataset.chatTarget);
+        } else {
+            const active = modal.querySelector('[data-msg-item].active');
+            if (!active) showListOnMobile();
+        }
     });
+});
 </script>
