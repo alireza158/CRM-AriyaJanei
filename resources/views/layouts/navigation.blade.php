@@ -12,143 +12,137 @@
 <style>
     :root,
     [data-bs-theme="light"] {
-        --hx-font: "Vazirmatn", "IRANSansX", "Yekan Bakh", Tahoma, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --mx-font: "Vazirmatn", "IRANSansX", "Yekan Bakh", Tahoma, sans-serif;
 
-        --hx-body: #f5f7fb;
-        --hx-surface: #ffffff;
-        --hx-surface-2: #f8fafc;
-        --hx-surface-3: #eef2f7;
+        --mx-bg: #f8fafc;
+        --mx-surface: #ffffff;
+        --mx-surface-2: #f1f5f9;
+        --mx-surface-3: #e2e8f0;
 
-        --hx-text: #0f172a;
-        --hx-text-soft: #475569;
-        --hx-text-muted: #64748b;
+        --mx-text: #0f172a;
+        --mx-text-soft: #334155;
+        --mx-text-muted: #64748b;
 
-        --hx-border: #e2e8f0;
-        --hx-border-strong: #cbd5e1;
+        --mx-border: #e2e8f0;
+        --mx-border-strong: #cbd5e1;
 
-        --hx-primary: #2563eb;
-        --hx-primary-2: #3b82f6;
-        --hx-success: #16a34a;
-        --hx-danger: #dc2626;
-        --hx-warning: #f59e0b;
+        --mx-primary: #2563eb;
+        --mx-primary-2: #3b82f6;
+        --mx-success: #16a34a;
+        --mx-danger: #dc2626;
 
-        --hx-shadow-sm: 0 8px 24px rgba(15, 23, 42, .06);
-        --hx-shadow-md: 0 18px 40px rgba(15, 23, 42, .09);
-        --hx-shadow-lg: 0 24px 64px rgba(15, 23, 42, .14);
+        --mx-shadow-sm: 0 8px 24px rgba(15, 23, 42, .06);
+        --mx-shadow-md: 0 18px 38px rgba(15, 23, 42, .08);
+        --mx-shadow-lg: 0 26px 70px rgba(15, 23, 42, .14);
 
-        --hx-header-bg:
-            linear-gradient(180deg, rgba(255,255,255,.88) 0%, rgba(255,255,255,.94) 100%);
-        --hx-header-border: rgba(15, 23, 42, .08);
-        --hx-header-btn: rgba(255,255,255,.92);
-        --hx-header-btn-hover: #ffffff;
+        --mx-header-bg: rgba(255,255,255,.88);
+        --mx-header-btn: rgba(255,255,255,.92);
+        --mx-header-btn-hover: #ffffff;
 
-        --hx-modal-bg: #ffffff;
-        --hx-modal-header-bg: #ffffff;
-        --hx-modal-body-bg: #f8fafc;
-        --hx-modal-footer-bg: #ffffff;
-        --hx-modal-backdrop: rgba(15, 23, 42, .45);
+        --mx-modal-bg: #ffffff;
+        --mx-modal-header-bg: #ffffff;
+        --mx-modal-body-bg: #f8fafc;
+        --mx-modal-footer-bg: #ffffff;
+        --mx-modal-backdrop: rgba(15, 23, 42, .42);
 
-        --hx-chat-list-bg: #ffffff;
-        --hx-chat-pane-bg: #ffffff;
-        --hx-chat-scroll-bg: #f8fafc;
-        --hx-chat-mine: #dbeafe;
-        --hx-chat-mine-border: #bfdbfe;
-        --hx-chat-theirs: #ffffff;
-        --hx-chat-theirs-border: #e2e8f0;
+        --mx-chat-list-bg: #ffffff;
+        --mx-chat-pane-bg: #ffffff;
+        --mx-chat-scroll-bg: #f8fafc;
+        --mx-chat-mine: #dbeafe;
+        --mx-chat-mine-border: #bfdbfe;
+        --mx-chat-theirs: #ffffff;
+        --mx-chat-theirs-border: #e2e8f0;
     }
 
     [data-bs-theme="dark"] {
-        --hx-body: #0b1220;
-        --hx-surface: #0f172a;
-        --hx-surface-2: #111827;
-        --hx-surface-3: #1e293b;
+        --mx-bg: #0b1220;
+        --mx-surface: #0f172a;
+        --mx-surface-2: #111827;
+        --mx-surface-3: #1e293b;
 
-        --hx-text: #e5eefc;
-        --hx-text-soft: #cbd5e1;
-        --hx-text-muted: #94a3b8;
+        --mx-text: #e5eefc;
+        --mx-text-soft: #cbd5e1;
+        --mx-text-muted: #94a3b8;
 
-        --hx-border: rgba(148, 163, 184, .18);
-        --hx-border-strong: rgba(148, 163, 184, .28);
+        --mx-border: rgba(148, 163, 184, .18);
+        --mx-border-strong: rgba(148, 163, 184, .28);
 
-        --hx-primary: #60a5fa;
-        --hx-primary-2: #3b82f6;
-        --hx-success: #22c55e;
-        --hx-danger: #f87171;
-        --hx-warning: #fbbf24;
+        --mx-primary: #60a5fa;
+        --mx-primary-2: #3b82f6;
+        --mx-success: #22c55e;
+        --mx-danger: #f87171;
 
-        --hx-shadow-sm: 0 8px 24px rgba(0, 0, 0, .24);
-        --hx-shadow-md: 0 18px 40px rgba(0, 0, 0, .30);
-        --hx-shadow-lg: 0 24px 64px rgba(0, 0, 0, .40);
+        --mx-shadow-sm: 0 8px 24px rgba(0,0,0,.24);
+        --mx-shadow-md: 0 18px 38px rgba(0,0,0,.30);
+        --mx-shadow-lg: 0 26px 70px rgba(0,0,0,.42);
 
-        --hx-header-bg:
-            linear-gradient(180deg, rgba(11,18,32,.88) 0%, rgba(11,18,32,.94) 100%);
-        --hx-header-border: rgba(148, 163, 184, .14);
-        --hx-header-btn: rgba(17,24,39,.92);
-        --hx-header-btn-hover: #182132;
+        --mx-header-bg: rgba(11,18,32,.88);
+        --mx-header-btn: rgba(17,24,39,.92);
+        --mx-header-btn-hover: #182132;
 
-        --hx-modal-bg: #0f172a;
-        --hx-modal-header-bg: #111827;
-        --hx-modal-body-bg: #0b1220;
-        --hx-modal-footer-bg: #111827;
-        --hx-modal-backdrop: rgba(2, 6, 23, .7);
+        --mx-modal-bg: #0f172a;
+        --mx-modal-header-bg: #111827;
+        --mx-modal-body-bg: #0b1220;
+        --mx-modal-footer-bg: #111827;
+        --mx-modal-backdrop: rgba(2, 6, 23, .72);
 
-        --hx-chat-list-bg: #0f172a;
-        --hx-chat-pane-bg: #0f172a;
-        --hx-chat-scroll-bg: #0b1220;
-        --hx-chat-mine: rgba(37, 99, 235, .24);
-        --hx-chat-mine-border: rgba(96, 165, 250, .24);
-        --hx-chat-theirs: #111827;
-        --hx-chat-theirs-border: rgba(148, 163, 184, .16);
+        --mx-chat-list-bg: #0f172a;
+        --mx-chat-pane-bg: #0f172a;
+        --mx-chat-scroll-bg: #0b1220;
+        --mx-chat-mine: rgba(37, 99, 235, .24);
+        --mx-chat-mine-border: rgba(96, 165, 250, .24);
+        --mx-chat-theirs: #111827;
+        --mx-chat-theirs-border: rgba(148, 163, 184, .16);
     }
 
-    .hx-header,
-    .hx-header * {
-        font-family: var(--hx-font);
+    .mx-header,
+    .mx-header * {
+        font-family: var(--mx-font);
     }
 
-    .hx-header {
+    .mx-header {
         position: sticky;
         top: 0;
         z-index: 1030;
-        background: var(--hx-header-bg);
-        background-color: var(--hx-surface);
-        border-bottom: 1px solid var(--hx-header-border);
+        background: var(--mx-header-bg);
+        background-color: var(--mx-surface);
+        border-bottom: 1px solid var(--mx-border);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        box-shadow: var(--hx-shadow-sm);
+        box-shadow: var(--mx-shadow-sm);
     }
 
-    .hx-header__row {
+    .mx-header__row {
         min-height: 76px;
     }
 
-    .hx-header__logo {
+    .mx-header__logo {
         height: 48px;
         display: flex;
         align-items: center;
     }
 
-    .hx-header__logo img {
+    .mx-header__logo img {
         max-height: 40px;
         width: auto;
         display: block;
     }
 
-    .hx-header__actions,
-    .hx-header__actions--mobile {
+    .mx-header__actions,
+    .mx-header__actions--mobile {
         display: flex;
         align-items: center;
         gap: .5rem;
     }
 
-    .hx-header__dashboard-btn {
+    .mx-header__dashboard-btn {
         height: 46px;
         border-radius: 16px !important;
         padding-inline: 16px !important;
         font-weight: 800;
     }
 
-    .hx-icon-btn {
+    .mx-icon-btn {
         width: 48px;
         height: 48px;
         min-width: 48px;
@@ -158,26 +152,25 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        border: 1px solid var(--hx-border) !important;
-        background: var(--hx-header-btn) !important;
-        color: var(--hx-text) !important;
-        box-shadow: var(--hx-shadow-sm);
+        border: 1px solid var(--mx-border) !important;
+        background: var(--mx-header-btn) !important;
+        color: var(--mx-text) !important;
+        box-shadow: var(--mx-shadow-sm);
         transition: .2s ease;
     }
 
-    .hx-icon-btn:hover {
-        background: var(--hx-header-btn-hover) !important;
-        border-color: var(--hx-border-strong) !important;
-        color: var(--hx-text) !important;
+    .mx-icon-btn:hover {
+        background: var(--mx-header-btn-hover) !important;
+        border-color: var(--mx-border-strong) !important;
+        color: var(--mx-text) !important;
         transform: translateY(-1px);
     }
 
-    .hx-icon-btn i {
+    .mx-icon-btn i {
         font-size: 1.1rem;
-        line-height: 1;
     }
 
-    .hx-badge {
+    .mx-badge {
         position: absolute;
         top: -6px;
         right: -6px;
@@ -191,29 +184,27 @@
         font-size: 11px;
         font-weight: 900;
         color: #fff;
-        border: 2px solid var(--hx-surface);
+        border: 2px solid var(--mx-surface);
     }
 
-    .hx-badge--primary { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-    .hx-badge--danger  { background: linear-gradient(135deg, #ef4444, #dc2626); }
-    .hx-badge--success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .mx-badge--primary { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .mx-badge--danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .mx-badge--success { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
-    .hx-modal {
-        --bs-modal-bg: var(--hx-modal-bg);
-        --bs-modal-color: var(--hx-text);
-        --bs-modal-border-color: var(--hx-border);
-        --bs-modal-header-border-color: var(--hx-border);
-        --bs-modal-footer-border-color: var(--hx-border);
-        --bs-backdrop-bg: 15, 23, 42;
-        --bs-backdrop-opacity: .55;
+    .mx-modal {
+        --bs-modal-bg: var(--mx-modal-bg);
+        --bs-modal-color: var(--mx-text);
+        --bs-modal-border-color: var(--mx-border);
+        --bs-modal-header-border-color: var(--mx-border);
+        --bs-modal-footer-border-color: var(--mx-border);
     }
 
-    .hx-modal,
-    .hx-modal * {
-        font-family: var(--hx-font);
+    .mx-modal,
+    .mx-modal * {
+        font-family: var(--mx-font);
     }
 
-    .hx-modal .modal-dialog {
+    .mx-modal .modal-dialog {
         max-width: 960px;
     }
 
@@ -221,113 +212,159 @@
         max-width: 1180px;
     }
 
-    .hx-modal .modal-content {
-        background-color: var(--hx-modal-bg) !important;
+    .mx-modal .modal-content {
+        background-color: var(--mx-modal-bg) !important;
         background-image: none !important;
-        border: 1px solid var(--hx-border) !important;
+        border: 1px solid var(--mx-border) !important;
         border-radius: 28px !important;
         overflow: hidden;
-        box-shadow: var(--hx-shadow-lg);
-        color: var(--hx-text);
+        box-shadow: var(--mx-shadow-lg);
+        color: var(--mx-text);
     }
 
-    .hx-modal .modal-header {
-        background-color: var(--hx-modal-header-bg) !important;
+    .mx-modal .modal-header {
+        background-color: var(--mx-modal-header-bg) !important;
         background-image: none !important;
-        border-bottom: 1px solid var(--hx-border) !important;
-        color: var(--hx-text) !important;
+        border-bottom: 1px solid var(--mx-border) !important;
+        color: var(--mx-text) !important;
         padding: 1rem 1.1rem;
     }
 
-    .hx-modal .modal-body {
-        background-color: var(--hx-modal-body-bg) !important;
+    .mx-modal .modal-body {
+        background-color: var(--mx-modal-body-bg) !important;
         background-image: none !important;
-        color: var(--hx-text) !important;
+        color: var(--mx-text) !important;
         padding: 1rem;
     }
 
-    .hx-modal .modal-footer {
-        background-color: var(--hx-modal-footer-bg) !important;
+    .mx-modal .modal-footer {
+        background-color: var(--mx-modal-footer-bg) !important;
         background-image: none !important;
-        border-top: 1px solid var(--hx-border) !important;
-        color: var(--hx-text) !important;
+        border-top: 1px solid var(--mx-border) !important;
+        color: var(--mx-text) !important;
         padding: 1rem 1.1rem;
     }
 
-    .hx-modal .btn-close {
+    .mx-modal .btn-close {
         opacity: 1;
     }
 
-    [data-bs-theme="dark"] .hx-modal .btn-close {
+    [data-bs-theme="dark"] .mx-modal .btn-close {
         filter: invert(1) grayscale(100%);
     }
 
     .modal-backdrop.show {
         opacity: 1 !important;
-        background: var(--hx-modal-backdrop) !important;
+        background: var(--mx-modal-backdrop) !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
     }
 
-    .hx-panel-list {
+    .mx-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 100%;
+        direction: rtl;
+    }
+
+    .mx-head__side {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+    }
+
+    .mx-head__icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        border-radius: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--mx-border);
+        background: var(--mx-surface-2);
+        color: var(--mx-text);
+        font-size: 1.15rem;
+    }
+
+    .mx-head__count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 36px;
+        padding: 0 .9rem;
+        border-radius: 999px;
+        background: var(--mx-surface-2);
+        border: 1px solid var(--mx-border);
+        color: var(--mx-text-muted);
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+    .mx-panel-list {
         display: grid;
         gap: 1rem;
     }
 
-    .hx-card {
-        background: var(--hx-surface);
-        border: 1px solid var(--hx-border);
+    .mx-card {
+        background: var(--mx-surface);
+        border: 1px solid var(--mx-border);
         border-radius: 22px;
         padding: 1rem;
-        box-shadow: var(--hx-shadow-sm);
-        color: var(--hx-text);
+        box-shadow: var(--mx-shadow-sm);
+        color: var(--mx-text);
     }
 
-    .hx-card__title {
+    .mx-card__title {
         font-size: 15px;
         font-weight: 900;
         margin: 0 0 .45rem;
-        color: var(--hx-text);
+        color: var(--mx-text);
         line-height: 1.9;
+        text-align: right;
     }
 
-    .hx-card__text {
+    .mx-card__text {
         font-size: 13.5px;
         line-height: 2;
-        color: var(--hx-text-soft);
+        color: var(--mx-text-soft);
         white-space: pre-line;
+        text-align: right;
     }
 
-    .hx-card__meta {
+    .mx-card__meta {
         display: flex;
         flex-wrap: wrap;
         gap: .5rem;
         margin-top: .9rem;
+        justify-content: flex-end;
     }
 
-    .hx-chip {
+    .mx-chip {
         display: inline-flex;
         align-items: center;
         gap: .4rem;
         padding: .45rem .8rem;
         border-radius: 999px;
-        border: 1px solid var(--hx-border);
-        background: var(--hx-surface-2);
-        color: var(--hx-text-muted);
+        border: 1px solid var(--mx-border);
+        background: var(--mx-surface-2);
+        color: var(--mx-text-muted);
         font-size: 12px;
         font-weight: 700;
     }
 
-    .hx-empty {
-        background: var(--hx-surface);
-        border: 1px dashed var(--hx-border-strong);
+    .mx-empty {
+        background: var(--mx-surface);
+        border: 1px dashed var(--mx-border-strong);
         border-radius: 24px;
         padding: 2rem 1rem;
         text-align: center;
-        color: var(--hx-text-muted);
+        color: var(--mx-text-muted);
     }
 
-    .hx-empty__icon {
+    .mx-empty__icon {
         width: 64px;
         height: 64px;
         margin: 0 auto 12px;
@@ -335,26 +372,26 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--hx-surface-2);
-        border: 1px solid var(--hx-border);
+        background: var(--mx-surface-2);
+        border: 1px solid var(--mx-border);
         font-size: 1.4rem;
-        color: var(--hx-text);
+        color: var(--mx-text);
     }
 
-    .hx-empty__title {
+    .mx-empty__title {
         font-size: 15px;
         font-weight: 900;
-        color: var(--hx-text);
+        color: var(--mx-text);
         margin-bottom: .35rem;
     }
 
-    .hx-empty__text {
+    .mx-empty__text {
         font-size: 13px;
         line-height: 2;
-        color: var(--hx-text-muted);
+        color: var(--mx-text-muted);
     }
 
-    .hx-new-badge {
+    .mx-new-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -363,144 +400,110 @@
         padding: 0 .8rem;
         border-radius: 999px;
         background: rgba(239, 68, 68, .12);
-        color: var(--hx-danger);
+        color: var(--mx-danger);
         border: 1px solid rgba(239, 68, 68, .18);
         font-size: 11px;
         font-weight: 900;
     }
 
-    .hx-headline {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        width: 100%;
-    }
-
-    .hx-headline__side {
-        display: flex;
-        align-items: center;
-        gap: .85rem;
-    }
-
-    .hx-headline__icon {
-        width: 52px;
-        height: 52px;
-        min-width: 52px;
-        border-radius: 18px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--hx-border);
-        background: var(--hx-surface-2);
-        color: var(--hx-text);
-        font-size: 1.15rem;
-    }
-
-    .hx-headline__count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 36px;
-        padding: 0 .9rem;
-        border-radius: 999px;
-        background: var(--hx-surface-2);
-        border: 1px solid var(--hx-border);
-        color: var(--hx-text-muted);
-        font-size: 12px;
-        font-weight: 900;
-    }
-
-    .hx-msg {
+    /* =======================
+       MESSAGES
+       ======================= */
+    .mx-msg {
         direction: rtl;
     }
 
-    .hx-msg [data-msg-layout] {
+    .mx-msg [data-msg-layout] {
         display: grid;
-        grid-template-columns: minmax(0,1fr) 360px;
-        grid-template-areas: "pane sidebar";
-        gap: .8rem;
+        grid-template-columns: 360px minmax(0, 1fr);
+        grid-template-areas: "sidebar pane";
+        gap: .9rem;
         min-height: 72vh;
+        direction: rtl;
     }
 
-    .hx-msg [data-msg-sidebar] {
+    .mx-msg [data-msg-sidebar] {
         grid-area: sidebar;
-        border: 1px solid var(--hx-border);
+        border: 1px solid var(--mx-border);
         border-radius: 22px;
-        background: var(--hx-chat-list-bg);
+        background: var(--mx-chat-list-bg);
         overflow: hidden;
+        box-shadow: var(--mx-shadow-sm);
     }
 
-    .hx-msg [data-msg-pane] {
+    .mx-msg [data-msg-pane] {
         grid-area: pane;
-        border: 1px solid var(--hx-border);
+        border: 1px solid var(--mx-border);
         border-radius: 22px;
-        background: var(--hx-chat-pane-bg);
+        background: var(--mx-chat-pane-bg);
         overflow: hidden;
         position: relative;
+        box-shadow: var(--mx-shadow-sm);
     }
 
-    .hx-msg [data-msg-sidebar-top] {
+    .mx-msg [data-msg-sidebar-top] {
         padding: .9rem;
-        border-bottom: 1px solid var(--hx-border);
-        background: var(--hx-surface-2);
+        border-bottom: 1px solid var(--mx-border);
+        background: var(--mx-surface-2);
+        text-align: right;
     }
 
-    .hx-msg [data-msg-sidebar-title] {
+    .mx-msg [data-msg-sidebar-title] {
         font-size: 13px;
         font-weight: 900;
-        color: var(--hx-text);
+        color: var(--mx-text);
         margin-bottom: .55rem;
         text-align: right;
     }
 
-    .hx-msg [data-msg-list] {
+    .mx-msg [data-msg-list] {
         max-height: calc(72vh - 92px);
         overflow-y: auto;
         padding: .5rem;
         display: flex;
         flex-direction: column;
         gap: .45rem;
-        background: var(--hx-chat-list-bg);
+        background: var(--mx-chat-list-bg);
     }
 
-    .hx-msg [data-msg-item] {
+    .mx-msg [data-msg-item] {
         width: 100%;
         border: 1px solid transparent;
         background: transparent;
         color: inherit;
         border-radius: 18px;
-        padding: .75rem .8rem;
+        padding: .8rem;
         display: flex;
         align-items: center;
-        gap: .7rem;
-        text-align: right;
+        gap: .75rem;
         direction: rtl;
+        text-align: right;
         transition: .2s ease;
     }
 
-    .hx-msg [data-msg-item]:hover {
-        background: var(--hx-surface-2);
-        border-color: var(--hx-border);
+    .mx-msg [data-msg-item]:hover {
+        background: var(--mx-surface-2);
+        border-color: var(--mx-border);
     }
 
-    .hx-msg [data-msg-item].active {
-        background: var(--hx-surface-2);
-        border-color: var(--hx-border-strong);
+    .mx-msg [data-msg-item].active {
+        background: var(--mx-surface-2);
+        border-color: var(--mx-border-strong);
     }
 
-    .hx-msg [data-msg-avatar],
-    .hx-msg [data-msg-chat-avatar],
-    .hx-msg [data-msg-inline-avatar] {
+    .mx-msg [data-msg-avatar],
+    .mx-msg [data-msg-chat-avatar],
+    .mx-msg [data-msg-inline-avatar] {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         color: #fff;
         font-weight: 900;
         background: linear-gradient(135deg, #3b82f6, #2563eb);
+        flex-shrink: 0;
     }
 
-    .hx-msg [data-msg-avatar] {
+    .mx-msg [data-msg-avatar] {
         width: 52px;
         height: 52px;
         min-width: 52px;
@@ -508,7 +511,7 @@
         font-size: 15px;
     }
 
-    .hx-msg [data-msg-chat-avatar] {
+    .mx-msg [data-msg-chat-avatar] {
         width: 46px;
         height: 46px;
         min-width: 46px;
@@ -516,61 +519,50 @@
         font-size: 14px;
     }
 
-    .hx-msg [data-msg-inline-avatar] {
+    .mx-msg [data-msg-inline-avatar] {
         width: 34px;
         height: 34px;
         min-width: 34px;
         border-radius: 50%;
         font-size: 11px;
-        flex: 0 0 34px;
     }
 
-    .hx-msg [data-msg-item-body] {
+    .mx-msg [data-msg-item-body] {
         flex: 1 1 auto;
         min-width: 0;
         text-align: right;
     }
 
-    .hx-msg [data-msg-item-top] {
+    .mx-msg [data-msg-item-top] {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: .5rem;
-        margin-bottom: .18rem;
+        margin-bottom: .2rem;
+        direction: rtl;
     }
 
-    .hx-msg [data-msg-name],
-    .hx-msg [data-msg-chat-name] {
-        font-weight: 900;
-        color: var(--hx-text);
-    }
-
-    .hx-msg [data-msg-name] {
+    .mx-msg [data-msg-name] {
         font-size: 14px;
-    }
-
-    .hx-msg [data-msg-chat-name] {
-        font-size: 15px;
-        line-height: 1.4;
-    }
-
-    .hx-msg [data-msg-preview],
-    .hx-msg [data-msg-chat-status],
-    .hx-msg [data-msg-time],
-    .hx-msg [data-msg-bubble-time],
-    .hx-msg [data-msg-bubble-sender] {
-        color: var(--hx-text-muted);
-    }
-
-    .hx-msg [data-msg-preview] {
-        display: block;
-        font-size: 12.5px;
+        font-weight: 900;
+        color: var(--mx-text);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: right;
     }
 
-    .hx-msg [data-msg-item-meta] {
+    .mx-msg [data-msg-preview] {
+        display: block;
+        font-size: 12.5px;
+        color: var(--mx-text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-item-meta] {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -580,141 +572,160 @@
         flex: 0 0 44px;
     }
 
-    .hx-msg [data-msg-time] {
+    .mx-msg [data-msg-time] {
         font-size: 11px;
         font-weight: 800;
+        color: var(--mx-text-muted);
         white-space: nowrap;
     }
 
-    .hx-msg [data-msg-unread-dot] {
+    .mx-msg [data-msg-unread-dot] {
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: var(--hx-success);
+        background: var(--mx-success);
         box-shadow: 0 0 0 4px rgba(34, 197, 94, .12);
     }
 
-    .hx-msg [data-msg-chat-head] {
+    .mx-msg [data-msg-chat-head] {
         padding: .9rem 1rem;
-        border-bottom: 1px solid var(--hx-border);
-        background: var(--hx-surface-2);
+        border-bottom: 1px solid var(--mx-border);
+        background: var(--mx-surface-2);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: .75rem;
+        direction: rtl;
     }
 
-    .hx-msg [data-msg-chat-user] {
+    .mx-msg [data-msg-chat-user] {
         display: flex;
         align-items: center;
         gap: .75rem;
         direction: rtl;
     }
 
-    .hx-msg [data-msg-chat-scroll] {
+    .mx-msg [data-msg-chat-name] {
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--mx-text);
+        line-height: 1.4;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-chat-status] {
+        color: var(--mx-text-muted);
+        font-size: 12px;
+        margin-top: .15rem;
+        text-align: right;
+    }
+
+    .mx-msg [data-msg-chat-scroll] {
         height: calc(72vh - 170px);
         overflow-y: auto;
         padding: 1rem;
-        background: var(--hx-chat-scroll-bg) !important;
+        background: var(--mx-chat-scroll-bg) !important;
         background-image: none !important;
         display: flex;
         flex-direction: column;
         gap: .8rem;
-        direction: rtl;
+        direction: ltr;
     }
 
-    .hx-msg [data-msg-row] {
+    .mx-msg [data-msg-row] {
         display: flex;
         align-items: flex-end;
         gap: .55rem;
         width: 100%;
     }
 
-    .hx-msg [data-msg-row].mine {
+    .mx-msg [data-msg-row].mine {
         justify-content: flex-end;
     }
 
-    .hx-msg [data-msg-row].theirs {
+    .mx-msg [data-msg-row].theirs {
         justify-content: flex-start;
     }
 
-    .hx-msg [data-msg-bubble-wrap] {
+    .mx-msg [data-msg-bubble-wrap] {
         max-width: min(78%, 620px);
-        text-align: right;
     }
 
-    .hx-msg [data-msg-bubble-sender] {
+    .mx-msg [data-msg-bubble-sender] {
         font-size: 11px;
         font-weight: 800;
         margin-bottom: .2rem;
+        color: var(--mx-text-muted);
+        text-align: left;
         padding-inline: .35rem;
     }
 
-    .hx-msg [data-msg-bubble] {
+    .mx-msg [data-msg-bubble] {
         border-radius: 20px;
         padding: .7rem .85rem .5rem;
         font-size: 13.4px;
         line-height: 1.9;
-        text-align: right;
-        direction: rtl;
         word-break: break-word;
-        box-shadow: var(--hx-shadow-sm);
+        box-shadow: var(--mx-shadow-sm);
+        direction: ltr;
+        text-align: left;
     }
 
-    .hx-msg [data-msg-bubble].mine {
-        background: var(--hx-chat-mine);
-        border: 1px solid var(--hx-chat-mine-border);
-        color: var(--hx-text);
+    .mx-msg [data-msg-bubble].mine {
+        background: var(--mx-chat-mine);
+        border: 1px solid var(--mx-chat-mine-border);
+        color: var(--mx-text);
         border-top-right-radius: 8px;
     }
 
-    .hx-msg [data-msg-bubble].theirs {
-        background: var(--hx-chat-theirs);
-        border: 1px solid var(--hx-chat-theirs-border);
-        color: var(--hx-text);
+    .mx-msg [data-msg-bubble].theirs {
+        background: var(--mx-chat-theirs);
+        border: 1px solid var(--mx-chat-theirs-border);
+        color: var(--mx-text);
         border-top-left-radius: 8px;
     }
 
-    .hx-msg [data-msg-bubble-time] {
+    .mx-msg [data-msg-bubble-time] {
         display: block;
         margin-top: .35rem;
         font-size: 10.5px;
+        color: var(--mx-text-muted);
         text-align: left;
         direction: ltr;
     }
 
-    .hx-msg [data-msg-compose] {
+    .mx-msg [data-msg-compose] {
         padding: .85rem;
-        border-top: 1px solid var(--hx-border);
-        background: var(--hx-chat-pane-bg);
+        border-top: 1px solid var(--mx-border);
+        background: var(--mx-chat-pane-bg);
     }
 
-    .hx-msg [data-msg-compose-form] {
+    .mx-msg [data-msg-compose-form] {
         display: flex;
         align-items: flex-end;
         gap: .55rem;
         direction: rtl;
     }
 
-    .hx-msg [data-msg-compose-form] textarea {
+    .mx-msg [data-msg-compose-form] textarea {
         min-height: 52px;
         resize: none;
         border-radius: 18px;
-        border: 1px solid var(--hx-border);
-        background: var(--hx-surface);
-        color: var(--hx-text);
+        border: 1px solid var(--mx-border);
+        background: var(--mx-surface);
+        color: var(--mx-text);
+        box-shadow: none !important;
         text-align: right;
         direction: rtl;
-        box-shadow: none !important;
     }
 
-    .hx-msg [data-msg-compose-form] textarea:focus {
-        border-color: var(--hx-primary);
-        background: var(--hx-surface);
-        color: var(--hx-text);
+    .mx-msg [data-msg-compose-form] textarea:focus {
+        border-color: var(--mx-primary);
+        background: var(--mx-surface);
+        color: var(--mx-text);
     }
 
-    .hx-msg [data-msg-send-btn] {
+    .mx-msg [data-msg-send-btn] {
         min-width: 92px;
         height: 52px;
         border-radius: 16px !important;
@@ -722,124 +733,125 @@
         white-space: nowrap;
     }
 
-    .hx-msg [data-msg-empty] {
+    .mx-msg [data-msg-empty] {
         height: 100%;
         min-height: 320px;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        color: var(--hx-text-muted);
+        color: var(--mx-text-muted);
         padding: 1.5rem;
-        background: var(--hx-chat-pane-bg);
+        background: var(--mx-chat-pane-bg);
     }
 
-    .hx-msg [data-msg-empty-box] {
+    .mx-msg [data-msg-empty-box] {
         max-width: 360px;
     }
 
-    .hx-msg [data-msg-empty-box] i {
+    .mx-msg [data-msg-empty-box] i {
         font-size: 2.2rem;
         display: block;
         margin-bottom: .8rem;
     }
 
     @media (max-width: 991.98px) {
-        #headerMessagesModal .modal-dialog,
+        #headerAnnouncementsModal .modal-dialog,
         #headerNotificationsModal .modal-dialog,
-        #headerAnnouncementsModal .modal-dialog {
+        #headerMessagesModal .modal-dialog {
             max-width: 100%;
             margin: 0;
         }
 
-        .hx-modal .modal-content {
+        .mx-modal .modal-content {
             min-height: 100vh;
             border-radius: 0 !important;
         }
 
-        .hx-msg .modal-body {
+        .mx-msg .modal-body {
             padding: 0;
         }
 
-        .hx-msg [data-msg-layout] {
+        .mx-msg [data-msg-layout] {
             grid-template-columns: 1fr;
             grid-template-areas: "sidebar";
             gap: 0;
             min-height: calc(100vh - 126px);
         }
 
-        .hx-msg [data-msg-sidebar],
-        .hx-msg [data-msg-pane] {
+        .mx-msg [data-msg-sidebar],
+        .mx-msg [data-msg-pane] {
             border: 0;
             border-radius: 0;
+            box-shadow: none;
         }
 
-        .hx-msg [data-msg-pane] {
+        .mx-msg [data-msg-pane] {
             display: none;
         }
 
-        .hx-msg [data-msg-layout].show-chat {
+        .mx-msg [data-msg-layout].show-chat {
             grid-template-areas: "pane";
         }
 
-        .hx-msg [data-msg-layout].show-chat [data-msg-sidebar] {
+        .mx-msg [data-msg-layout].show-chat [data-msg-sidebar] {
             display: none;
         }
 
-        .hx-msg [data-msg-layout].show-chat [data-msg-pane] {
+        .mx-msg [data-msg-layout].show-chat [data-msg-pane] {
             display: block;
         }
 
-        .hx-msg [data-msg-list] {
+        .mx-msg [data-msg-list] {
             max-height: calc(100vh - 210px);
         }
 
-        .hx-msg [data-msg-item] {
+        .mx-msg [data-msg-item] {
             border-radius: 0;
-            border-bottom: 1px solid var(--hx-border);
+            border-bottom: 1px solid var(--mx-border);
         }
 
-        .hx-msg [data-msg-chat-scroll] {
+        .mx-msg [data-msg-chat-scroll] {
             height: calc(100vh - 255px);
             padding: .85rem;
         }
 
-        .hx-msg [data-msg-bubble-wrap] {
+        .mx-msg [data-msg-bubble-wrap] {
             max-width: 88%;
         }
     }
 
     @media (max-width: 639.98px) {
-        .hx-header__row {
+        .mx-header__row {
             min-height: 66px;
         }
 
-        .hx-header__logo {
+        .mx-header__logo {
             height: 40px;
         }
 
-        .hx-header__logo img {
+        .mx-header__logo img {
             max-height: 34px;
         }
 
-        .hx-icon-btn {
+        .mx-icon-btn {
             width: 40px;
             height: 40px;
             min-width: 40px;
             border-radius: 14px !important;
         }
 
-        .hx-icon-btn i {
+        .mx-icon-btn i {
             font-size: 1rem;
         }
 
-        .hx-badge {
+        .mx-badge {
             min-width: 20px;
             height: 20px;
             font-size: 10px;
         }
 
-        .hx-header__dashboard-btn {
+        .mx-header__dashboard-btn {
             height: 39px;
             padding-inline: 10px !important;
             font-size: 13px;
@@ -847,89 +859,89 @@
     }
 </style>
 
-<nav class="hx-header">
+<nav class="mx-header">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center hx-header__row">
+        <div class="flex justify-between items-center mx-header__row">
             <div class="flex items-center gap-3">
                 <a href="{{ route('dashboard') }}" class="shrink-0">
-                    <div class="hx-header__logo">
+                    <div class="mx-header__logo">
                         <img src="{{ asset('logo.png') }}" alt="Logo">
                     </div>
                 </a>
 
                 <a href="{{ route('dashboard') }}"
-                   class="btn btn-primary d-none d-sm-inline-flex align-items-center gap-2 hx-header__dashboard-btn {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                   class="btn btn-primary d-none d-sm-inline-flex align-items-center gap-2 mx-header__dashboard-btn {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
                     <span>داشبورد</span>
                 </a>
             </div>
 
-            <div class="d-none d-sm-flex hx-header__actions">
-                <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerAnnouncementsModal" aria-label="اطلاعیه‌ها" title="اطلاعیه‌ها">
+            <div class="d-none d-sm-flex mx-header__actions">
+                <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerAnnouncementsModal" aria-label="اطلاعیه‌ها" title="اطلاعیه‌ها">
                     <i class="bi bi-megaphone"></i>
                     @if($announcementsCount > 0)
-                        <span class="hx-badge hx-badge--primary">{{ $announcementsCount }}</span>
+                        <span class="mx-badge mx-badge--primary">{{ $announcementsCount }}</span>
                     @endif
                 </button>
 
-                <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerNotificationsModal" aria-label="اعلان‌ها" title="اعلان‌ها">
+                <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerNotificationsModal" aria-label="اعلان‌ها" title="اعلان‌ها">
                     <i class="bi bi-bell"></i>
                     @if($notificationsCount > 0)
-                        <span class="hx-badge hx-badge--danger">{{ $notificationsCount }}</span>
+                        <span class="mx-badge mx-badge--danger">{{ $notificationsCount }}</span>
                     @endif
                 </button>
 
-                <button type="button" class="btn hx-icon-btn" data-theme-toggle aria-label="تغییر تم" title="تغییر تم">
+                <button type="button" class="btn mx-icon-btn" data-theme-toggle aria-label="تغییر تم" title="تغییر تم">
                     <i class="bi bi-moon-stars-fill" data-theme-icon></i>
                 </button>
 
                 @auth
-                    <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
+                    <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
                         <i class="bi bi-chat-dots"></i>
                         @if($messagesCount > 0)
-                            <span class="hx-badge hx-badge--success">{{ $messagesCount }}</span>
+                            <span class="mx-badge mx-badge--success">{{ $messagesCount }}</span>
                         @endif
                     </button>
 
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="btn hx-icon-btn" aria-label="خروج" title="خروج">
+                        <button type="submit" class="btn mx-icon-btn" aria-label="خروج" title="خروج">
                             <i class="bi bi-box-arrow-right"></i>
                         </button>
                     </form>
                 @endauth
             </div>
 
-            <div class="d-flex d-sm-none hx-header__actions--mobile">
-                <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerAnnouncementsModal" aria-label="اطلاعیه‌ها" title="اطلاعیه‌ها">
+            <div class="d-flex d-sm-none mx-header__actions--mobile">
+                <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerAnnouncementsModal" aria-label="اطلاعیه‌ها" title="اطلاعیه‌ها">
                     <i class="bi bi-megaphone"></i>
                     @if($announcementsCount > 0)
-                        <span class="hx-badge hx-badge--primary">{{ $announcementsCount }}</span>
+                        <span class="mx-badge mx-badge--primary">{{ $announcementsCount }}</span>
                     @endif
                 </button>
 
-                <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerNotificationsModal" aria-label="اعلان‌ها" title="اعلان‌ها">
+                <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerNotificationsModal" aria-label="اعلان‌ها" title="اعلان‌ها">
                     <i class="bi bi-bell"></i>
                     @if($notificationsCount > 0)
-                        <span class="hx-badge hx-badge--danger">{{ $notificationsCount }}</span>
+                        <span class="mx-badge mx-badge--danger">{{ $notificationsCount }}</span>
                     @endif
                 </button>
 
-                <button type="button" class="btn hx-icon-btn" data-theme-toggle aria-label="تغییر تم" title="تغییر تم">
+                <button type="button" class="btn mx-icon-btn" data-theme-toggle aria-label="تغییر تم" title="تغییر تم">
                     <i class="bi bi-moon-stars-fill" data-theme-icon></i>
                 </button>
 
                 @auth
-                    <button type="button" class="btn hx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
+                    <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
                         <i class="bi bi-chat-dots"></i>
                         @if($messagesCount > 0)
-                            <span class="hx-badge hx-badge--success">{{ $messagesCount }}</span>
+                            <span class="mx-badge mx-badge--success">{{ $messagesCount }}</span>
                         @endif
                     </button>
 
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="btn hx-icon-btn" aria-label="خروج" title="خروج">
+                        <button type="submit" class="btn mx-icon-btn" aria-label="خروج" title="خروج">
                             <i class="bi bi-box-arrow-right"></i>
                         </button>
                     </form>
@@ -939,44 +951,43 @@
     </div>
 </nav>
 
-<div class="modal fade hx-modal" id="headerAnnouncementsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade mx-modal" id="headerAnnouncementsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="hx-headline">
-                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                    <div class="hx-headline__side">
+                <div class="mx-head">
+                    <div class="mx-head__side">
                         <div class="text-end">
                             <h5 class="modal-title fw-bold mb-1">اطلاعیه‌ها</h5>
                             <div class="small text-muted">آخرین اطلاعیه‌های سیستم</div>
                         </div>
 
-                        <div class="hx-headline__icon">
+                        <div class="mx-head__icon">
                             <i class="bi bi-megaphone"></i>
                         </div>
 
-                        <div class="hx-headline__count" data-ann-count>{{ $announcementsCount }} مورد</div>
+                        <div class="mx-head__count" data-ann-count>{{ $announcementsCount }} مورد</div>
                     </div>
+
+                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
 
             <div class="modal-body">
                 @if($announcementsCount > 0)
-                    <div class="hx-panel-list">
+                    <div class="mx-panel-list">
                         @foreach($headerAnnouncements as $announcement)
-                            <div class="hx-card">
-                                <h6 class="hx-card__title">{{ $announcement->title }}</h6>
+                            <div class="mx-card">
+                                <h6 class="mx-card__title">{{ $announcement->title }}</h6>
+                                <div class="mx-card__text">{{ $announcement->message }}</div>
 
-                                <div class="hx-card__text">{{ $announcement->message }}</div>
-
-                                <div class="hx-card__meta">
-                                    <span class="hx-chip">
+                                <div class="mx-card__meta">
+                                    <span class="mx-chip">
                                         <i class="bi bi-person"></i>
                                         <span>{{ $announcement->creator?->name ?? '---' }}</span>
                                     </span>
 
-                                    <span class="hx-chip">
+                                    <span class="mx-chip">
                                         <i class="bi bi-clock-history"></i>
                                         <span>{{ \Hekmatinasser\Verta\Verta::instance($announcement->created_at)->format('Y/m/d H:i') }}</span>
                                     </span>
@@ -985,12 +996,12 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="hx-empty">
-                        <div class="hx-empty__icon">
+                    <div class="mx-empty">
+                        <div class="mx-empty__icon">
                             <i class="bi bi-megaphone"></i>
                         </div>
-                        <div class="hx-empty__title">اطلاعیه‌ای وجود ندارد</div>
-                        <div class="hx-empty__text">در حال حاضر موردی برای نمایش ثبت نشده است.</div>
+                        <div class="mx-empty__title">اطلاعیه‌ای وجود ندارد</div>
+                        <div class="mx-empty__text">در حال حاضر موردی برای نمایش ثبت نشده است.</div>
                     </div>
                 @endif
             </div>
@@ -1003,43 +1014,42 @@
     </div>
 </div>
 
-<div class="modal fade hx-modal" id="headerNotificationsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade mx-modal" id="headerNotificationsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="hx-headline">
-                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                    <div class="hx-headline__side">
+                <div class="mx-head">
+                    <div class="mx-head__side">
                         <div class="text-end">
                             <h5 class="modal-title fw-bold mb-1">اعلان‌ها</h5>
                             <div class="small text-muted">اعلان‌های اخیر شما</div>
                         </div>
 
-                        <div class="hx-headline__icon">
+                        <div class="mx-head__icon">
                             <i class="bi bi-bell"></i>
                         </div>
 
-                        <div class="hx-headline__count" data-notif-count>{{ $notificationsCount }} دیده‌نشده</div>
+                        <div class="mx-head__count" data-notif-count>{{ $notificationsCount }} دیده‌نشده</div>
                     </div>
+
+                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
 
             <div class="modal-body">
                 @if($headerNotifications->count() > 0)
-                    <div class="hx-panel-list">
+                    <div class="mx-panel-list">
                         @foreach($headerNotifications as $notification)
-                            <div class="hx-card">
+                            <div class="mx-card">
                                 <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-                                    <h6 class="hx-card__title mb-0">{{ $notification->title }}</h6>
-
+                                    <h6 class="mx-card__title mb-0">{{ $notification->title }}</h6>
                                     @if(!$notification->seen)
-                                        <span class="hx-new-badge" data-notif-new>جدید</span>
+                                        <span class="mx-new-badge" data-notif-new>جدید</span>
                                     @endif
                                 </div>
 
                                 @if(!empty($notification->message))
-                                    <div class="hx-card__text">{{ $notification->message }}</div>
+                                    <div class="mx-card__text">{{ $notification->message }}</div>
                                 @endif
 
                                 @php
@@ -1065,8 +1075,8 @@
                                     </div>
                                 @endif
 
-                                <div class="hx-card__meta">
-                                    <span class="hx-chip">
+                                <div class="mx-card__meta">
+                                    <span class="mx-chip">
                                         <i class="bi bi-clock-history"></i>
                                         <span>{{ \Hekmatinasser\Verta\Verta::instance($notification->created_at)->format('Y/m/d H:i') }}</span>
                                     </span>
@@ -1075,12 +1085,12 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="hx-empty">
-                        <div class="hx-empty__icon">
+                    <div class="mx-empty">
+                        <div class="mx-empty__icon">
                             <i class="bi bi-bell"></i>
                         </div>
-                        <div class="hx-empty__title">اعلانی وجود ندارد</div>
-                        <div class="hx-empty__text">فعلاً اعلان جدیدی برای شما ثبت نشده است.</div>
+                        <div class="mx-empty__title">اعلانی وجود ندارد</div>
+                        <div class="mx-empty__text">فعلاً اعلان جدیدی برای شما ثبت نشده است.</div>
                     </div>
                 @endif
             </div>
@@ -1092,16 +1102,19 @@
     </div>
 </div>
 
-<div class="modal fade hx-modal hx-msg" id="headerMessagesModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade mx-modal mx-msg" id="headerMessagesModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="d-flex align-items-center justify-content-between w-100">
-                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="text-end">
-                        <h5 class="modal-title fw-bold mb-1">پیام‌ها</h5>
-                        <div class="small text-muted">نمای گفتگو</div>
+                <div class="mx-head">
+                    <div class="mx-head__side">
+                        <div class="text-end">
+                            <h5 class="modal-title fw-bold mb-1">پیام‌ها</h5>
+                            <div class="small text-muted">نمای گفتگو</div>
+                        </div>
                     </div>
+
+                    <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
 
@@ -1309,7 +1322,7 @@
         const seenAnnouncementId = parseInt(localStorage.getItem('seen_header_announcement_id') || '0', 10);
 
         if (latestAnnouncementId > 0 && seenAnnouncementId >= latestAnnouncementId) {
-            hideBadges('.hx-badge--primary');
+            hideBadges('.mx-badge--primary');
         }
 
         if (announcementModal) {
@@ -1323,7 +1336,7 @@
                     if (annCountLabel) {
                         annCountLabel.textContent = '0 مورد جدید';
                     }
-                    hideBadges('.hx-badge--primary');
+                    hideBadges('.mx-badge--primary');
                 }, ANNOUNCEMENT_BADGE_DELAY);
             });
         }
@@ -1360,7 +1373,7 @@
                     }
 
                     notificationModal.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
-                    hideBadges('.hx-badge--danger');
+                    hideBadges('.mx-badge--danger');
                 }, NOTIFICATION_BADGE_DELAY);
             } catch (e) {
                 //
@@ -1388,15 +1401,21 @@
 
         function scrollThreadToBottom(thread) {
             const scroll = thread ? thread.querySelector('[data-msg-chat-scroll]') : null;
-            if (scroll) scroll.scrollTop = scroll.scrollHeight;
+            if (scroll) {
+                scroll.scrollTop = scroll.scrollHeight;
+            }
         }
 
         function showListOnMobile() {
-            if (isMobile() && layout) layout.classList.remove('show-chat');
+            if (isMobile() && layout) {
+                layout.classList.remove('show-chat');
+            }
         }
 
         function showChatOnMobile() {
-            if (isMobile() && layout) layout.classList.add('show-chat');
+            if (isMobile() && layout) {
+                layout.classList.add('show-chat');
+            }
         }
 
         function activateThread(userId) {
@@ -1420,7 +1439,9 @@
                 placeholder.style.display = found ? 'none' : '';
             }
 
-            if (found) showChatOnMobile();
+            if (found) {
+                showChatOnMobile();
+            }
         }
 
         threadButtons.forEach((btn) => {
@@ -1522,10 +1543,14 @@
                 layout.classList.remove('show-chat');
 
                 const active = modal.querySelector('[data-msg-item].active');
-                if (active) activateThread(active.dataset.chatTarget);
+                if (active) {
+                    activateThread(active.dataset.chatTarget);
+                }
             } else {
                 const active = modal.querySelector('[data-msg-item].active');
-                if (!active) showListOnMobile();
+                if (!active) {
+                    showListOnMobile();
+                }
             }
         });
     });
