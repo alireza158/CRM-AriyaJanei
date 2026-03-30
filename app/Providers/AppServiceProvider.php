@@ -91,11 +91,53 @@ class AppServiceProvider extends ServiceProvider
                 })
                 ->count();
 
+            $threadUserIds = $headerMessages
+                ->map(fn ($message) => $message->sender_id === $user->id ? $message->receiver_id : $message->sender_id)
+                ->filter()
+                ->unique()
+                ->values();
+
+            $headerMessageConversations = collect();
+            if ($threadUserIds->isNotEmpty()) {
+                $threadMessages = Message::query()
+                    ->where(function ($q) use ($user, $threadUserIds) {
+                        $q->where(function ($q2) use ($user, $threadUserIds) {
+                            $q2->where('sender_id', $user->id)
+                                ->whereIn('receiver_id', $threadUserIds);
+                        })->orWhere(function ($q2) use ($user, $threadUserIds) {
+                            $q2->whereIn('sender_id', $threadUserIds)
+                                ->where('receiver_id', $user->id);
+                        });
+                    })
+                    ->where(function ($q) {
+                        $q->whereNull('body')
+                            ->orWhere('body', 'not like', '[گروه:%');
+                    })
+                    ->with(['sender:id,name', 'receiver:id,name'])
+                    ->orderBy('created_at')
+                    ->get();
+
+                $headerMessageConversations = $threadMessages
+                    ->groupBy(function ($message) use ($user) {
+                        return $message->sender_id === $user->id ? $message->receiver_id : $message->sender_id;
+                    })
+                    ->map(fn ($messages) => $messages->take(-30)->values());
+            }
+
+            $headerMessageUsers = \App\Models\User::query()
+                ->where('id', '!=', $user->id)
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->limit(200)
+                ->get();
+
             $view->with('headerAnnouncements', $headerAnnouncements)
                 ->with('headerNotifications', $headerNotifications)
                 ->with('headerNotificationsUnseenCount', $headerNotificationsUnseenCount)
                 ->with('headerMessages', $headerMessages)
-                ->with('headerMessagesUnseenCount', $headerMessagesUnseenCount);
+                ->with('headerMessagesUnseenCount', $headerMessagesUnseenCount)
+                ->with('headerMessageConversations', $headerMessageConversations)
+                ->with('headerMessageUsers', $headerMessageUsers);
         });
     }
 }

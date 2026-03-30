@@ -650,10 +650,10 @@
     }
 
     /* =========================
-       MESSAGES (Telegram-like)
+       MESSAGES (Telegram/WhatsApp Layout)
        ========================= */
     #headerMessagesModal .modal-dialog {
-        max-width: 560px;
+        max-width: 1040px;
     }
 
     #headerMessagesModal .modal-content {
@@ -667,54 +667,68 @@
     #headerMessagesModal .modal-header {
         border-bottom: 1px solid var(--gh-border);
         background: linear-gradient(135deg, rgba(37, 99, 235, .12) 0%, rgba(6, 182, 212, .06) 100%);
-        padding: 1rem 1.25rem;
+        padding: .85rem 1rem;
     }
 
     #headerMessagesModal .modal-body {
         background: var(--gh-surface-2);
-        padding: .75rem;
+        padding: .65rem;
     }
 
-    #headerMessagesModal .modal-footer {
-        border-top: 1px solid var(--gh-border);
+    #headerMessagesModal [data-msg-layout] {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: .7rem;
+        min-height: 68vh;
+    }
+
+    #headerMessagesModal [data-msg-sidebar],
+    #headerMessagesModal [data-msg-pane] {
+        border: 1px solid var(--gh-border);
+        border-radius: 20px;
         background: var(--gh-surface);
+        overflow: hidden;
+    }
+
+    #headerMessagesModal [data-msg-sidebar-top] {
+        padding: .75rem;
+        border-bottom: 1px solid var(--gh-border);
     }
 
     #headerMessagesModal [data-msg-list] {
+        max-height: calc(68vh - 72px);
+        overflow-y: auto;
+        padding: .5rem;
         display: flex;
         flex-direction: column;
-        gap: .55rem;
+        gap: .45rem;
     }
 
     #headerMessagesModal [data-msg-item] {
         display: grid;
-        grid-template-columns: 1fr auto;
-        gap: .75rem;
+        grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
-        text-decoration: none;
-        border-radius: 18px;
+        gap: .65rem;
         border: 1px solid var(--gh-border);
-        padding: .8rem .85rem;
+        border-radius: 14px;
         background: var(--gh-surface);
-        transition: all .2s ease;
+        padding: .55rem;
+        cursor: pointer;
     }
 
-    #headerMessagesModal [data-msg-item]:hover {
-        transform: translateY(-1px);
-        border-color: var(--gh-border-strong);
-        box-shadow: var(--gh-shadow-sm);
+    #headerMessagesModal button[data-msg-item] {
+        text-align: right;
+        color: inherit;
     }
 
-    #headerMessagesModal [data-msg-main] {
-        display: flex;
-        align-items: center;
-        gap: .8rem;
-        min-width: 0;
+    #headerMessagesModal [data-msg-item].active {
+        border-color: rgba(37, 99, 235, .35);
+        background: rgba(37, 99, 235, .08);
     }
 
     #headerMessagesModal [data-msg-avatar] {
-        width: 48px;
-        height: 48px;
+        width: 43px;
+        height: 43px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
@@ -722,34 +736,22 @@
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         color: #fff;
         font-weight: 800;
-        font-size: 15px;
-        flex: 0 0 48px;
-    }
-
-    #headerMessagesModal [data-msg-content] {
-        min-width: 0;
+        font-size: 14px;
+        flex: 0 0 43px;
     }
 
     #headerMessagesModal [data-msg-name] {
         color: var(--gh-text);
-        font-size: 14px;
+        font-size: 13.5px;
         font-weight: 800;
-        margin-bottom: .12rem;
     }
 
     #headerMessagesModal [data-msg-preview] {
         color: var(--gh-muted);
-        font-size: 12.5px;
+        font-size: 12px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-    }
-
-    #headerMessagesModal [data-msg-side] {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: .35rem;
     }
 
     #headerMessagesModal [data-msg-time] {
@@ -758,24 +760,83 @@
         font-weight: 700;
     }
 
-    #headerMessagesModal [data-msg-unseen] {
-        min-width: 24px;
-        height: 24px;
-        border-radius: 999px;
-        padding-inline: 7px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        font-weight: 900;
-        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    #headerMessagesModal [data-msg-chat-head] {
+        border-bottom: 1px solid var(--gh-border);
+        padding: .7rem .8rem;
+        font-weight: 800;
+        color: var(--gh-text);
+    }
+
+    #headerMessagesModal [data-msg-chat-scroll] {
+        padding: .8rem;
+        height: calc(68vh - 180px);
+        overflow-y: auto;
+        background:
+            radial-gradient(circle at top right, rgba(59, 130, 246, .05), transparent 26%),
+            linear-gradient(180deg, #f8fbff 0%, #fcfdff 100%);
+    }
+
+    #headerMessagesModal [data-msg-bubble] {
+        max-width: 80%;
+        border-radius: 16px;
+        padding: .55rem .7rem;
+        margin-bottom: .55rem;
+        font-size: 13px;
+        line-height: 1.55;
+        box-shadow: 0 7px 18px rgba(15, 23, 42, .05);
+    }
+
+    #headerMessagesModal [data-msg-bubble].mine {
+        margin-right: auto;
+        background: #2563eb;
         color: #fff;
+        border-bottom-left-radius: 5px;
+    }
+
+    #headerMessagesModal [data-msg-bubble].theirs {
+        margin-left: auto;
+        background: #fff;
+        color: var(--gh-text);
+        border: 1px solid var(--gh-border);
+        border-bottom-right-radius: 5px;
+    }
+
+    #headerMessagesModal [data-msg-bubble-time] {
+        display: block;
+        margin-top: .28rem;
+        font-size: 10px;
+        opacity: .8;
+    }
+
+    #headerMessagesModal [data-msg-compose] {
+        border-top: 1px solid var(--gh-border);
+        padding: .7rem;
+        background: var(--gh-surface);
     }
 
     #headerMessagesModal [data-msg-empty] {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        padding: 2rem 1rem;
         color: var(--gh-muted);
+        padding: 1.2rem;
+    }
+
+    @media (max-width: 991.98px) {
+        #headerMessagesModal [data-msg-layout] {
+            grid-template-columns: 1fr;
+            min-height: auto;
+        }
+
+        #headerMessagesModal [data-msg-list] {
+            max-height: 250px;
+        }
+
+        #headerMessagesModal [data-msg-chat-scroll] {
+            height: 42vh;
+        }
     }
 
     html.dark #headerMessagesModal .modal-content,
@@ -786,15 +847,6 @@
     [data-bs-theme="dark"] #headerMessagesModal .modal-content {
         background: #0f172a;
         border-color: rgba(148, 163, 184, .2) !important;
-    }
-
-    html.dark #headerMessagesModal .modal-header,
-    body.dark #headerMessagesModal .modal-header,
-    .dark #headerMessagesModal .modal-header,
-    html[data-bs-theme="dark"] #headerMessagesModal .modal-header,
-    body[data-bs-theme="dark"] #headerMessagesModal .modal-header,
-    [data-bs-theme="dark"] #headerMessagesModal .modal-header {
-        background: linear-gradient(135deg, rgba(59, 130, 246, .25) 0%, rgba(6, 182, 212, .14) 100%);
     }
     }
 </style>
@@ -1103,51 +1155,112 @@
                     <button type="button" class="btn-close m-0 ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="text-end">
                         <h5 class="modal-title fw-bold mb-1">پیام‌ها</h5>
-                        <div class="small text-muted">ظاهر جدید شبیه لیست چت تلگرام</div>
+                        <div class="small text-muted">نمای کامل گفتگو شبیه تلگرام / واتساپ</div>
                     </div>
                 </div>
             </div>
 
             <div class="modal-body">
-                @if(($headerMessages ?? collect())->count() > 0)
-                    <div data-msg-list>
-                        @foreach($headerMessages as $messageItem)
-                            @php
-                                $otherUser = $messageItem->sender_id === auth()->id() ? $messageItem->receiver : $messageItem->sender;
-                                if (!$otherUser) {
-                                    continue;
-                                }
-                                $isUnread = $messageItem->receiver_id === auth()->id() && is_null($messageItem->seen_at);
-                                $avatarText = trim(mb_substr($otherUser?->name ?? '؟', 0, 1));
-                            @endphp
-                            <a href="{{ route('messages.show', $otherUser?->id) }}" data-msg-item>
-                                <div data-msg-main>
-                                    <div data-msg-avatar>{{ $avatarText }}</div>
-                                    <div data-msg-content>
-                                        <div data-msg-name>{{ $otherUser?->name ?? 'کاربر حذف شده' }}</div>
-                                        <div data-msg-preview>{{ \Illuminate\Support\Str::limit($messageItem->body ?? 'پیوست ارسال شده', 55) }}</div>
+                <div data-msg-layout>
+                    <aside data-msg-sidebar>
+                        <div data-msg-sidebar-top>
+                            <select class="form-select form-select-sm" data-msg-new-user>
+                                <option value="">شروع گفتگوی جدید...</option>
+                                @foreach(($headerMessageUsers ?? collect()) as $msgUser)
+                                    <option value="{{ $msgUser->id }}">{{ $msgUser->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div data-msg-list>
+                            @forelse(($headerMessages ?? collect()) as $i => $messageItem)
+                                @php
+                                    $otherUser = $messageItem->sender_id === auth()->id() ? $messageItem->receiver : $messageItem->sender;
+                                    if (!$otherUser) continue;
+                                    $isUnread = $messageItem->receiver_id === auth()->id() && is_null($messageItem->seen_at);
+                                    $avatarText = trim(mb_substr($otherUser->name, 0, 1));
+                                @endphp
+                                <button type="button"
+                                        class="w-100 text-start"
+                                        data-msg-item
+                                        data-chat-target="{{ $otherUser->id }}">
+                                    <span data-msg-avatar>{{ $avatarText }}</span>
+                                    <span class="min-w-0">
+                                        <span data-msg-name>{{ $otherUser->name }}</span>
+                                        <span data-msg-preview>{{ \Illuminate\Support\Str::limit($messageItem->body ?? 'پیوست ارسال شده', 38) }}</span>
+                                    </span>
+                                    <span>
+                                        <span data-msg-time>{{ \Hekmatinasser\Verta\Verta::instance($messageItem->created_at)->format('H:i') }}</span>
+                                        @if($isUnread)
+                                            <span class="badge bg-success rounded-pill mt-1">جدید</span>
+                                        @endif
+                                    </span>
+                                </button>
+                            @empty
+                                <div class="small text-muted text-center py-4">هنوز گفتگویی ندارید.</div>
+                            @endforelse
+                        </div>
+                    </aside>
+
+                    <section data-msg-pane>
+                        @php
+                            $firstThread = ($headerMessages ?? collect())->first();
+                            $firstThreadUser = $firstThread
+                                ? ($firstThread->sender_id === auth()->id() ? $firstThread->receiver : $firstThread->sender)
+                                : null;
+                        @endphp
+
+                        @if(($headerMessageConversations ?? collect())->count() > 0)
+                            @foreach($headerMessageConversations as $threadUserId => $threadMessages)
+                                @php
+                                    $threadUser = optional($threadMessages->first())->sender_id === auth()->id()
+                                        ? optional($threadMessages->first())->receiver
+                                        : optional($threadMessages->first())->sender;
+                                @endphp
+                                @if($threadUser)
+                                    <div data-msg-thread="{{ $threadUserId }}" style="{{ $firstThreadUser && (int)$firstThreadUser->id === (int)$threadUserId ? '' : 'display:none;' }}">
+                                        <div data-msg-chat-head>{{ $threadUser->name }}</div>
+                                        <div data-msg-chat-scroll>
+                                            @foreach($threadMessages as $chatItem)
+                                                <div data-msg-bubble class="{{ $chatItem->sender_id === auth()->id() ? 'mine' : 'theirs' }}">
+                                                    <div>{{ $chatItem->body ?: 'پیوست ارسال شد.' }}</div>
+                                                    <span data-msg-bubble-time>{{ \Hekmatinasser\Verta\Verta::instance($chatItem->created_at)->format('Y/m/d H:i') }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div data-msg-compose>
+                                            <form action="{{ route('messages.reply', $threadUserId) }}" method="POST">
+                                                @csrf
+                                                <div class="d-flex gap-2 align-items-end">
+                                                    <textarea class="form-control form-control-sm" name="body" rows="2" required placeholder="پیام بنویسید..."></textarea>
+                                                    <button class="btn btn-primary btn-sm px-3" type="submit">ارسال</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div data-msg-empty>
+                                <div>
+                                    <i class="bi bi-chat-square-text fs-2 d-block mb-2"></i>
+                                    هنوز پیام مستقیمی ثبت نشده است.
                                 </div>
-                                <div data-msg-side>
-                                    <div data-msg-time>{{ \Hekmatinasser\Verta\Verta::instance($messageItem->created_at)->format('m/d H:i') }}</div>
-                                    @if($isUnread)
-                                        <div data-msg-unseen>جدید</div>
-                                    @endif
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                @else
-                    <div data-msg-empty>
-                        <i class="bi bi-chat-dots fs-2 d-block mb-2"></i>
-                        فعلاً گفت‌وگویی برای نمایش ندارید.
-                    </div>
-                @endif
+                            </div>
+                        @endif
+
+                        <div data-msg-empty data-msg-placeholder style="{{ ($headerMessageConversations ?? collect())->count() > 0 ? 'display:none;' : '' }}">
+                            <div>
+                                <i class="bi bi-chat-square-text fs-2 d-block mb-2"></i>
+                                یک گفتگو را از لیست سمت چپ انتخاب کنید.
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
 
             <div class="modal-footer">
-                <a class="btn btn-primary" href="{{ route('messages.index') }}">ورود به پیام‌ها</a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <small class="text-muted">برای پاسخ سریع، همین‌جا گفتگو را ادامه دهید.</small>
             </div>
         </div>
     </div>
@@ -1277,6 +1390,82 @@
             } catch (e) {
                 // fail silently
             }
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('headerMessagesModal');
+        if (!modal) return;
+
+        const threadButtons = modal.querySelectorAll('[data-msg-item][data-chat-target]');
+        const threads = modal.querySelectorAll('[data-msg-thread]');
+        const placeholder = modal.querySelector('[data-msg-placeholder]');
+        const newUserSelect = modal.querySelector('[data-msg-new-user]');
+        const baseReplyPath = "{{ url('/messages') }}";
+
+        const activateThread = (userId) => {
+            threadButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.chatTarget === String(userId)));
+
+            let found = false;
+            threads.forEach((thread) => {
+                const match = thread.getAttribute('data-msg-thread') === String(userId);
+                thread.style.display = match ? '' : 'none';
+                if (match) {
+                    found = true;
+                    const scroll = thread.querySelector('[data-msg-chat-scroll]');
+                    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+                }
+            });
+
+            if (placeholder) placeholder.style.display = found ? 'none' : '';
+        };
+
+        threadButtons.forEach((btn) => {
+            btn.addEventListener('click', function () {
+                activateThread(this.dataset.chatTarget);
+            });
+        });
+
+        if (newUserSelect) {
+            newUserSelect.addEventListener('change', function () {
+                const userId = this.value;
+                if (!userId) return;
+
+                const existingThread = modal.querySelector(`[data-msg-thread="${userId}"]`);
+                if (existingThread) {
+                    activateThread(userId);
+                    return;
+                }
+
+                if (!placeholder) return;
+                placeholder.innerHTML = `
+                    <div class="w-100">
+                        <div class="mb-3 fw-bold text-dark">گفتگوی جدید</div>
+                        <form method="POST" action="${baseReplyPath}/${userId}/reply">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <div class="d-flex gap-2 align-items-end">
+                                <textarea class="form-control form-control-sm" name="body" rows="3" required placeholder="اولین پیام خود را بنویسید..."></textarea>
+                                <button class="btn btn-primary btn-sm px-3" type="submit">ارسال</button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+                placeholder.style.display = '';
+                threads.forEach((thread) => (thread.style.display = 'none'));
+                threadButtons.forEach((btn) => btn.classList.remove('active'));
+            });
+        }
+
+        modal.addEventListener('shown.bs.modal', function () {
+            const active = modal.querySelector('[data-msg-item].active');
+            if (active) {
+                activateThread(active.dataset.chatTarget);
+                return;
+            }
+
+            const firstButton = modal.querySelector('[data-msg-item][data-chat-target]');
+            if (firstButton) activateThread(firstButton.dataset.chatTarget);
         });
     });
 </script>
