@@ -965,3 +965,50 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('headerNotificationsModal');
+        if (!modalEl) return;
+
+        let markedSeen = false;
+
+        modalEl.addEventListener('shown.bs.modal', async function () {
+            if (markedSeen) return;
+
+            const unseenCount = {{ (int)($headerNotificationsUnseenCount ?? 0) }};
+            if (unseenCount <= 0) return;
+
+            try {
+                const response = await fetch("{{ route('notifications.markAllSeen') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                markedSeen = true;
+
+                const notifCountLabel = modalEl.querySelector('[data-notif-count]');
+                if (notifCountLabel) {
+                    notifCountLabel.textContent = '0 دیده\u200cنشده';
+                }
+
+                modalEl.querySelectorAll('[data-notif-new]').forEach((el) => el.remove());
+
+                document.querySelectorAll('.glass-header-badge-danger').forEach((badge) => {
+                    badge.textContent = '0';
+                    badge.style.display = 'none';
+                });
+            } catch (e) {
+                // fail silently
+            }
+        });
+    });
+</script>

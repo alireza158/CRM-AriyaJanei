@@ -42,6 +42,16 @@ class AppServiceProvider extends ServiceProvider
             $headerNotifications = Notification::query()
                 ->with(['leave.user', 'leave.substituteUser'])
                 ->where('user_id', $user->id)
+                ->when($user->hasRole('Manager'), function ($q) use ($user) {
+                    $q->where(function ($nested) use ($user) {
+                        $nested->whereNull('leave_id')
+                            ->orWhereHas('leave', function ($leaveQ) use ($user) {
+                                $leaveQ->where('manager_id', $user->id)
+                                    ->orWhere('substitute_user_id', $user->id)
+                                    ->orWhere('user_id', $user->id);
+                            });
+                    });
+                })
                 ->orderByDesc('created_at')
                 ->limit(8)
                 ->get();
