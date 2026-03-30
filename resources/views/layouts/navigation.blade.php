@@ -868,6 +868,28 @@
                                     <div data-notif-text>{{ $notification->message }}</div>
                                 @endif
 
+                                @php
+                                    $notifLeave = $notification->leave;
+                                    $canSubstituteAction = $notifLeave && $notifLeave->status === 'pending' && (int) $notifLeave->substitute_user_id === (int) auth()->id();
+                                    $canManagerAction = $notifLeave && $notifLeave->status === 'manager_approved' && auth()->user()->hasRole('Manager') && (int) $notifLeave->manager_id === (int) auth()->id();
+                                    $canInternalAction = $notifLeave && $notifLeave->status === 'internal_approved' && (auth()->user()->hasRole('Admin') || auth()->user()->hasAnyRole(['internalManager', 'InternalManager']));
+                                @endphp
+
+                                @if($canSubstituteAction || $canManagerAction || $canInternalAction)
+                                    <div class="d-flex gap-2 mt-2">
+                                        <form action="{{ route('leaves.approve', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success btn-sm">تایید</button>
+                                        </form>
+                                        <form action="{{ route('leaves.reject', $notifLeave->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-danger btn-sm">رد</button>
+                                        </form>
+                                    </div>
+                                @endif
+
                                 <div data-notif-meta>
                                     <span data-notif-chip>
                                         <i class="bi bi-clock-history"></i>

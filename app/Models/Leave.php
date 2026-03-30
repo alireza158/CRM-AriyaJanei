@@ -15,6 +15,7 @@ class Leave extends Model
     const STATUS_REJECTED          = 'rejected';          // رد شده
     protected $fillable = [
         'user_id',
+        'substitute_user_id',
         'leave_type',
         'start_date',
         'end_date',
@@ -36,6 +37,10 @@ class Leave extends Model
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function substituteUser() {
+        return $this->belongsTo(User::class, 'substitute_user_id');
     }
 
     public function manager() {

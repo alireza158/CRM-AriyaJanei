@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
                 ->get();
 
             $headerNotifications = Notification::query()
+                ->with(['leave.user', 'leave.substituteUser'])
                 ->where('user_id', $user->id)
                 ->orderByDesc('created_at')
                 ->limit(8)
