@@ -422,6 +422,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/messages/groups/{group}/reply', [MessageController::class, 'replyGroup'])->name('messages.groups.reply');
     Route::get('/messages/groups/file/{groupMessage}', [MessageController::class, 'downloadGroupAttachment'])->name('messages.groups.download');
     Route::get('/messages/{user}',     [MessageController::class, 'show'])->name('messages.show'); // {user} = other user id
+    Route::post('/messages/{user}/seen', [MessageController::class, 'markSeen'])->name('messages.markSeen');
     Route::post('/messages',           [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/{user}/reply', [MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/messages/file/{message}', [MessageController::class, 'download'])->name('messages.download');

@@ -1324,7 +1324,7 @@
                     <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
                         <i class="bi bi-chat-dots"></i>
                         @if($messagesCount > 0)
-                            <span class="mx-badge mx-badge--success">{{ $messagesCount }}</span>
+                            <span class="mx-badge mx-badge--success" data-header-message-badge>{{ $messagesCount }}</span>
                         @endif
                     </button>
 
@@ -1360,7 +1360,7 @@
                     <button type="button" class="btn mx-icon-btn" data-bs-toggle="modal" data-bs-target="#headerMessagesModal" aria-label="پیام‌ها" title="پیام‌ها">
                         <i class="bi bi-chat-dots"></i>
                         @if($messagesCount > 0)
-                            <span class="mx-badge mx-badge--success">{{ $messagesCount }}</span>
+                            <span class="mx-badge mx-badge--success" data-header-message-badge>{{ $messagesCount }}</span>
                         @endif
                     </button>
 
@@ -1846,6 +1846,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const newUserSelect = modal.querySelector('[data-msg-new-user]');
     const baseReplyPath = "{{ url('/messages') }}";
     const csrfToken = "{{ csrf_token() }}";
+    const markSeenBasePath = "{{ url('/messages') }}";
 
     function isMobile() {
         return window.innerWidth < 992;
@@ -1903,6 +1904,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateMessageBadges(count) {
+        document.querySelectorAll('[data-header-message-badge]').forEach((badge) => {
+            if (count <= 0) {
+                badge.style.display = 'none';
+                badge.textContent = '0';
+                return;
+            }
+
+            badge.style.display = '';
+            badge.textContent = String(count);
+        });
+    }
+
+    function clearUnreadDot(userId) {
+        const btn = modal.querySelector(`[data-msg-item][data-chat-target="${userId}"]`);
+        if (!btn) return;
+        btn.querySelector('[data-msg-unread-dot]')?.remove();
+    }
+
+    async function markThreadSeen(userId) {
+        try {
+            const response = await fetch(`${markSeenBasePath}/${userId}/seen`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            updateMessageBadges(Number(data?.remaining_unseen_count ?? 0));
+            clearUnreadDot(userId);
+        } catch (e) {
+            //
+        }
+    }
+
     function activateThread(userId) {
         let found = false;
 
@@ -1926,6 +1967,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (found) {
             showChatOnMobile();
+            markThreadSeen(userId);
         }
     }
 

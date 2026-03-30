@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
 
 class MessageController extends Controller
 {
@@ -62,17 +63,34 @@ class MessageController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        Message::between($authId, $user->id)
-            ->where(function ($q) {
-                $q->whereNull('body')->orWhere('body', 'not like', '[گروه:%');
-            })
-            ->whereNull('seen_at')
-            ->where('receiver_id', $authId)
-            ->update(['seen_at' => now()]);
+        $this->markConversationAsSeen($user, $authId);
 
         return view('messages.show', [
             'conversation' => $conversation,
             'otherUser'    => $user,
+        ]);
+    }
+
+    public function markSeen(User $user): JsonResponse
+    {
+        $authId = Auth::id();
+        abort_if($user->id === $authId, 404);
+
+        $unseenMessages = $this->markConversationAsSeen($user, $authId);
+
+        $remainingUnseen = Message::query()
+            ->where('receiver_id', $authId)
+            ->whereNull('seen_at')
+            ->where(function ($q) {
+                $q->whereNull('body')
+                    ->orWhere('body', 'not like', '[گروه:%');
+            })
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'updated_messages' => $unseenMessages,
+            'remaining_unseen_count' => $remainingUnseen,
         ]);
     }
 
@@ -278,5 +296,24 @@ class MessageController extends Controller
         }
 
         return Storage::disk('public')->download($message->attachment);
+    }
+
+    private function markConversationAsSeen(User $user, int $authId): int
+    {
+        $updatedMessages = Message::between($authId, $user->id)
+            ->where(function ($q) {
+                $q->whereNull('body')->orWhere('body', 'not like', '[گروه:%');
+            })
+            ->whereNull('seen_at')
+            ->where('receiver_id', $authId)
+            ->update(['seen_at' => now()]);
+
+        Notification::query()
+            ->where('user_id', $authId)
+            ->where('seen', false)
+            ->where('title', 'پیام جدید از ' . $user->name)
+            ->update(['seen' => true]);
+
+        return $updatedMessages;
     }
 }
