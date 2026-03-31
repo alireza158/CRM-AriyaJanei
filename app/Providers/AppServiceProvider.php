@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\Notification;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use App\Services\TaskOverdueNotificationService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
                     ->with('headerMessages', collect())
                     ->with('headerMessagesUnseenCount', 0);
                 return;
+            }
+
+            if ($user->hasRole('Manager')) {
+                app(TaskOverdueNotificationService::class)->syncForManager($user);
             }
 
             $headerAnnouncements = Announcement::query()
