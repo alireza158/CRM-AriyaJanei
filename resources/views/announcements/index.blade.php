@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            اطلاعیه‌ها
+            مدیریت اطلاعیه‌ها
         </h2>
     </x-slot>
 
@@ -27,6 +27,7 @@
                                 <th>ثبت‌کننده</th>
                                 <th>وضعیت</th>
                                 <th>تاریخ ثبت (شمسی)</th>
+                                <th>عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,10 +44,31 @@
                                         @endif
                                     </td>
                                     <td>{{ \Hekmatinasser\Verta\Verta::instance($announcement->created_at)->format('Y/m/d H:i') }}</td>
+                                    <td>
+                                        @if(auth()->user()->hasAnyRole(['Admin', 'internalManager', 'InternalManager']))
+                                            <div class="d-flex gap-1 flex-wrap">
+                                                <a href="{{ route('announcements.edit', $announcement) }}" class="btn btn-sm btn-outline-primary">ویرایش</a>
+
+                                                <form method="POST" action="{{ route('announcements.toggleActive', $announcement) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-sm {{ $announcement->is_active ? 'btn-outline-warning' : 'btn-outline-success' }}">
+                                                        {{ $announcement->is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی' }}
+                                                    </button>
+                                                </form>
+
+                                                <form method="POST" action="{{ route('announcements.destroy', $announcement) }}" onsubmit="return confirm('از حذف این اطلاعیه مطمئن هستید؟');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                                                </form>
+                                            </div>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-4">هنوز اطلاعیه‌ای ثبت نشده است.</td>
+                                    <td colspan="6" class="text-center py-4">هنوز اطلاعیه‌ای ثبت نشده است.</td>
                                 </tr>
                             @endforelse
                         </tbody>
