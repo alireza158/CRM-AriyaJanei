@@ -19,6 +19,7 @@
             ['title' => 'نتایج ارزیابی', 'route' => 'admin.evaluations.monthly', 'icon' => 'doc'],
             ['title' => 'گزارش‌های مدیریتی', 'route' => 'admin.reports', 'icon' => 'chart'],
             ['title' => 'فرم رضایت مشتری', 'route' => 'customer-satisfaction-forms.index', 'icon' => 'doc'],
+            ['title' => 'افزودن اطلاعیه جدید', 'route' => 'announcements.index', 'icon' => 'megaphone'],
         ];
 
         $linksMarketer = [
@@ -55,6 +56,7 @@
 
         $linksInternalManager = [
             ['title' => 'فرم رضایت مشتری', 'route' => 'customer-satisfaction-forms.index', 'icon' => 'doc'],
+            ['title' => 'افزودن اطلاعیه جدید', 'route' => 'announcements.index', 'icon' => 'megaphone'],
         ];
 
         $roleLinks = [
@@ -142,6 +144,7 @@
                 'reminders.index',
                 'requests.index',
                 'admin.tasks.index',
+                'announcements.index',
             ])) {
                 $groups['requests']['items'][$route] = $link;
             } elseif (in_array($route, [
