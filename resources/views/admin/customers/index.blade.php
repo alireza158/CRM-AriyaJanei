@@ -414,18 +414,24 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const notesStoreUrlTemplate = @json(route('admin.customers.notes.store2', ['customer' => '__CUSTOMER_ID__']));
+            const notesActionUrlTemplate = @json(route('admin.customers.notes.destroy', ['note' => '__NOTE_ID__']));
 
             document.addEventListener('click', function(e){
                 const modal = e.target.closest('.modal');
+                const addNoteButton = e.target.closest('.add-note');
+                const deleteNoteButton = e.target.closest('.delete-note');
+                const editNoteButton = e.target.closest('.edit-note');
 
                 // افزودن یادداشت
-                if(e.target.classList.contains('add-note') && modal){
+                if(addNoteButton && modal){
                     const customerId = modal.dataset.customer;
                     const textarea = modal.querySelector('textarea');
                     const content = textarea.value.trim();
                     if(!content) return alert('محتوا نمی‌تواند خالی باشد');
+                    const storeUrl = notesStoreUrlTemplate.replace('__CUSTOMER_ID__', customerId);
 
-                    fetch(`/admin/customers/${customerId}/notes2`, {
+                    fetch(storeUrl, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': token,
@@ -463,16 +469,17 @@
                 }
 
                 // حذف یادداشت
-                if (e.target.classList.contains('delete-note')) {
-                    const li = e.target.closest('li[data-id]');
+                if (deleteNoteButton) {
+                    const li = deleteNoteButton.closest('li[data-id]');
                     if (!li) return;
 
                     const noteId = li.dataset.id;
                     if (!confirm('آیا مطمئن هستید؟')) return;
 
-                    e.target.disabled = true;
+                    deleteNoteButton.disabled = true;
+                    const destroyUrl = notesActionUrlTemplate.replace('__NOTE_ID__', noteId);
 
-                    fetch(`/admin/customers/notes/${noteId}`, {
+                    fetch(destroyUrl, {
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': token,
@@ -485,18 +492,18 @@
                             li.remove();
                         } else {
                             alert('حذف یادداشت موفقیت‌آمیز نبود.');
-                            e.target.disabled = false;
+                            deleteNoteButton.disabled = false;
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        e.target.disabled = false;
+                        deleteNoteButton.disabled = false;
                     });
                 }
 
                 // ویرایش یادداشت
-                if (e.target.classList.contains('edit-note')) {
-                    const li = e.target.closest('li[data-id]');
+                if (editNoteButton) {
+                    const li = editNoteButton.closest('li[data-id]');
                     if (!li) return;
 
                     const noteId = li.dataset.id;
@@ -509,8 +516,9 @@
                         alert('محتوا نمی‌تواند خالی باشد');
                         return;
                     }
+                    const updateUrl = notesActionUrlTemplate.replace('__NOTE_ID__', noteId);
 
-                    fetch(`/admin/customers/notes/${noteId}`, {
+                    fetch(updateUrl, {
                         method: 'PATCH',
                         headers: {
                             'X-CSRF-TOKEN': token,
