@@ -140,13 +140,13 @@
     }
 
     .mx-header__logo {
-        height: 48px;
+        height: 40px;
         display: flex;
         align-items: center;
     }
 
     .mx-header__logo img {
-        max-height: 40px;
+        max-height: 32px;
         width: auto;
         display: block;
     }
@@ -856,11 +856,11 @@
         }
 
         .mx-header__logo {
-            height: 40px;
+            height: 34px;
         }
 
         .mx-header__logo img {
-            max-height: 34px;
+            max-height: 28px;
         }
 
         .mx-icon-btn {
