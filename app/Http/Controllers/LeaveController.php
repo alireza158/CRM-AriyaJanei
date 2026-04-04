@@ -338,7 +338,11 @@ class LeaveController extends Controller
 
         if ($user->hasRole('Admin')) {
         } elseif ($user->hasRole('Manager')) {
-            $query->where('manager_id', $user->id);
+            $query->where(function ($q) use ($user) {
+                $q->where('manager_id', $user->id)
+                    ->orWhere('user_id', $user->id)
+                    ->orWhere('substitute_user_id', $user->id);
+            });
         } elseif ($user->hasRole('User')) {
             $query->where('user_id', $user->id);
         } else {
